@@ -1,0 +1,70 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <value>
+          <list size="31">
+            <item index="0" class="java.lang.String" itemvalue="gspread-formatting" />
+            <item index="1" class="java.lang.String" itemvalue="gino" />
+            <item index="2" class="java.lang.String" itemvalue="SQLAlchemy" />
+            <item index="3" class="java.lang.String" itemvalue="pathspec" />
+            <item index="4" class="java.lang.String" itemvalue="environs" />
+            <item index="5" class="java.lang.String" itemvalue="greenlet" />
+            <item index="6" class="java.lang.String" itemvalue="mypy-extensions" />
+            <item index="7" class="java.lang.String" itemvalue="marshmallow" />
+            <item index="8" class="java.lang.String" itemvalue="requests" />
+            <item index="9" class="java.lang.String" itemvalue="frozenlist" />
+            <item index="10" class="java.lang.String" itemvalue="filelock" />
+            <item index="11" class="java.lang.String" itemvalue="tomli" />
+            <item index="12" class="java.lang.String" itemvalue="pyparsing" />
+            <item index="13" class="java.lang.String" itemvalue="asyncpg" />
+            <item index="14" class="java.lang.String" itemvalue="aiogram" />
+            <item index="15" class="java.lang.String" itemvalue="black" />
+            <item index="16" class="java.lang.String" itemvalue="tzdata" />
+            <item index="17" class="java.lang.String" itemvalue="packaging" />
+            <item index="18" class="java.lang.String" itemvalue="pipenv" />
+            <item index="19" class="java.lang.String" itemvalue="click" />
+            <item index="20" class="java.lang.String" itemvalue="aioredis" />
+            <item index="21" class="java.lang.String" itemvalue="platformdirs" />
+            <item index="22" class="java.lang.String" itemvalue="Django" />
+            <item index="23" class="java.lang.String" itemvalue="virtualenv" />
+            <item index="24" class="java.lang.String" itemvalue="aiohttp" />
+            <item index="25" class="java.lang.String" itemvalue="distlib" />
+            <item index="26" class="java.lang.String" itemvalue="aiosignal" />
+            <item index="27" class="java.lang.String" itemvalue="pickle" />
+            <item index="28" class="java.lang.String" itemvalue="gspread_formatting" />
+            <item index="29" class="java.lang.String" itemvalue="aiogram_dialog" />
+            <item index="30" class="java.lang.String" itemvalue="aiogram_calendar" />
+          </list>
+        </value>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyPep8NamingInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="ignoredErrors">
+        <list>
+          <option value="N803" />
+          <option value="N806" />
+          <option value="N801" />
+        </list>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyShadowingBuiltinsInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="ignoredNames">
+        <list>
+          <option value="id" />
+          <option value="property" />
+          <option value="copyright" />
+        </list>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyTypeCheckerInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredIdentifiers">
+        <list>
+          <option value="jarvis.contacts.models.core" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>

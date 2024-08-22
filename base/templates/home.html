@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Головна | Huhy Space</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+
+    <!-- Шапка з навігацією -->
+    <header id="SITE_HEADER" class="SITE_HEADER">
+        <nav class="navbar">
+            <a href="https://www.huhy.space" class="logo">
+                <img src="static/images/ХУХИ.png" alt="ХУХИ Logo">
+            </a>
+            <ul class="nav-links">
+                <li><a href="#games">Ігри</a></li>
+                <li><a href="#about">Про нас</a></li>
+                <li><a href="#calendar">Календар</a></li>
+                <li><a href="tel:+38 099 369 69 69">099 369 69 69</a></li>
+                <li><a href="https://t.me/hyhu_space" target="_blank">Записатись</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Банер з головним слоганом -->
+    <section class="banner">
+        <div class="banner-content">
+            <h1>Грай · Твори · Відпочивай</h1>
+            <p>Пориньте у світ фантазії, де пригодам немає меж</p>
+            <p>Уяви себе в ролі мага, лиходія, лицаря чи ельфійського рейнджера, де ти визначаєш свою долю та переживаєш захопливі пригоди.</p>
+        </div>
+        <img src="static/images/banner.jpg" alt="Banner Image" class="banner-image">
+    </section>
+
+    <!-- Секція "Ігри" -->
+    <section id="games" class="games-section">
+        <h2>У нас можна пограти в</h2>
+        <div class="game">
+            <img src="{% static 'images/dd.png' %}" alt="D&D Image">
+            <h3>Підземелля та Дракони (D&D)</h3>
+            <p>Тривалість 4 години \ кількість людей 5 \ Ідеально для новачків</p>
+            <p>Ця гра вважається класикою і стала фундаментом жанру. Ви можете створювати своїх героїв, виконувати квести, битися з монстрами та розкривати захоплюючі історії у фантастичному світі.</p>
+        </div>
+        <div class="game">
+            <img src="{% static 'images/vampire.jpg' %}" alt="Vampire Masquerade Image">
+            <h3>Вампіри: Маскарад</h3>
+            <p>Тривалість 4 години \ кількість людей 5 \ Для досвідчених гравців</p>
+            <p>Ти будеш грати за вампіра, що приховує свою істинну сутність від людського світу. Головну роль відіграє рольова інтеракція та взаємодія між гравцями...</p>
+        </div>
+        <div class="game">
+            <img src="{% static 'images/coriolis.jpg' %}" alt="Coriolis Image">
+            <h3>Коріоліс.Третій Горизонт</h3>
+            <p>Тривалість 4 години \ кількість людей 5 \ Для новачків та досвідчених гравців</p>
+            <p>Уяви собі казки 1001 Ночі, сагу Зоряні війни та фільми Чужий...</p>
+        </div>
+        <div class="game">
+            <img src="{% static 'images/vessen.jpg' %}" alt="Vessen Image">
+            <h3>Вессен</h3>
+            <p>Тривалість 4 години \ кількість людей 5 \ Для новачків та досвідчених гравців</p>
+            <p>Гра переносить вас в глушини північних лісів Європи 19 століття...</p>
+        </div>
+        <div class="game">
+            <img src="{% static 'images/warhammer.jpg' %}" alt="Warhammer Image">
+            <h3>Вархаммер 40.000</h3>
+            <p>Тривалість 4 години \ кількість людей 5 \ Для досвідчених гравців</p>
+            <p>Ви перенеслись у 40.000 рік існування людства. Вас чекає темна космічна сага...</p>
+        </div>
+    </section>
+
+    <!-- Секція "Про нас" -->
+    <section id="about" class="about-section">
+        <h2>Про нас</h2>
+        <div class="about-item">
+            <h3>Люди</h3>
+            <img src="{% static 'images/people.jpg' %}" alt="People Image">
+            <p>Наші люди - це наша найголовніша цінність. Гравці - це наші друзі, а команда - родина.</p>
+        </div>
+        <div class="about-item">
+            <h3>Ігротека</h3>
+            <img src="{% static 'images/library.jpg' %}" alt="Library Image">
+            <p>На наших полицях можна знайти ігри від великої компанії...</p>
+        </div>
+        <div class="about-item">
+            <h3>3D друк</h3>
+            <img src="{% static 'images/3dprint.jpg' %}" alt="3D Print Image">
+            <p>Давно мріяли грати за свого власного персонажа? У нас можна замовити 3D друк...</p>
+        </div>
+        <div class="about-item">
+            <h3>Майстер класи</h3>
+            <img src="{% static 'images/workshops.jpg' %}" alt="Workshops Image">
+            <p>Можливо цікавить плетіння кольчуги? Або мейкап? Ми пропонуємо різноманітні майстер-класи...</p>
+        </div>
+        <div class="about-item">
+            <h3>Оренда кімнати</h3>
+            <img src="{% static 'images/rent.jpg' %}" alt="Room Rental Image">
+            <p>Ви можете орендувати приміщення під проведення зустрічей, настільно-рольові ігри, івенти та майстер-класи...</p>
+        </div>
+    </section>
+
+    <!-- Секція "Календар подій" -->
+    <section id="calendar" class="calendar-section">
+        <h2>Календар подій</h2>
+        <img src="{% static 'images/calendar.jpg' %}" alt="Calendar Image">
+        <p>Перелік подій, які плануються в найближчому майбутньому.</p>
+    </section>
+
+    <!-- Секція "Залиште контакти" -->
+    <section id="contact" class="contact-section">
+        <h2>Залиште контакти, щоб ми з вами зв'язались:</h2>
+        <form>
+            <label for="name">Ім'я:</label><br>
+            <input type="text" id="name" name="name" required><br><br>
+            <label for="phone">Телефон:</label><br>
+            <input type="tel" id="phone" name="phone" required><br><br>
+            <button type="submit">Відправити</button>
+        </form>
+    </section>
+
+    <!-- Підвал з контактами -->
+    <footer>
+        <p>Контакти: <a href="tel:+380993696969">099 369 69 69</a></p>
+        <p>Адреса: Костянтинівська, 56 А</p>
+        <p><a href="https://t.me/huhyspace">Telegram</a> | <a href="https://www.instagram.com/huhy.space/?hl=uk">Instagram</a> | <a href="https://www.facebook.com/profile.php?id=100093723872579&locale=uk_UA">Facebook</a></p>
+        <p>&copy; 2024 Всі права захищено</p>
+    </footer>
+
+</body>
+</html>

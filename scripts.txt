@@ -1,0 +1,23 @@
+pip install poetry
+
+docker-compose up -d
+
+
+superuser Tony 1111
+
+перевірка в бд:
+python manage.py shell
+from task_manager.models import Task, Tag
+
+git fetch origin
+git pull origin <branch_name>
+
+
+
+python manage.py makemigrations
+python manage.py migrate
+
+
+python manage.py runserver 8000
+
+
