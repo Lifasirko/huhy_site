@@ -1,7 +1,8 @@
 import logging
 
-from aiogram import Dispatcher, types
+from aiogram import Dispatcher, types, Bot
 
+from base.forms import ContactForm
 from telegram_bot.data.config import ADMINS
 
 
@@ -92,13 +93,36 @@ async def some_problem_notify(dp: Dispatcher, message: types.Message, problem_st
             logging.exception(err)
 
 
-async def new_order_notify(dp: Dispatcher, message: types.Message, form: dict = None):
+async def new_order_notify(bot: Bot, form: ContactForm = None):
+    print(1)
+    message_text = (
+        f"Нова заявка:\n"
+        f"{form.as_text()}"
+    )
+
     for admin in ADMINS:
         try:
-            await dp.bot.send_message(admin,
-                                      f"Нова заявка:\n"
-                                      f"{form}\n"
-                                      )
+            await bot.send_message(admin, message_text)
 
         except Exception as err:
             logging.exception(err)
+
+import asyncio
+
+def new_order_notify_sync(bot, form):
+    print(1)
+    message_text = (
+        f"Нова заявка:\n"
+        f"{form.as_text()}"
+    )
+
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+
+    for admin in ADMINS:
+        try:
+            loop.run_until_complete(bot.send_message(admin, message_text))
+        except Exception as err:
+            logging.exception(err)
+
+    loop.close()

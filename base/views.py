@@ -1,32 +1,47 @@
 from aiogram import types
+from asgiref.sync import sync_to_async
 from django.core.mail import send_mail
 from django.shortcuts import render, redirect
 
+
 from base.forms import ContactForm
-from telegram_bot.loader import dp
-from telegram_bot.utils.notify_admins import new_order_notify
+from telegram_bot.loader import dp, bot
+from telegram_bot.utils.notify_admins import new_order_notify, new_order_notify_sync
 
 
-def home(request):
-    return render(request, 'home.html')
-
-
-async def contact_view(request):
+async def home(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)
         if form.is_valid():
-            # Зберігаємо дані в базу даних
+            contact = await sync_to_async(form.save)()
+            print("Форма успішно збережена в базу даних.")
+            new_order_notify_sync(bot, form=form)
+            # await new_order_notify(bot, form=form)
+            print("Повідомлення відправлено в Telegram.")
+            # send_email(contact)
+            # print("Повідомлення відправлено на пошту.")
+            return await sync_to_async(redirect)('home')
+        else:
+            print("Форма не пройшла валідацію.")
+    else:
+        form = ContactForm()
+
+    return await sync_to_async(render)(request, 'home.html', {'form': form})
+
+
+def contact_view(request):
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
             contact = form.save()
-
-            # Відправка повідомлення в Telegram
-            message = types.Message()
-            await new_order_notify(dp, message, form = form)
-
-            # Відправка на електронну пошту
+            print("Форма успішно збережена в базу даних.")
+            # await new_order_notify(dp, form=form)
+            print("Повідомлення відправлено в Telegram.")
             send_email(contact)
-
-            # Перенаправлення на сторінку успіху або відображення повідомлення
+            print("Повідомлення відправлено на пошту.")
             return redirect('success')
+        else:
+            print("Форма не пройшла валідацію.")
     else:
         form = ContactForm()
 

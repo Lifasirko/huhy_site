@@ -15,14 +15,14 @@ python manage.py runserver
 Генерує файл міграції на основі змін у моделях.
 
 ```bash
-poetry run python manage.py makemigrations
+python manage.py makemigrations
 ```
 
 ### Проведення міграцій бази даних
 Виконує всі міграції для актуалізації бази даних відповідно до змін у моделях.
 
 ```bash
-poetry run python manage.py migrate
+python manage.py migrate
 ```
 
 ### Створення адміністративного користувача
