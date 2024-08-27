@@ -1,6 +1,8 @@
+import asyncio
 import logging
 
 from aiogram import Dispatcher, types, Bot
+from asgiref.sync import async_to_sync
 
 from base.forms import ContactForm
 from telegram_bot.data.config import ADMINS
@@ -107,7 +109,6 @@ async def new_order_notify(bot: Bot, form: ContactForm = None):
         except Exception as err:
             logging.exception(err)
 
-import asyncio
 
 def new_order_notify_sync(bot, form):
     print(1)
@@ -116,13 +117,11 @@ def new_order_notify_sync(bot, form):
         f"{form.as_text()}"
     )
 
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-
     for admin in ADMINS:
         try:
+            loop = asyncio.new_event_loop()  # Створюємо новий цикл подій
+            asyncio.set_event_loop(loop)
             loop.run_until_complete(bot.send_message(admin, message_text))
+            loop.close()  # Закриваємо цикл подій після завершення
         except Exception as err:
             logging.exception(err)
-
-    loop.close()
