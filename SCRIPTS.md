@@ -9,7 +9,7 @@
 Запускає локальний сервер для розробки.
 
 ```bash
-poetry run python manage.py runserver
+python manage.py runserver
 ```
 ### Створення нової міграції
 Генерує файл міграції на основі змін у моделях.

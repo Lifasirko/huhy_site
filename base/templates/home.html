@@ -107,16 +107,10 @@
         <p>Перелік подій, які плануються в найближчому майбутньому.</p>
     </section>
 
-    <!-- Секція "Залиште контакти" -->
+        <!-- Секція "Залиште контакти" -->
     <section id="contact" class="contact-section">
         <h2>Залиште контакти, щоб ми з вами зв'язались:</h2>
-        <form>
-            <label for="name">Ім'я:</label><br>
-            <input type="text" id="name" name="name" required><br><br>
-            <label for="phone">Телефон:</label><br>
-            <input type="tel" id="phone" name="phone" required><br><br>
-            <button type="submit">Відправити</button>
-        </form>
+        {% include 'contact.html' %}
     </section>
 
     <!-- Підвал з контактами -->

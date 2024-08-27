@@ -1,15 +1,15 @@
 import asyncio
 
 from aiogram import types
-from aiogram.dispatcher import FSMContext
-from aiogram.dispatcher.filters.state import StatesGroup, State
+from aiogram.fsm.context import FSMContext
+from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import CallbackQuery
 
-from data.greetings import personal_greetings, url_rules
-from keyboards.callback_datas import i_am_human_callback
-from keyboards.human_button import i_am_human_button_menu_func
-from loader import dp, bot
-from utils.notify_admins import new_chat_member_notify, count_chat_members, chat_member_left_chat_notify, \
+from telegram_bot.data.greetings import personal_greetings, url_rules
+from telegram_bot.keyboards.callback_datas import i_am_human_callback
+from telegram_bot.keyboards.human_button import i_am_human_button_menu_func
+from telegram_bot.loader import dp, bot
+from telegram_bot.utils.notify_admins import new_chat_member_notify, count_chat_members, chat_member_left_chat_notify, \
     send_message_to_admin
 
 
