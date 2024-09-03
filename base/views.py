@@ -4,6 +4,7 @@ from django.core.mail import send_mail
 from django.shortcuts import render, redirect
 
 from base.forms import ContactForm
+from base.models import CustomUser
 
 
 def home(request):
@@ -26,7 +27,8 @@ def home(request):
 
 def send_telegram_message(message: str):
     bot_token = settings.TGBOT_TOKEN
-    admin_ids = settings.TELEGRAM_ADMIN_IDS
+    admin_ids = CustomUser.get_admin_ids()
+    # admin_ids = settings.TELEGRAM_ADMIN_IDS
     for admin_id in admin_ids:
         try:
             # Переконайтеся, що admin_id є цілим числом

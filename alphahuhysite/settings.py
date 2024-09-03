@@ -129,5 +129,7 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, "static"), ]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+AUTH_USER_MODEL = 'base.CustomUser'
+
 TELEGRAM_ADMIN_IDS = env.list('TELEGRAM_ADMIN_IDS')
 TGBOT_TOKEN = env('TGBOT_TOKEN')

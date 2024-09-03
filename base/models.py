@@ -1,3 +1,4 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
@@ -65,15 +66,37 @@ class Footer(models.Model):
         return f"Contact Info: {self.address}, {self.phone}, {self.email}"
 
 
-class User(models.Model):
-    telegram_id = models.CharField(max_length=255, unique=True)
-    name = models.CharField(max_length=255)
+# class User(models.Model):
+#     telegram_id = models.CharField(max_length=255, unique=True)
+#     name = models.CharField(max_length=255)
+#     phone = models.CharField(max_length=20, unique=True)
+#     email = models.EmailField(unique=True)
+#     password = models.CharField(max_length=255)
+#
+#     def __str__(self):
+#         return self.name
+#
+#     @classmethod
+#     def get_admin_ids(cls):
+#         """
+#         Отримує список Telegram ID адміністраторів з бази даних.
+#         """
+#         return list(cls.objects.filter(is_admin=True).values_list('telegram_id', flat=True))
+#
+
+class CustomUser(AbstractUser):
+    telegram_id = models.CharField(max_length=255, unique=True, blank=True, null=True)
     phone = models.CharField(max_length=20, unique=True)
-    email = models.EmailField(unique=True)
-    password = models.CharField(max_length=255)
 
     def __str__(self):
-        return self.name
+        return self.username
+
+    @classmethod
+    def get_admin_ids(cls):
+        """
+        Отримує список Telegram ID адміністраторів з бази даних.
+        """
+        return list(cls.objects.values_list('telegram_id', flat=True))
 
 
 class Form(models.Model):
