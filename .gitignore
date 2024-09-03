@@ -162,7 +162,7 @@ cython_debug/
 .idea/
 
 # macOS system file that stores custom folder attributes
-.DS_Store/
+.DS_Store
 
 # Visual Studio Code settings folder
-.vscode/
+.vscode
