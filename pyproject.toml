@@ -10,6 +10,8 @@ python = "^3.12"
 django = "^5.1"
 psycopg2-binary = "^2.9.9"
 pillow = "^10.4.0"
+python-dateutil = "2.8.2"
+google-api-python-client = "^2.145.0"
 
 
 [build-system]
