@@ -102,9 +102,37 @@
 
     <!-- Секція "Календар подій" -->
     <section id="calendar" class="calendar-section">
-        <h2>Календар подій</h2>
-        <img src="{% static 'images/calendar.jpg' %}" alt="Calendar Image">
-        <p>Перелік подій, які плануються в найближчому майбутньому.</p>
+        <section id="calendar" class="calendar-section">
+            <span id="events-url" data-url="{% url 'get_events_ajax' %}"></span>
+    
+            <h2>Календар подій</h2>
+            <div id="calendar-header">
+                <div class="month-navigation">
+                    <button id="prev-month">&lt;</button>
+                    <span id="current-month"></span>
+                    <button id="next-month">&gt;</button>
+                </div>
+                <button id="today">Сьогодні</button>
+            </div>
+            
+            <a id="show-past-events" class="show-past-events"></a>
+            
+            <ul class="event-list" id="event-list"></ul> 
+            
+            <button id="show-more-btn"></button>
+            
+            <div id="event-popup" class="event-popup">
+                <div class="event-popup-content">
+                    <span class="close-popup">&times;</span>
+                    <h3 id="popup-event-title"></h3>
+                    <p id="popup-event-time"></p>
+                    <p id="popup-event-description"></p>
+                </div>
+            </div>
+            
+            <div id="overlay" class="overlay"></div>
+            
+            <script src="{% static 'js/calendar.js' %}"></script>
     </section>
 
         <!-- Секція "Залиште контакти" -->
