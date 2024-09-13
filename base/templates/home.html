@@ -297,18 +297,17 @@
         <!-- Секція "Залиште контакти" -->
         <section id="contact" class="contact-section">
             <h2>Лишилися питання, хочеш щоб ми зв'язалися і <br>розповіли більше? Лиши контакти:)</h2>
-            <form>
-                <input placeholder="Ім'я" type="text" id="name" name="name" required>
-                <input placeholder="Телефон" type="tel" id="phone" name="phone" required>
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
                 <button type="submit">Відправити</button>
             </form>
         </section>
 
-        <!-- Секція "Залиште контакти" by Mike -->
-        <!-- <section id="contact" class="contact-section">
-        <h2>Залиште контакти, щоб ми з вами зв'язались:</h2>
-        {% include 'contact.html' %}
-    </section> -->
+        <!-- НЕ ВИДАЛЯТИ! Можливо ще знадобиться -->
+        <!-- <input placeholder="Ім'я" type="text" id="name" name="name" required> -->
+        <!-- <input placeholder="Телефон" type="tel" id="phone" name="phone" required> -->
+
 
 
 
