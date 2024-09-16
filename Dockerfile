@@ -23,7 +23,7 @@ ENV OWNERS=131445541 \
     ip=localhost
 
 # Collect static files
-RUN python manage.py collectstatic --noinput
+#RUN python manage.py collectstatic --noinput
 
 # Відкриття порту
 EXPOSE 8000
