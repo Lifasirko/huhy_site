@@ -1,16 +1,30 @@
 version: '3.8'
 
 services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - OWNERS=131445541
+      - TELEGRAM_ADMIN_IDS=131445541
+      - TGBOT_TOKEN=7350767988:AAGt0-dMsehLYl3gXFXokjZgQF5JPsqg874
+      - ip=localhost
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+
   db:
     image: postgres:13
-    volumes:
-      - postgres_data:/var/lib/postgresql/data/
     environment:
-      POSTGRES_DB: huhysitedb
-      POSTGRES_USER: amol
+      POSTGRES_DB: mydatabase
+      POSTGRES_USER: myuser
       POSTGRES_PASSWORD: mypassword
-    ports:
-      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 
 volumes:
   postgres_data:
