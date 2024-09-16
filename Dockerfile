@@ -1,19 +1,19 @@
-# Use the official Python image from the Docker Hub
+# Використання базового образу
 FROM python:3.12-slim
 
-# Set the working directory
+# Встановлення робочої директорії
 WORKDIR /app
 
-# Copy the current directory contents into the container at /app
+# Копіювання файлів
 COPY . .
 
-# Install Poetry for dependency management
+# Встановлення Poetry
 RUN pip install poetry
 
-# Configure Poetry to not create virtual environments
+# Конфігурація Poetry
 RUN poetry config virtualenvs.create false
 
-# Install dependencies without dev packages
+# Встановлення залежностей
 RUN poetry install --only main
 
 # Set environment variables
@@ -25,8 +25,8 @@ ENV OWNERS=131445541 \
 # Collect static files
 RUN python manage.py collectstatic --noinput
 
-# Expose the application port
+# Відкриття порту
 EXPOSE 8000
 
-# Command to run the Django server
+# Запуск сервера
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
