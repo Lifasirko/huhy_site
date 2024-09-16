@@ -86,7 +86,7 @@ DATABASES = {
         'NAME': 'huhysitedb',
         'USER': 'amol',
         'PASSWORD': 'mypassword',
-        'HOST': 'db',
+        'HOST': 'localhost',
         'PORT': '5432',
     }
 }

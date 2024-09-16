@@ -14,6 +14,7 @@ aiogram = "^3.12.0"
 environs = "^11.0.0"
 python-dateutil = "2.8.2"
 google-api-python-client = "^2.145.0"
+gunicorn = "^23.0.0"
 
 
 [build-system]
