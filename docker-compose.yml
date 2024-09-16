@@ -23,6 +23,8 @@ services:
       - TELEGRAM_ADMIN_IDS=131445541
       - TGBOT_TOKEN=7350767988:AAGt0-dMsehLYl3gXFXokjZgQF5JPsqg874
       - ip=localhost
+      - DEBUG=False
+      - DJANGO_ALLOWED_HOSTS=mental-veradis-stark-industries-jarvis-4cfc6016.koyeb.app
     volumes:
       - .:/app
     depends_on:
