@@ -27,6 +27,7 @@ services:
       - DJANGO_ALLOWED_HOSTS=mental-veradis-stark-industries-jarvis-4cfc6016.koyeb.app
     volumes:
       - .:/app
+      - ./huhysite_my_git/static:/app/static
     depends_on:
       - db
 
