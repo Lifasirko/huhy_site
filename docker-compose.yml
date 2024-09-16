@@ -1,16 +1,29 @@
 version: '3.8'
 
 services:
+  web:
+    build: .
+    command: gunicorn --bind 0.0.0.0:8000 alphahuhysite.wsgi:application
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DJANGO_SETTINGS_MODULE=alphahuhysite.settings
+      - POSTGRES_DB=huhysitedb
+      - POSTGRES_USER=amol
+      - POSTGRES_PASSWORD=mypassword
+    depends_on:
+      - db
+
   db:
     image: postgres:13
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
-      POSTGRES_DB: huhysitedb
-      POSTGRES_USER: amol
-      POSTGRES_PASSWORD: mypassword
-    ports:
-      - "5432:5432"
+      - POSTGRES_DB=huhysitedb
+      - POSTGRES_USER=amol
+      - POSTGRES_PASSWORD=mypassword
 
 volumes:
   postgres_data:
