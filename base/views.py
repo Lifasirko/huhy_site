@@ -7,7 +7,7 @@ from django.utils import timezone
 from django.core.cache import cache
 
 import datetime as dt
-from dateutil.relativedelta import relativedelta
+from datetime import datetime, timezone
 
 from googleapiclient.discovery import build
 from google.auth.exceptions import GoogleAuthError
@@ -66,55 +66,50 @@ def send_email(contact):
     send_mail(subject, message, email_from, recipient_list)
     return render(request, 'home.html')
 
-def get_events(year, month):
-    cache_key = f'events_{year}_{month}'
-    events = cache.get(cache_key)
-    
-    if events is None:
-        start_date = timezone.make_aware(dt.datetime(year, month, 1))
-        end_date = start_date + relativedelta(months=1)
-        
-        try:
-            service = build('calendar', 'v3', developerKey=API_KEY)
-            events_result = service.events().list(
-                calendarId=CALENDAR_ID,
-                timeMin=start_date.isoformat(),
-                timeMax=end_date.isoformat(),
-                maxResults=1000,
-                singleEvents=True,
-                orderBy='startTime'
-            ).execute()
-            
-            events = []
-            for event in events_result.get('items', []):
-                start = event['start'].get('dateTime', event['start'].get('date'))
-                end = event['end'].get('dateTime', event['end'].get('date'))
-                events.append({
-                    'start': start,
-                    'end': end,
-                    'summary': event['summary'],
-                    'description': event.get('description', '')
-                })
-            
-            cache.set(cache_key, events, timeout=60*60)  # Кешуємо на 1 годину
-        except GoogleAuthError:
-            events = []
-            print("Помилка аутентифікації Google API")
-        except Exception as e:
-            events = []
-            print(f"Виникла помилка при отриманні подій: {e}")
-    
-    return events
+
+def get_events():
+    now = datetime.now(timezone.utc).isoformat()
+
+    try:
+        service = build('calendar', 'v3', developerKey=API_KEY)
+        events_result = service.events().list(
+            calendarId=CALENDAR_ID,
+            singleEvents=True,
+            orderBy='startTime',
+            timeMin=now
+        ).execute()
+
+        return events_result.get('items', [])
+    except GoogleAuthError:
+        print("Google API authentication error")
+        return []
+    except Exception as e:
+        print(f"Error fetching events: {e}")
+        return []
 
 
-def get_calendar_events(request):
-    now = dt.datetime.now()
-    events = get_events(now.year, now.month)
-    return render(request, 'base.html', {'events': events})
+def events_api(request):
+    page = int(request.GET.get('page'))
+    limit = int(request.GET.get('limit'))
 
+    all_events = get_events()
 
-def get_events_ajax(request):
-    year = int(request.GET.get('year'))
-    month = int(request.GET.get('month'))
-    events = get_events(year, month)
-    return JsonResponse({'events': events})
+    start = (page - 1) * limit
+    end = start + limit
+    paginated_events = all_events[start:end]
+
+    events_data = []
+    for event in paginated_events:
+        start_time = event['start'].get('dateTime', event['start'].get('date'))
+        end_time = event['end'].get('dateTime', event['end'].get('date'))
+        events_data.append({
+            'summary': event['summary'],
+            'start': start_time,
+            'end': end_time,
+            'description': event.get('description', ''),
+        })
+
+    return JsonResponse({
+        'events': events_data,
+        'has_more': end < len(all_events)
+    })
