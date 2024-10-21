@@ -77,7 +77,7 @@ body {
 }
 
 .nav-links a:hover {
-    color: #f27825;
+    color: #b43339;
 }
 
 /* Іконка меню для мал. екран. (спочатку прихована) */
@@ -126,7 +126,7 @@ body {
     }
 
     .menu-icon:hover {
-        color: #e5671b;
+        color: #b43339;
     }
 
     .menu-icon.rotate {
@@ -424,14 +424,15 @@ body {
 
 .game p,
 .game li {
-    font-size: 15px;
     text-align: justify;
     position: relative;
 }
 
 .dd-text {
-    margin-left: 20%;
-    margin-right: 20%;
+    box-sizing: border-box;
+    margin-top: 10px;
+    padding-left: 15%;
+    padding-right: 15%;
 }
 
 .game ul {
@@ -458,8 +459,8 @@ body {
     }
 
     .dd-text {
-        margin-left: 0;
-        margin-right: 0;
+        padding-left: 0;
+        padding-right: 0;
     }
 
     .other-games {
@@ -860,12 +861,25 @@ li {
     text-align: center;
 }
 
+.calendar-header {
+    margin-left: 15%;
+    margin-right: 15%;
+    font-family: 'Lato',
+        sans-serif;
+    font-size: 40px;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+
 .pagination-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 20px;
     height: 350px;
+    margin-bottom: 80px;
 }
 
 #calendar-events {
@@ -886,7 +900,7 @@ li {
     margin-bottom: 20px;
     height: 370px;
     box-sizing: border-box;
-  }
+}
 
 .event-card h3 {
     font-size: 18px;
@@ -905,7 +919,7 @@ li {
     width: 95%;
     display: inline-block;
 }
-  
+
 .event-card p {
     text-align: left;
     font-size: 15px;
@@ -913,7 +927,8 @@ li {
     width: 95%;
 }
 
-#next-btn, #prev-btn {
+#next-btn,
+#prev-btn {
     margin: 10px;
     padding: 10px 15px;
     border: none;
@@ -922,7 +937,8 @@ li {
     border-radius: 5px;
 }
 
-#next-btn:disabled, #prev-btn:disabled {
+#next-btn:disabled,
+#prev-btn:disabled {
     background-color: #ddd;
     cursor: not-allowed;
 }
@@ -931,7 +947,7 @@ li {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-  }
+}
 
 .button-container {
     margin-bottom: 15px;
@@ -951,7 +967,12 @@ li {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     text-align: center;
     text-decoration: none;
-  }
+}
+
+.sign-up:hover {
+    color: #ffffff;
+    background-color: #b43339;
+}
 
 
 /* ////////////////////////////////////////////////////////////////////////// */
@@ -1089,7 +1110,7 @@ p {
 }
 
 .contact-section button:hover {
-    background-color: #e5671b;
+    background-color: #b43339;
 }
 
 @media (max-width: 1000px) {
@@ -1207,7 +1228,7 @@ p {
 }
 
 .contacts a:hover {
-    color: #e5671b;
+    color: #b43339;
 }
 
 .contacts span {
@@ -1230,7 +1251,7 @@ p {
 }
 
 .social-link svg:hover {
-    fill: #e5671b;
+    fill: #00ff5e;
 }
 
 .all-rights {
@@ -1238,6 +1259,9 @@ p {
     color: #00000088;
     font-weight: 400;
 }
+
+
+
 
 @media (max-width: 900px) {
 
@@ -1309,3 +1333,114 @@ p {
         margin-top: 0;
     }
 }
+
+
+/* ************************************************** Huhy-Men for Footer ********************************************* */
+
+
+
+.huhy-footer-photos {
+    position: relative;
+    margin-top: 20px;
+}
+
+/* тут щось зроби з шириною і висотою, бо вони на розмір фото при зменшенні впливають */
+.huhy-footer-photos img {
+    position: absolute;
+    width: 10%;
+    max-width: 80px;
+    min-width: 50px;
+    height: auto;
+    object-fit: cover;
+}
+
+
+
+/* max-width: 900px ----------- from row to column */
+
+
+
+
+
+/* #1 верхній хухі зліва */
+.huhy-footer-photos img:nth-child(1) {
+    left: 15%;
+    top: 20%;
+}
+
+/* #2 нижній хухі справа */
+.huhy-footer-photos img:nth-child(2) {
+    right: 5%;
+    top: 27vh;
+}
+
+/* #3 нижній хухі справа */
+/* .huhy-footer-photos img:nth-child(3) {
+    left: 140px;
+    bottom: -260px;
+} */
+
+/* #4 плоский хухі, з верхнього лівого боку */
+/* .huhy-footer-photos img:nth-child(4) {
+    left: 240px;
+    bottom: -20px;
+} */
+
+/* #5 плоский хухі, з верхнього лівого боку */
+/* .huhy-footer-photos img:nth-child(5) {
+    left: 500px;
+    bottom: -60px;
+    transform: rotate(70deg);
+} */
+
+
+
+
+
+@media (max-width: 900px) {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Адаптація для малих екранів */
+/* @media (max-width: 768px) {
+    .huhy-footer-photos img {
+        width: 15%;
+        max-width: 60px;
+    }
+
+    .huhy-footer-photos img:nth-child(1) {
+        left: 10%;
+        top: 10%;
+    }
+
+    .huhy-footer-photos img:nth-child(2) {
+        right: 10%;
+        top: 40%;
+    }
+
+    .huhy-footer-photos img:nth-child(3) {
+        left: 20%;
+        bottom: 20%;
+    }
+
+    .huhy-footer-photos img:nth-child(4) {
+        left: 30%;
+        bottom: 30%;
+    }
+
+    .huhy-footer-photos img:nth-child(5) {
+        left: 40%;
+        bottom: 40%;
+    }
+} */
