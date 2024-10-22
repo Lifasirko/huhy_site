@@ -242,20 +242,31 @@
 
         <div class="pagination-container">
 
-            <button id="prev-btn" disabled>←</button>
-
             <div id="calendar-events">
                 <div class="event-card">
+                    <!-- Вміст події -->
                 </div>
+                <!-- Інші картки подій -->
             </div>
 
-            <button id="next-btn">→</button>
+        </div>
 
+        <!-- Перемикачі під блоком подій -->
+        <div class="button-container">
+            <button id="prev-btn" disabled>←</button>
+            <button id="next-btn">→</button>
         </div>
 
         <span id="events-url" data-url="{% url 'events_api' %}"></span>
 
     </section>
+
+
+
+
+
+
+
 
 
 
@@ -313,8 +324,8 @@
             <div class="contacts">
 
                 <div class="huhy-footer-photos">
-                    <img src="{% static 'images/huhis/9.png' %}" alt="Huhy 1">
-                    <img src="{% static 'images/huhis/10.png' %}" alt="Huhy 2">
+                    <!-- <img src="{% static 'images/huhis/9.png' %}" alt="Huhy 1"> -->
+                    <!-- <img src="{% static 'images/huhis/10.png' %}" alt="Huhy 2"> -->
                     <!-- <img src="{% static 'images/huhis/11.png'%}" alt="Huhy 3"> -->
                     <!-- <img src="{% static 'images/huhis/12.png' %}" alt="Huhy 4"> -->
                     <!-- <img src="{% static 'images/huhis/9.png' %}" alt="Huhy 5"> -->
@@ -359,7 +370,7 @@
     <script src="{% static 'js/header.js' %}"></script>
     <script src="{% static 'js/carousel.js' %}"></script>
     <script src="{% static 'js/calendar.js' %}"></script>
-    <script src="{% static 'js/calendar-mobile.js' %}"></script>
+    <!-- <script src="{% static 'js/calendar_pagination.js' %}"></script> -->
 
 </body>
 

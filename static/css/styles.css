@@ -856,7 +856,7 @@ li {
 
 #calendar {
     scroll-margin-top: 80px;
-    width: 70%;
+    width: 80%;
     margin: 0 auto;
     text-align: center;
 }
@@ -878,22 +878,25 @@ li {
     justify-content: space-between;
     align-items: center;
     gap: 20px;
-    height: 350px;
-    margin-bottom: 80px;
+    height: auto;
+    min-height: 350px;
+    margin-bottom: 20px;
 }
 
 #calendar-events {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 35px;
+    /* flex: 1; */
+    /* Заповнює простір між кнопками */
 }
 
 .event-card {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    flex: 0 0 calc(33.333% - 15px);
-    background-color: white;
+    flex: 0 0 calc(33.333% - 25px);
+    background-color: rgb(255, 240, 219);
     border-radius: 10px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     overflow: hidden;
@@ -905,7 +908,11 @@ li {
 .event-card h3 {
     font-size: 18px;
     margin: 0;
-    background-color: #f0f0f0;
+    background-color: #39165f;
+    color: #ffffff;
+    font-family: 'Lato',
+        sans-serif;
+    font-size: 15px;
     text-align: center;
     display: flex;
     align-items: center;
@@ -913,6 +920,7 @@ li {
     height: 80px;
     padding: 10px;
     box-sizing: border-box;
+    margin-bottom: 10px;
 }
 
 .event-card span {
@@ -930,12 +938,14 @@ li {
 #next-btn,
 #prev-btn {
     margin: 10px;
-    padding: 10px 15px;
+    padding: 10px 35px;
     border: none;
     color: white;
     cursor: pointer;
     border-radius: 5px;
 }
+
+
 
 #next-btn:disabled,
 #prev-btn:disabled {
@@ -950,10 +960,12 @@ li {
 }
 
 .button-container {
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     padding: 10px;
     text-align: center;
 }
+
+
 
 .sign-up {
     background-color: #f0f0f0;
@@ -971,14 +983,35 @@ li {
 
 .sign-up:hover {
     color: #ffffff;
-    background-color: #b43339;
+    background-color: #2f2f2f;
 }
 
 
 /* ////////////////////////////////////////////////////////////////////////// */
 
 
+@media (max-width: 1280px) {
+    #calendar {
+        width: 90%;
+    }
+}
 
+/* Стилі для малих екранів */
+@media (max-width: 750px) {
+    #calendar-events {
+        flex-direction: column;
+        /* Зміна орієнтації на вертикальну (стовпець) */
+        gap: 20px;
+        /* Встановлюємо відступи між картками подій */
+    }
+
+    .event-card {
+        flex: 0 0 100%;
+        /* Картки займають всю ширину батьківського контейнера */
+        height: auto;
+        /* Можна також змінити висоту для кращого вигляду */
+    }
+}
 
 
 /* @media (max-width: 1200px) {
@@ -1251,7 +1284,7 @@ p {
 }
 
 .social-link svg:hover {
-    fill: #00ff5e;
+    fill: #91ff00;
 }
 
 .all-rights {
