@@ -27,20 +27,64 @@ document.addEventListener('DOMContentLoaded', () => {
             .catch(error => console.error('Error fetching events:', error));
     }
 
+    function parseEventDescription(description) {
+        // Регулярні вирази для витягування полів
+        const gameRegex = /Майстер\s(.+)\s\((.+)\)/;  // Витягуємо майстра та назву гри
+        const freeSeatsRegex = /Вільні місця:\s(\d+)/;  // Витягуємо вільні місця
+        const costRegex = /Вартість:\s(\d+)/;  // Витягуємо вартість
+
+        const gameMatch = description.match(gameRegex);
+        const freeSeatsMatch = description.match(freeSeatsRegex);
+        const costMatch = description.match(costRegex);
+
+        // Парсинг результатів
+        const master = gameMatch ? gameMatch[1] : 'Невідомо';
+        const game = gameMatch ? gameMatch[2] : 'Невідомо';
+        const freeSeats = freeSeatsMatch ? freeSeatsMatch[1] : 'Невідомо';
+        const cost = costMatch ? costMatch[1] : 'Невідомо';
+
+        return {
+            game,
+            master,
+            freeSeats,
+            cost,
+            remainingDescription: description.split("Щоб записатись")[0].trim(),  // Обрізаємо все, що після вказівки як записатися
+        };
+    }
+
     function renderEvents() {
         const carouselContainer = elements.calendarEvents;
         carouselContainer.innerHTML = '';
         allEvents.forEach(event => {
+            const startDateTime = new Date(event.start);
+            const endDateTime = new Date(event.end);
+
+            // Форматуємо дату та час
+            const formattedDate = `${startDateTime.getDate().toString().padStart(2, '0')}-${(startDateTime.getMonth() + 1).toString().padStart(2, '0')}-${startDateTime.getFullYear()}`;
+            const formattedTime = `${startDateTime.getHours().toString().padStart(2, '0')}:${startDateTime.getMinutes().toString().padStart(2, '0')} — ${endDateTime.getHours().toString().padStart(2, '0')}:${endDateTime.getMinutes().toString().padStart(2, '0')}`;
+
+            // Парсинг опису
+            const parsedDescription = parseEventDescription(event.description || '');
+
+            // Створюємо картку події
             const eventCard = document.createElement('div');
             eventCard.className = 'event-card';
             eventCard.innerHTML = `
                 <div class="event-card-content">
                     <h3><span>${event.summary}</span></h3>
-                    <p>Початок: ${new Date(event.start).toLocaleString()}</p>
-                    <p>Кінець: ${new Date(event.end).toLocaleString()}</p>
-                    <p>${event.description || 'Опис відсутній'}</p>
+                    <ul>
+                        <li><strong>Гра:</strong> ${parsedDescription.game}</li>
+                        <li><strong>Дата:</strong> ${formattedDate}</li>
+                        <li><strong>Час:</strong> ${formattedTime}</li>
+                        <li><strong>Майстер:</strong> ${parsedDescription.master}</li>
+                        <li><strong>Всього гравців:</strong> 5</li>
+                        <li><strong>Вільні місця:</strong> ${parsedDescription.freeSeats}</li>
+                        <li><strong>Вартість:</strong> ${parsedDescription.cost} грн з гравця</li>
+                    </ul>
+                    <p>${parsedDescription.remainingDescription}</p>
+                    <p>Щоб записатись на гру пишіть на наш телеграм <a href="https://t.me/hyhu_space">@hyhu_space</a></p>
                 </div>
-                <div class="button-container">
+                <div class="telegram-button-container">
                     <a href="https://t.me/hyhu_space" class="sign-up">Записатись</a>
                 </div>
             `;

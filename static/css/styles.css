@@ -856,7 +856,7 @@ li {
 
 #calendar {
     scroll-margin-top: 80px;
-    width: 80%;
+    width: 70%;
     margin: 0 auto;
     text-align: center;
 }
@@ -889,6 +889,7 @@ li {
     gap: 35px;
     /* flex: 1; */
     /* Заповнює простір між кнопками */
+    margin-bottom: 0;
 }
 
 .event-card {
@@ -938,11 +939,17 @@ li {
 #next-btn,
 #prev-btn {
     margin: 10px;
-    padding: 10px 35px;
+    padding: 10px 30px;
     border: none;
     color: white;
+    background-color: #7a7777;
     cursor: pointer;
-    border-radius: 5px;
+    border-radius: 10px;
+}
+
+#next-btn:hover,
+#prev-btn:hover {
+    background-color: #333;
 }
 
 
@@ -960,9 +967,16 @@ li {
 }
 
 .button-container {
-    margin-bottom: 10px;
+    margin-bottom: 60px;
+    padding: 0 10px 10px 10px;
+    margin-top: 0;
+    text-align: center;
+}
+
+.telegram-button-container {
     padding: 10px;
     text-align: center;
+    margin-bottom: 20px;
 }
 
 
@@ -1284,7 +1298,7 @@ p {
 }
 
 .social-link svg:hover {
-    fill: #91ff00;
+    fill: #ff9d00;
 }
 
 .all-rights {
