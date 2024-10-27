@@ -873,13 +873,145 @@ li {
 }
 
 
+/* //////////////////// frontend_the_fourth /////////////////// */
+
+
+
+/* Filters */
+.filters {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.filters select {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+/* Event cards */
+.events {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px;
+}
+
+.event-card {
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    width: 32%;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.event-card:hover {
+    transform: translate(0, 5px);
+    /* transform: scale(1.03); */
+}
+
+.event-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.event-info {
+    padding: 15px;
+}
+
+.event-info h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.event-details {
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+.signup-btn {
+    display: block;
+    width: 100%;
+}
+
+/* Responsiveness */
+@media (max-width: 1000px) {
+    .events {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .event-card {
+        width: 90%;
+    }
+
+}
+
+@media (max-width: 600px) {
+    .filters {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .filters select {
+        width: 90%;
+    }
+
+    .header-content {
+        flex-direction: column;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ////////////// стилі для версії frontend_the_third ////////////// */
+
 .pagination-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 20px;
     height: auto;
-    min-height: 350px;
+    min-height: 380px;
     margin-bottom: 20px;
 }
 
@@ -887,8 +1019,6 @@ li {
     display: flex;
     flex-wrap: wrap;
     gap: 35px;
-    /* flex: 1; */
-    /* Заповнює простір між кнопками */
     margin-bottom: 0;
 }
 
@@ -897,19 +1027,23 @@ li {
     flex-direction: column;
     justify-content: space-between;
     flex: 0 0 calc(33.333% - 25px);
-    background-color: rgb(255, 240, 219);
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background-color: rgb(255, 255, 255);
+    border-radius: 5px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     overflow: hidden;
     margin-bottom: 20px;
-    height: 370px;
+    height: 420px;
     box-sizing: border-box;
+}
+
+.calendar-imgs {
+    min-height: 120px;
 }
 
 .event-card h3 {
     font-size: 18px;
     margin: 0;
-    background-color: #39165f;
+    background-color: #5f1616;
     color: #ffffff;
     font-family: 'Lato',
         sans-serif;
@@ -922,6 +1056,37 @@ li {
     padding: 10px;
     box-sizing: border-box;
     margin-bottom: 10px;
+}
+
+.game-name {
+    font-family: 'Lato',
+        sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    font-style: italic;
+    margin: 10px 20px 20px 30px;
+
+    text-align: left;
+}
+
+.calendar-icon {
+    max-height: 25px;
+    max-width: 25px;
+    margin-left: 30px;
+}
+
+.span-for-icons {
+    font-family: 'Lato',
+        sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: left;
+    margin: 2px 5px 2px 8px;
+}
+
+.master-div {
+    display: flex;
+    flex-direction: row;
 }
 
 .event-card span {
@@ -968,7 +1133,7 @@ li {
 
 .button-container {
     margin-bottom: 60px;
-    padding: 0 10px 10px 10px;
+    padding: 0 5px 0 5px;
     margin-top: 0;
     text-align: center;
 }
@@ -982,13 +1147,13 @@ li {
 
 
 .sign-up {
-    background-color: #f0f0f0;
-    color: black;
+    background-color: #000000;
+    color: rgb(255, 255, 255);
     cursor: pointer;
-    padding: 10px 22px;
-    font-size: 16px;
+    padding: 9px 80px;
+    font-size: 14px;
     border: none;
-    border-radius: 8px;
+    border-radius: 20px;
     transition: background-color 0.3s ease, transform 0.3s ease;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     text-align: center;
@@ -997,8 +1162,10 @@ li {
 
 .sign-up:hover {
     color: #ffffff;
-    background-color: #2f2f2f;
+    background-color: #024853;
 }
+
+
 
 
 /* ////////////////////////////////////////////////////////////////////////// */
@@ -1010,23 +1177,21 @@ li {
     }
 }
 
-/* Стилі для малих екранів */
 @media (max-width: 750px) {
     #calendar-events {
         flex-direction: column;
-        /* Зміна орієнтації на вертикальну (стовпець) */
         gap: 20px;
-        /* Встановлюємо відступи між картками подій */
     }
 
     .event-card {
         flex: 0 0 100%;
-        /* Картки займають всю ширину батьківського контейнера */
         height: auto;
-        /* Можна також змінити висоту для кращого вигляду */
     }
 }
 
+/* .button-container {
+    display: none;
+} */
 
 /* @media (max-width: 1200px) {
     #calendar-header {
@@ -1298,7 +1463,7 @@ p {
 }
 
 .social-link svg:hover {
-    fill: #ff9d00;
+    fill: #f70000;
 }
 
 .all-rights {

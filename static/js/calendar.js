@@ -27,21 +27,21 @@ document.addEventListener('DOMContentLoaded', () => {
             .catch(error => console.error('Error fetching events:', error));
     }
 
-    function parseEventDescription(description) {
+    function parseEventDescription(summary, description) {
         // Регулярні вирази для витягування полів
-        const gameRegex = /Майстер\s(.+)\s\((.+)\)/;  // Витягуємо майстра та назву гри
+        const summaryRegex = /^(.+?)(?:\s*[.-]\s*(?:Кімната\s.*\s)?)?[Мм]айстер\s(.+)$/;  // Витягуємо майстра та назву гри
         const freeSeatsRegex = /Вільні місця:\s(\d+)/;  // Витягуємо вільні місця
         const costRegex = /Вартість:\s(\d+)/;  // Витягуємо вартість
 
-        const gameMatch = description.match(gameRegex);
+        const gameMatch = summary.match(summaryRegex);
         const freeSeatsMatch = description.match(freeSeatsRegex);
         const costMatch = description.match(costRegex);
 
         // Парсинг результатів
-        const master = gameMatch ? gameMatch[1] : 'Невідомо';
-        const game = gameMatch ? gameMatch[2] : 'Невідомо';
-        const freeSeats = freeSeatsMatch ? freeSeatsMatch[1] : 'Невідомо';
-        const cost = costMatch ? costMatch[1] : 'Невідомо';
+        const master = gameMatch ? gameMatch[2] : '—';
+        const game = gameMatch ? gameMatch[1] : 'Вільна кімната';
+        const freeSeats = freeSeatsMatch ? freeSeatsMatch[1] : '—';
+        const cost = costMatch ? costMatch[1] : '—';
 
         return {
             game,
@@ -61,31 +61,64 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Форматуємо дату та час
             const formattedDate = `${startDateTime.getDate().toString().padStart(2, '0')}-${(startDateTime.getMonth() + 1).toString().padStart(2, '0')}-${startDateTime.getFullYear()}`;
-            const formattedTime = `${startDateTime.getHours().toString().padStart(2, '0')}:${startDateTime.getMinutes().toString().padStart(2, '0')} — ${endDateTime.getHours().toString().padStart(2, '0')}:${endDateTime.getMinutes().toString().padStart(2, '0')}`;
+            const formattedTime = `${startDateTime.getHours().toString().padStart(2, '0')}:${startDateTime.getMinutes().toString().padStart(2, '0')}`;
 
             // Парсинг опису
-            const parsedDescription = parseEventDescription(event.description || '');
+            const parsedDescription = parseEventDescription(event.summary, event.description || '');
+
+
+            // Default image path
+            const defaultImage = "../static/images/calendar_pics/slay.png"; // Path to the default image
+            const images = {
+                'підземелля': "../static/images/calendar_pics/dd.png", // Path for Підземелля та дракони
+                'підземелля': "../static/images/calendar_pics/dd.png",
+                'підземелля': "../static/images/calendar_pics/dd.png",
+                'star': "../static/images/calendar_pics/sw.jpg",
+                'вільна': "../static/images/calendar_pics/free_chamber.png",
+                // Add more games and their image paths here
+            };
+
+            // Визначаємо фото гри
+            let gameImage = defaultImage; // Start with the default image
+            for (const key in images) {
+                if (parsedDescription.game.toLowerCase().includes(key)) {
+                    gameImage = images[key]; // Set the specific image if game name matches
+                    break; // Stop searching after finding the first match
+                }
+            }
+
+            console.log('Game Name:', parsedDescription.game); // Debugging
+            console.log('Image Path:', gameImage);
+
+
+
 
             // Створюємо картку події
             const eventCard = document.createElement('div');
             eventCard.className = 'event-card';
             eventCard.innerHTML = `
+                <img class="calendar-imgs" src="${gameImage}" alt="${parsedDescription.game}" class="event-image">
                 <div class="event-card-content">
                     <h3><span>${event.summary}</span></h3>
-                    <ul>
-                        <li><strong>Гра:</strong> ${parsedDescription.game}</li>
-                        <li><strong>Дата:</strong> ${formattedDate}</li>
-                        <li><strong>Час:</strong> ${formattedTime}</li>
-                        <li><strong>Майстер:</strong> ${parsedDescription.master}</li>
-                        <li><strong>Всього гравців:</strong> 5</li>
-                        <li><strong>Вільні місця:</strong> ${parsedDescription.freeSeats}</li>
-                        <li><strong>Вартість:</strong> ${parsedDescription.cost} грн з гравця</li>
-                    </ul>
+                    <span class="game-name">${parsedDescription.game}</span>
+
+                    <div class="master-div">
+                        <img class="calendar-icon" src="../static/images/calendar_icons/school.png">
+                        <span class="span-for-icons">Майстер: ${parsedDescription.master}</span>
+                    </div>
+
+                    <span><strong>Гра:</strong> ${parsedDescription.game}</span>
+                    <span><strong>Дата:</strong> ${formattedDate}</span>
+                    <span><strong>Час:</strong> ${formattedTime}</span>
+
+                    <span><strong>Вільні місця:</strong> ${parsedDescription.freeSeats}</span>
+                    <span><strong>Вартість:</strong> ${parsedDescription.cost} грн з гравця</span>
+
                     <p>${parsedDescription.remainingDescription}</p>
-                    <p>Щоб записатись на гру пишіть на наш телеграм <a href="https://t.me/hyhu_space">@hyhu_space</a></p>
+                    <p>Щоб записатись на гру пишіть на наш телеграм @hyhu_space</a></p>
                 </div>
                 <div class="telegram-button-container">
-                    <a href="https://t.me/hyhu_space" class="sign-up">Записатись</a>
+                    <a href="https://t.me/hyhu_space" class="sign-up" target="_blank">Записатись на гру</a>
                 </div>
             `;
             carouselContainer.appendChild(eventCard);
