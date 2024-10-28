@@ -869,7 +869,7 @@ li {
     font-size: 40px;
     font-weight: 800;
     text-align: center;
-    margin-bottom: 50px;
+    margin-bottom: 0px;
 }
 
 
@@ -880,7 +880,7 @@ li {
 /* Filters */
 .filters {
     display: flex;
-    justify-content: center;
+    justify-content: left;
     gap: 10px;
     margin: 20px 0;
 }
@@ -1012,7 +1012,7 @@ li {
     gap: 20px;
     height: auto;
     min-height: 380px;
-    margin-bottom: 20px;
+    margin-bottom: 0;
 }
 
 #calendar-events {
@@ -1032,7 +1032,7 @@ li {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     overflow: hidden;
     margin-bottom: 20px;
-    height: 420px;
+    height: 400px;
     box-sizing: border-box;
 }
 
@@ -1052,10 +1052,10 @@ li {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 80px;
+    height: 60px;
     padding: 10px;
     box-sizing: border-box;
-    margin-bottom: 10px;
+    margin-bottom: 0px;
 }
 
 .game-name {
@@ -1064,15 +1064,16 @@ li {
     font-size: 13px;
     font-weight: 600;
     font-style: italic;
-    margin: 10px 20px 20px 30px;
+    margin: 10px 0px 10px 20px;
 
     text-align: left;
 }
 
 .calendar-icon {
-    max-height: 25px;
-    max-width: 25px;
+    max-height: 22px;
+    max-width: 22px;
     margin-left: 30px;
+    margin-bottom: 5px;
 }
 
 .span-for-icons {
@@ -1081,7 +1082,7 @@ li {
     font-size: 14px;
     font-weight: 600;
     text-align: left;
-    margin: 2px 5px 2px 8px;
+    margin: 4px 5px 4px 8px;
 }
 
 .master-div {
@@ -1096,20 +1097,21 @@ li {
 
 .event-card p {
     text-align: left;
-    font-size: 15px;
+    font-size: 9px;
     margin-left: 10px;
     width: 95%;
 }
 
 #next-btn,
 #prev-btn {
-    margin: 10px;
-    padding: 10px 30px;
+    margin: 5px;
+    padding: 7px 15px 10px 15px;
     border: none;
     color: white;
     background-color: #7a7777;
     cursor: pointer;
-    border-radius: 10px;
+    border-radius: 100px;
+
 }
 
 #next-btn:hover,
@@ -1141,7 +1143,7 @@ li {
 .telegram-button-container {
     padding: 10px;
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 4px;
 }
 
 
@@ -1150,7 +1152,7 @@ li {
     background-color: #000000;
     color: rgb(255, 255, 255);
     cursor: pointer;
-    padding: 9px 80px;
+    padding: 6px 95px;
     font-size: 14px;
     border: none;
     border-radius: 20px;
@@ -1463,7 +1465,7 @@ p {
 }
 
 .social-link svg:hover {
-    fill: #f70000;
+    fill: #00f7a9;
 }
 
 .all-rights {

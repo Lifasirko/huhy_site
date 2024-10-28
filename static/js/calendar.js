@@ -31,23 +31,38 @@ document.addEventListener('DOMContentLoaded', () => {
         // Регулярні вирази для витягування полів
         const summaryRegex = /^(.+?)(?:\s*[.-]\s*(?:Кімната\s.*\s)?)?[Мм]айстер\s(.+)$/;  // Витягуємо майстра та назву гри
         const freeSeatsRegex = /Вільні місця:\s(\d+)/;  // Витягуємо вільні місця
-        const costRegex = /Вартість:\s(\d+)/;  // Витягуємо вартість
+        const costRegex = /(?:[Вв]артість\s*:?\s*)(\d+(?:\s*[\wа-яА-Я]+)*)(?=\s*Щоб записатись|$)/;  // Витягуємо вартість
+        // /(?:[Вв]артість\s*:?\s*)(\d+(?:\s*[\wа-яА-Я]+)*)/;
+        const locationRegex = /(лісові|печерні|степові)\s*хухи/i;
 
         const gameMatch = summary.match(summaryRegex);
         const freeSeatsMatch = description.match(freeSeatsRegex);
         const costMatch = description.match(costRegex);
+        const locationMatch = summary.match(locationRegex);
 
         // Парсинг результатів
         const master = gameMatch ? gameMatch[2] : '—';
-        const game = gameMatch ? gameMatch[1] : 'Вільна кімната';
-        const freeSeats = freeSeatsMatch ? freeSeatsMatch[1] : '—';
+        const game = gameMatch ? gameMatch[1].slice(0, 21) : 'Вільна кімната';
+        const freeSeats = freeSeatsMatch ? parseInt(freeSeatsMatch[1], 10) : null;
         const cost = costMatch ? costMatch[1] : '—';
+
+        // Calculate booked seats
+        const totalSeats = 5; // Default total seats
+        const bookedSeatsText = freeSeats !== null ? `${totalSeats - freeSeats}/${totalSeats} місць заброньовані` : '—';
+
+
+        // Determine location
+        const location = locationMatch
+            ? `${locationMatch[1][0].toUpperCase()}${locationMatch[1].slice(1).toLowerCase()} Хухи`  // Corrected capitalization and structure
+            : 'Онлайн партія';
 
         return {
             game,
             master,
             freeSeats,
             cost,
+            bookedSeatsText,
+            location,  // Include location in the parsed data
             remainingDescription: description.split("Щоб записатись")[0].trim(),  // Обрізаємо все, що після вказівки як записатися
         };
     }
@@ -59,9 +74,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const startDateTime = new Date(event.start);
             const endDateTime = new Date(event.end);
 
+            // Формат дня, дати і часу
+            const dayOfWeek = startDateTime.toLocaleDateString('uk-UA', { weekday: 'long' });
+            const formattedDate = startDateTime.toLocaleDateString('uk-UA', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            const formattedTime = startDateTime.toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' });
+            const fullDateDisplay = `${dayOfWeek.charAt(0).toUpperCase() + dayOfWeek.slice(1)} | ${formattedDate} | ${formattedTime}`;
+
             // Форматуємо дату та час
-            const formattedDate = `${startDateTime.getDate().toString().padStart(2, '0')}-${(startDateTime.getMonth() + 1).toString().padStart(2, '0')}-${startDateTime.getFullYear()}`;
-            const formattedTime = `${startDateTime.getHours().toString().padStart(2, '0')}:${startDateTime.getMinutes().toString().padStart(2, '0')}`;
+            // const formattedDate = `${startDateTime.getDate().toString().padStart(2, '0')}-${(startDateTime.getMonth() + 1).toString().padStart(2, '0')}-${startDateTime.getFullYear()}`;
+            // const formattedTime = `${startDateTime.getHours().toString().padStart(2, '0')}:${startDateTime.getMinutes().toString().padStart(2, '0')}`;
 
             // Парсинг опису
             const parsedDescription = parseEventDescription(event.summary, event.description || '');
@@ -107,15 +128,28 @@ document.addEventListener('DOMContentLoaded', () => {
                         <span class="span-for-icons">Майстер: ${parsedDescription.master}</span>
                     </div>
 
-                    <span><strong>Гра:</strong> ${parsedDescription.game}</span>
-                    <span><strong>Дата:</strong> ${formattedDate}</span>
-                    <span><strong>Час:</strong> ${formattedTime}</span>
+                    <div class="master-div">
+                        <img class="calendar-icon" src="../static/images/calendar_icons/calendar.png">
+                        <span class="span-for-icons">${fullDateDisplay}</span>
+                    </div>
 
-                    <span><strong>Вільні місця:</strong> ${parsedDescription.freeSeats}</span>
-                    <span><strong>Вартість:</strong> ${parsedDescription.cost} грн з гравця</span>
+                    <div class="master-div">
+                        <img class="calendar-icon" src="../static/images/calendar_icons/profit.png">
+                        <span class="span-for-icons">${parsedDescription.cost}</span>
+                    </div>
 
-                    <p>${parsedDescription.remainingDescription}</p>
-                    <p>Щоб записатись на гру пишіть на наш телеграм @hyhu_space</a></p>
+                    <div class="master-div">
+                        <img class="calendar-icon" src="../static/images/calendar_icons/group.png">
+                        <span class="span-for-icons">${parsedDescription.bookedSeatsText}</span>
+                    </div>
+
+                    <div class="master-div">
+                        <img class="calendar-icon" src="../static/images/calendar_icons/location.png">
+                        <span class="span-for-icons">${parsedDescription.location}</span>
+                    </div>
+                    
+                    <!-- <p>${parsedDescription.remainingDescription}</p> -->
+                    
                 </div>
                 <div class="telegram-button-container">
                     <a href="https://t.me/hyhu_space" class="sign-up" target="_blank">Записатись на гру</a>
