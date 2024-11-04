@@ -4,6 +4,9 @@ document.addEventListener('DOMContentLoaded', () => {
         eventsUrl: 'events-url',
         prevBtn: 'prev-btn',
         nextBtn: 'next-btn',
+        datePicker: 'date-picker',
+        masterFilter: 'master-filter',
+        systemFilter: 'system-filter',
     };
 
     let currentPage = 1;
@@ -17,9 +20,23 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function fetchEvents() {
-        fetch(`${elements.eventsUrl.dataset.url}?page=${currentPage}&limit=${eventsPerPage}`)
+        const date = elements.datePicker.value;
+        const master = elements.masterFilter.value;
+        const system = elements.systemFilter.value;
+
+        // Додаємо фільтри до URL запиту
+        const url = new URL(elements.eventsUrl.dataset.url, window.location.origin);
+        url.searchParams.append('page', currentPage);
+        url.searchParams.append('limit', eventsPerPage);
+        if (date) url.searchParams.append('date', date);
+        if (master) url.searchParams.append('master', master);
+        if (system) url.searchParams.append('system', system);
+        console.log("Fetching events with URL:", url.toString());  // Додано для відладки
+
+        fetch(url)
             .then(response => response.json())
             .then(data => {
+                console.log("Fetched events:", data);  // Додано для відладки
                 allEvents = data.events;
                 renderEvents();
                 updateButtonStates(data.has_more);
@@ -27,12 +44,33 @@ document.addEventListener('DOMContentLoaded', () => {
             .catch(error => console.error('Error fetching events:', error));
     }
 
+    // Завантаження унікальних значень для майстрів і систем
+    function loadFilters() {
+        fetch('/api/filters/')
+            .then(response => response.json())
+            .then(data => {
+                populateFilter(elements.masterFilter, data.masters, 'Майстер');
+                populateFilter(elements.systemFilter, data.systems, 'Система');
+            })
+            .catch(error => console.error('Error fetching filters:', error));
+    }
+
+    // Заповнення випадаючого списку унікальними значеннями з назвою поля як перше значення
+    function populateFilter(selectElement, options, placeholder) {
+        selectElement.innerHTML = `<option value="">${placeholder}</option>`;
+        options.forEach(option => {
+            const opt = document.createElement('option');
+            opt.value = option;
+            opt.textContent = option;
+            selectElement.appendChild(opt);
+        });
+    }
+
     function parseEventDescription(summary, description) {
         // Регулярні вирази для витягування полів
         const summaryRegex = /^(.+?)(?:\s*[.-]\s*(?:Кімната\s.*\s)?)?[Мм]айстер\s(.+)$/;  // Витягуємо майстра та назву гри
         const freeSeatsRegex = /Вільні місця:\s(\d+)/;  // Витягуємо вільні місця
         const costRegex = /(?:[Вв]артість\s*:?\s*)(\d+(?:\s*[\wа-яА-Я]+)*)(?=\s*Щоб записатись|$)/;  // Витягуємо вартість
-        // /(?:[Вв]артість\s*:?\s*)(\d+(?:\s*[\wа-яА-Я]+)*)/;
         const locationRegex = /(лісові|печерні|степові)\s*хухи/i;
 
         const gameMatch = summary.match(summaryRegex);
@@ -48,10 +86,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const totalSeats = 5;
         const bookedSeatsText = freeSeats !== null ? `${totalSeats - freeSeats}/${totalSeats} місць заброньовані` : '—';
 
-
         // Determine location
         const location = locationMatch
-            ? `${locationMatch[1][0].toUpperCase()}${locationMatch[1].slice(1).toLowerCase()} Хухи`  // Corrected capitalization and structure
+            ? `${locationMatch[1][0].toUpperCase()}${locationMatch[1].slice(1).toLowerCase()} Хухи`
             : 'Онлайн партія';
 
         return {
@@ -70,16 +107,16 @@ document.addEventListener('DOMContentLoaded', () => {
         carouselContainer.innerHTML = '';
 
         const images = {
-            'підземелля': "../static/images/dd.png",
-            'star': "../static/images/sw.jpg",
-            'вільна': "../static/images/free_chamber.png",
-            'coriolis': "../static/images/coriolis_edit.jpg",
-            'vampire': "../static/images/vampire.jpg",
-            'vessen': "../static/images/vessen.jpg",
-            'warhammer': "../static/images/warhammer.jpg"
+            'підземелля': "../static/images/calendar_pics/dd.png",
+            'star': "../static/images/calendar_pics/sw.jpg",
+            'вільна': "../static/images/calendar_pics/free_chamber.png",
+            'coriolis': "../static/images/calendar_pics/coriolis_edit.jpg",
+            'vampire': "../static/images/calendar_pics/vampire.jpg",
+            'vessen': "../static/images/calendar_pics/vessen.jpg",
+            'warhammer': "../static/images/calendar_pics/warhammer.jpg"
         };
 
-        const defaultImage = "../static/images/slay.png"; // Заглушка, якщо зображення немає
+        const defaultImage = "../static/images/calendar_pics/slay.png"; // Заглушка, якщо зображення немає
 
         allEvents.forEach(event => {
             const startDateTime = new Date(event.start);
@@ -106,10 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
-
-            // console.log('Game Name:', parsedDescription.game); // Debugging
-            // console.log('Image Path:', gameImage);
-            const eventImage = event.image_url || gameImage; // Використовуємо зображення з події або локальне
+            const eventImage = event.image_url || gameImage;
 
             const eventCard = document.createElement('div');
             eventCard.className = 'event-card';
@@ -143,9 +177,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         <img class="calendar-icon" src="../static/images/calendar_icons/location.png">
                         <span class="span-for-icons">${parsedDescription.location}</span>
                     </div>
-                    
-                    <!-- <p>${parsedDescription.remainingDescription}</p> -->
-                    
                 </div>
                 <div class="telegram-button-container">
                     <a href="https://t.me/hyhu_space" class="sign-up" target="_blank">Записатись на гру</a>
@@ -160,6 +191,11 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.nextBtn.disabled = !hasMore;
     }
 
+    // Додаємо обробники подій для фільтрів
+    elements.datePicker.addEventListener('change', fetchEvents);
+    elements.masterFilter.addEventListener('change', fetchEvents);
+    elements.systemFilter.addEventListener('change', fetchEvents);
+
     elements.prevBtn.addEventListener('click', () => {
         if (currentPage > 1) {
             currentPage--;
@@ -172,5 +208,6 @@ document.addEventListener('DOMContentLoaded', () => {
         fetchEvents();
     });
 
+    loadFilters();
     fetchEvents();
 });

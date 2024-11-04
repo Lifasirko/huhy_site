@@ -238,14 +238,12 @@
     <section id="calendar" class="calendar-section">
         <h2 class="calendar-header">Календар подій</h2>
         <div class="filters">
-            <select>
-                <option>Оберіть день</option>
+            <input type="date" id="date-picker" placeholder="Оберіть день">
+            <select id="master-filter">
+                <option value="">Майстер</option>
             </select>
-            <select>
-                <option>Майстер</option>
-            </select>
-            <select>
-                <option>Система</option>
+            <select id="system-filter">
+                <option value="">Система</option>
             </select>
         </div>
 

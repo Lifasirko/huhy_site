@@ -1,3 +1,5 @@
+import re
+
 import requests
 from django.conf import settings
 from django.core.mail import send_mail
@@ -7,7 +9,7 @@ from django.utils import timezone
 from django.core.cache import cache
 
 import datetime as dt
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 from googleapiclient.discovery import build
 from google.auth.exceptions import GoogleAuthError
@@ -55,7 +57,7 @@ def send_telegram_message(message: str):
             print(f"Error sending message to admin {admin_id}: {e}")
 
 
-def send_email(contact):
+def send_email(contact, request):
     subject = 'Нова форма з сайту'
     message = (f"Назва форми: {contact.form_name}\n"
                f"Ім'я: {contact.name}\n"
@@ -131,8 +133,19 @@ def get_event_image_url(summary):
 def events_api(request):
     page = int(request.GET.get('page', 1))
     limit = int(request.GET.get('limit', 3))
+    date_filter = request.GET.get('date')
+    master_filter = request.GET.get('master')
+    system_filter = request.GET.get('system')
 
     all_events = get_events()
+
+    # Фільтрація подій за обраними параметрами
+    if date_filter:
+        all_events = [event for event in all_events if event['start'].startswith(date_filter)]
+    if master_filter:
+        all_events = [event for event in all_events if master_filter in event.get('summary', '')]
+    if system_filter:
+        all_events = [event for event in all_events if system_filter in event.get('description', '')]
 
     start = (page - 1) * limit
     end = start + limit
@@ -163,3 +176,45 @@ def events_api(request):
         'events': events_data,
         'has_more': end < len(all_events)
     })  # TODO: пофіксити ширину кнопки запису на гру на телефонах
+
+
+def get_unique_filters():
+    now = datetime.now(timezone.utc).isoformat()  # Поточний час у форматі UTC
+    thirty_days_later = (datetime.now(timezone.utc) + timedelta(days=30)).isoformat()  # Час через 30 днів
+
+    service = build('calendar', 'v3', developerKey=GOOGLE_CALENDAR_API_KEY)
+    events_result = service.events().list(
+        calendarId=CALENDAR_ID,
+        timeMin=now,
+        timeMax=thirty_days_later,
+        singleEvents=True,
+        orderBy='startTime'
+    ).execute()
+    events = events_result.get('items', [])
+
+    # Збір унікальних значень
+    masters = set()
+    systems = set()
+    for event in events:
+        description = event.get('description', '')
+        summary = event.get('summary', '')
+
+        # Парсимо майстра та систему з опису або назви події
+        master_match = re.search(r"[Мм]айстер\s(.+)", summary)
+        if master_match:
+            masters.add(master_match.group(1).strip())
+
+        # Приклад парсингу системи - це може залежати від формату ваших даних
+        system_match = re.search(r"[Сс]истема\s(.+)", description)
+        if system_match:
+            systems.add(system_match.group(1).strip())
+
+    return list(masters), list(systems)
+
+
+def get_filters(request):
+    masters, systems = get_unique_filters()
+    return JsonResponse({
+        'masters': masters,
+        'systems': systems
+    })
