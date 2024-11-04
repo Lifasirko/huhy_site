@@ -7,4 +7,6 @@ urlpatterns = [
     path('api/events/', views.events_api, name='events_api'),
     path('api/filters/', views.get_filters, name='filters_api'),
     path('thank-you/', views.thank_you, name='thank_you'),
+    path('postcard/<int:postcard_id>/', views.postcard_detail, name='postcard_detail'),
+
 ]

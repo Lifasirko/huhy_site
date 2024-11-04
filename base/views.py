@@ -1,21 +1,17 @@
 import re
+from datetime import datetime, timezone, timedelta
 
 import requests
 from django.conf import settings
 from django.core.mail import send_mail
-from django.shortcuts import render, redirect
 from django.http import JsonResponse
-from django.utils import timezone
-from django.core.cache import cache
-
-import datetime as dt
-from datetime import datetime, timezone, timedelta
-
-from googleapiclient.discovery import build
+from django.shortcuts import render, redirect, get_object_or_404
 from google.auth.exceptions import GoogleAuthError
+from googleapiclient.discovery import build
 
 from base.forms import ContactForm
-from base.models import CustomUser
+from base.models import CustomUser, Postcard
+from .models import Event  # Make sure Event is your event model
 
 GOOGLE_CALENDAR_API_KEY = settings.GOOGLE_CALENDAR_API_KEY
 CALENDAR_ID = settings.CALENDAR_ID
@@ -71,6 +67,7 @@ def send_email(contact, request):
 
 def get_events():
     now = datetime.now(timezone.utc).isoformat()
+
     service = build('calendar', 'v3', developerKey=GOOGLE_CALENDAR_API_KEY)
     try:
         events_result = service.events().list(
@@ -220,6 +217,7 @@ def get_unique_filters():
 
     return list(masters), list(systems)
 
+
 def get_filters(request):
     masters, systems = get_unique_filters()
     print("Sending filters response:", {"masters": masters, "systems": systems})  # Для відладки
@@ -233,3 +231,6 @@ def thank_you(request):
     return render(request, 'thankyoupage.html')
 
 
+def postcard_detail(request, postcard_id):
+    postcard = get_object_or_404(Postcard, id=postcard_id)
+    return render(request, 'postcard_detail.html', {'postcard': postcard})

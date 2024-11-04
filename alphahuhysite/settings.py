@@ -40,6 +40,7 @@ ALLOWED_HOSTS = ['annoyed-jaquenette-stark-industries-jarvis-6e5d8fa2.koyeb.app'
                  '127.0.0.1',
                  '45.91.169.29',
                  'huhy.space']
+SITE_URL = "huhy.space"
 
 # Application definition
 

@@ -1,5 +1,11 @@
+from io import BytesIO
+
+import qrcode
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.urls import reverse
+from django.utils.html import format_html
 
 
 class Banner(models.Model):
@@ -89,3 +95,37 @@ class Form(models.Model):
 
     def __str__(self):
         return f"{self.form_name} - {self.name}"
+
+
+class Postcard(models.Model):
+    name = models.CharField(max_length=200)
+    title = models.CharField(max_length=200, verbose_name="Назва")
+    content = models.TextField(verbose_name="Текст")
+
+    def generate_qr_code_svg(self):
+        # Створюємо URL для сторінки листівки
+        url = f"{settings.SITE_URL}{reverse('postcard_detail', args=[self.id])}"
+
+        # Генеруємо QR-код
+        qr = qrcode.make(url, image_factory=qrcode.image.svg.SvgPathImage)
+
+        # Зберігаємо QR-код у SVG
+        buffer = BytesIO()
+        qr.save(buffer)
+        svg_data = buffer.getvalue().decode()
+        buffer.close()
+
+        return svg_data  # Повертаємо SVG дані як строку
+
+    def qr_code_link(self):
+        if self.id:
+            url = reverse('admin:postcard_qr_code_download', args=[self.id])
+            return format_html(
+                '<a href="{}" download class="button">Скачати QR-код</a>',
+                url
+            )
+        return "QR-код недоступний"
+
+    qr_code_link.allow_tags = True
+    qr_code_link.short_description = "Завантажити QR-код"
+

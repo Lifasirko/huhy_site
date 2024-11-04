@@ -1661,3 +1661,63 @@ p {
     background-color: #024853;
 }
 
+
+
+
+/* CSS для сторінки листівки */
+.postcard-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 70vh;
+    padding: 20px;
+}
+
+.container {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.postcard-message {
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    padding: 40px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.postcard-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.postcard-text {
+    font-size: 18px;
+    color: #555;
+    margin-bottom: 30px;
+}
+
+.postcard-contact {
+    font-size: 16px;
+    color: #777;
+}
+
+
+
+.button {
+    display: inline-block;
+    padding: 8px 12px;
+    margin: 4px 0;
+    background-color: #007bff;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.button:hover {
+    background-color: #0056b3;
+}
