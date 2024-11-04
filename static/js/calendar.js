@@ -45,9 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const game = gameMatch ? gameMatch[1].slice(0, 21) : 'Вільна кімната';
         const freeSeats = freeSeatsMatch ? parseInt(freeSeatsMatch[1], 10) : null;
         const cost = costMatch ? costMatch[1] : '—';
-
-        // Calculate booked seats
-        const totalSeats = 5; // Default total seats
+        const totalSeats = 5;
         const bookedSeatsText = freeSeats !== null ? `${totalSeats - freeSeats}/${totalSeats} місць заброньовані` : '—';
 
 
@@ -62,59 +60,57 @@ document.addEventListener('DOMContentLoaded', () => {
             freeSeats,
             cost,
             bookedSeatsText,
-            location,  // Include location in the parsed data
-            remainingDescription: description.split("Щоб записатись")[0].trim(),  // Обрізаємо все, що після вказівки як записатися
+            location,
+            remainingDescription: description.split("Щоб записатись")[0].trim(),
         };
     }
 
     function renderEvents() {
         const carouselContainer = elements.calendarEvents;
         carouselContainer.innerHTML = '';
+
+        const images = {
+            'підземелля': "../static/images/dd.png",
+            'star': "../static/images/sw.jpg",
+            'вільна': "../static/images/free_chamber.png",
+            'coriolis': "../static/images/coriolis_edit.jpg",
+            'vampire': "../static/images/vampire.jpg",
+            'vessen': "../static/images/vessen.jpg",
+            'warhammer': "../static/images/warhammer.jpg"
+        };
+
+        const defaultImage = "../static/images/slay.png"; // Заглушка, якщо зображення немає
+
         allEvents.forEach(event => {
             const startDateTime = new Date(event.start);
             const endDateTime = new Date(event.end);
 
             // Формат дня, дати і часу
             const dayOfWeek = startDateTime.toLocaleDateString('uk-UA', { weekday: 'long' });
-            const formattedDate = startDateTime.toLocaleDateString('uk-UA', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            const formattedDate = startDateTime.toLocaleDateString('uk-UA', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
             const formattedTime = startDateTime.toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' });
             const fullDateDisplay = `${dayOfWeek.charAt(0).toUpperCase() + dayOfWeek.slice(1)} | ${formattedDate} | ${formattedTime}`;
 
-            // Форматуємо дату та час
-            // const formattedDate = `${startDateTime.getDate().toString().padStart(2, '0')}-${(startDateTime.getMonth() + 1).toString().padStart(2, '0')}-${startDateTime.getFullYear()}`;
-            // const formattedTime = `${startDateTime.getHours().toString().padStart(2, '0')}:${startDateTime.getMinutes().toString().padStart(2, '0')}`;
-
-            // Парсинг опису
             const parsedDescription = parseEventDescription(event.summary, event.description || '');
 
-
-            // Default image path
-            const defaultImage = "../static/images/calendar_pics/slay.png"; // Path to the default image
-            const images = {
-                'підземелля': "../static/images/calendar_pics/dd.png", // Path for Підземелля та дракони
-                'підземелля': "../static/images/calendar_pics/dd.png",
-                'підземелля': "../static/images/calendar_pics/dd.png",
-                'star': "../static/images/calendar_pics/sw.jpg",
-                'вільна': "../static/images/calendar_pics/free_chamber.png",
-                // Add more games and their image paths here
-            };
-
-            // Визначаємо фото гри
-            let gameImage = defaultImage; // Start with the default image
+            // Пошук відповідного зображення
+            let gameImage = defaultImage;
             for (const key in images) {
                 if (parsedDescription.game.toLowerCase().includes(key)) {
-                    gameImage = images[key]; // Set the specific image if game name matches
-                    break; // Stop searching after finding the first match
+                    gameImage = images[key];
+                    break;
                 }
             }
 
-            console.log('Game Name:', parsedDescription.game); // Debugging
-            console.log('Image Path:', gameImage);
 
+            // console.log('Game Name:', parsedDescription.game); // Debugging
+            // console.log('Image Path:', gameImage);
+            const eventImage = event.image_url || gameImage; // Використовуємо зображення з події або локальне
 
-
-
-            // Створюємо картку події
             const eventCard = document.createElement('div');
             eventCard.className = 'event-card';
             eventCard.innerHTML = `
@@ -153,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <div class="telegram-button-container">
                     <a href="https://t.me/hyhu_space" class="sign-up" target="_blank">Записатись на гру</a>
-                </div>
+                </div> 
             `;
             carouselContainer.appendChild(eventCard);
         });

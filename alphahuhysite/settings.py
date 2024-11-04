@@ -10,8 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
-import os
 from pathlib import Path
+import os
 
 from environs import Env
 
@@ -20,6 +20,10 @@ env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+GOOGLE_CALENDAR_API_KEY = env('GOOGLE_CALENDAR_API_KEY')
+CALENDAR_ID = env('CALENDAR_ID')
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -30,7 +34,12 @@ SECRET_KEY = 'django-insecure-)97#k+w379b@m2ax5dz2*o!_&*al*duwg)51-a^$ci97e2cr21
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['annoyed-jaquenette-stark-industries-jarvis-6e5d8fa2.koyeb.app',
+                 'tall-beaver-olena-c12ee0c3.koyeb.app',
+                 'localhost',
+                 '127.0.0.1',
+                 '45.91.169.29',
+                 'huhy.space']
 
 # Application definition
 
@@ -75,6 +84,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'alphahuhysite.wsgi.application'
 
+
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
@@ -88,6 +98,7 @@ DATABASES = {
         'PORT': '5432',
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -107,6 +118,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
@@ -117,6 +129,7 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/

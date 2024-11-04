@@ -15,9 +15,9 @@ from google.auth.exceptions import GoogleAuthError
 from base.forms import ContactForm
 from base.models import CustomUser
 
+GOOGLE_CALENDAR_API_KEY = settings.GOOGLE_CALENDAR_API_KEY
+CALENDAR_ID = settings.CALENDAR_ID
 
-API_KEY = 'AIzaSyDX8Ul5yN4vCOkiwmCOCEiBaN4jpJyoH9Q'
-CALENDAR_ID = '63f17c703a73e613e05b4fbd8b9c0b65a1920fbbbaad28997182aab4dfae1d1b@group.calendar.google.com'
 
 def home(request):
     if request.method == 'POST':
@@ -69,9 +69,8 @@ def send_email(contact):
 
 def get_events():
     now = datetime.now(timezone.utc).isoformat()
-
+    service = build('calendar', 'v3', developerKey=GOOGLE_CALENDAR_API_KEY)
     try:
-        service = build('calendar', 'v3', developerKey=API_KEY)
         events_result = service.events().list(
             calendarId=CALENDAR_ID,
             singleEvents=True,
@@ -79,7 +78,32 @@ def get_events():
             timeMin=now
         ).execute()
 
-        return events_result.get('items', [])
+        events = events_result.get('items', [])
+
+        events_data = []
+        for event in events:
+            start = event.get('start', {}).get('dateTime', event.get('start', {}).get('date'))
+            end = event.get('end', {}).get('dateTime', event.get('end', {}).get('date'))
+
+            # Перевіряємо локальне зображення за ключовими словами
+            image_url = get_event_image_url(event.get('summary', ''))
+
+            # Якщо немає локального зображення, перевіряємо вкладення
+            if image_url == '/static/images/calendar_pics/default_image.jpg':
+                if 'attachments' in event:
+                    image_url = event['attachments'][0].get('fileUrl', '/static/images/calendar_pics/slay.png')
+                else:
+                    image_url = '/static/images/calendar_pics/slay.png'
+
+            events_data.append({
+                'summary': event.get('summary', 'No Title'),
+                'start': start,
+                'end': end,
+                'description': event.get('description', ''),
+                'image_url': image_url,
+            })
+
+        return events_data
     except GoogleAuthError:
         print("Google API authentication error")
         return []
@@ -88,9 +112,25 @@ def get_events():
         return []
 
 
+def get_event_image_url(summary):
+    images = {
+        'D&D': '/static/images/dd.png',
+        'Vampire': '/static/images/vampire.jpg',
+        'Coriolis': '/static/images/coriolis_edit.jpg',
+        'Vessen': '/static/images/vessen.jpg',
+        'Warhammer': '/static/images/warhammer.jpg'
+    }
+
+    for key, image_url in images.items():
+        if key.lower() in summary.lower():
+            return image_url
+
+    return '/static/images/calendar_pics/slay.png'  # Стандартне зображення, якщо немає збігів
+
+
 def events_api(request):
-    page = int(request.GET.get('page'))
-    limit = int(request.GET.get('limit'))
+    page = int(request.GET.get('page', 1))
+    limit = int(request.GET.get('limit', 3))
 
     all_events = get_events()
 
@@ -100,16 +140,26 @@ def events_api(request):
 
     events_data = []
     for event in paginated_events:
-        start_time = event['start'].get('dateTime', event['start'].get('date'))
-        end_time = event['end'].get('dateTime', event['end'].get('date'))
+        # Перевірка на тип даних перед використанням `.get()`
+        if isinstance(event.get('start'), dict):
+            start_time = event['start'].get('dateTime', event['start'].get('date'))
+        else:
+            start_time = event['start']  # Встановлення значення як є, якщо це не словник
+
+        if isinstance(event.get('end'), dict):
+            end_time = event['end'].get('dateTime', event['end'].get('date'))
+        else:
+            end_time = event['end']  # Встановлення значення як є, якщо це не словник
+
         events_data.append({
-            'summary': event['summary'],
+            'summary': event.get('summary', 'No Title'),
             'start': start_time,
             'end': end_time,
             'description': event.get('description', ''),
+            'image_url': event.get('image_url', '')  # або надаємо стандартне зображення за замовчуванням
         })
 
     return JsonResponse({
         'events': events_data,
         'has_more': end < len(all_events)
-    })
+    })  # TODO: пофіксити ширину кнопки запису на гру на телефонах

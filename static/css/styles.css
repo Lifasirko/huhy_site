@@ -1141,18 +1141,22 @@ li {
 }
 
 .telegram-button-container {
+    margin-top: auto;
     padding: 10px;
     text-align: center;
-    margin-bottom: 4px;
+    display: flex; /* Додає flex-контейнер */
+    justify-content: center; /* Вирівнює кнопку по центру */
+    align-items: center; /* Вирівнює кнопку по вертикалі */
+
 }
 
 
 
 .sign-up {
     background-color: #000000;
-    color: rgb(255, 255, 255);
+    color: white;
     cursor: pointer;
-    padding: 6px 95px;
+    padding: 8px 10px;
     font-size: 14px;
     border: none;
     border-radius: 20px;
@@ -1160,13 +1164,19 @@ li {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     text-align: center;
     text-decoration: none;
+    display: inline-block;
+    /*width: 100%;*/
+    max-width: 100%; /* Використай всю ширину контейнера */
+    white-space: nowrap; /* Забороняє перенесення тексту */
+    overflow: hidden;    /* Ховає текст, який не поміщається */
+    text-overflow: ellipsis; /* Додає три крапки (...) в кінці тексту, якщо він не поміщається */
+
 }
 
 .sign-up:hover {
-    color: #ffffff;
     background-color: #024853;
+    transform: scale(1.05);
 }
-
 
 
 
