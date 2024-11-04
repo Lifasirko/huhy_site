@@ -1,6 +1,7 @@
-from io import BytesIO
+from io import BytesIO, StringIO
 
 import qrcode
+import svgwrite
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
@@ -102,20 +103,40 @@ class Postcard(models.Model):
     title = models.CharField(max_length=200, verbose_name="Назва")
     content = models.TextField(verbose_name="Текст")
 
+    def get_absolute_url(self):
+        # Додаємо https://, якщо його немає у базовому URL
+        base_url = settings.SITE_URL
+        if not base_url.startswith("http://") and not base_url.startswith("https://"):
+            base_url = f"https://{base_url}"
+        return f"{base_url}{reverse('postcard_detail', args=[str(self.id)])}"
+
+
     def generate_qr_code_svg(self):
-        # Створюємо URL для сторінки листівки
-        url = f"{settings.SITE_URL}{reverse('postcard_detail', args=[self.id])}"
+        # Отримує повний URL для QR-коду
+        url = self.get_absolute_url()
 
-        # Генеруємо QR-код
-        qr = qrcode.make(url, image_factory=qrcode.image.svg.SvgPathImage)
+        # Створює QR-код
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            box_size=10,
+            border=4,
+        )
+        qr.add_data(url)
+        qr.make(fit=True)
 
-        # Зберігаємо QR-код у SVG
-        buffer = BytesIO()
-        qr.save(buffer)
-        svg_data = buffer.getvalue().decode()
-        buffer.close()
+        # Створює SVG
+        dwg = svgwrite.Drawing(size=(qr.modules_count * 10, qr.modules_count * 10))
+        for row, line in enumerate(qr.modules):
+            for col, module in enumerate(line):
+                if module:  # Якщо модуль є чорним
+                    dwg.add(dwg.rect(insert=(col * 10, row * 10), size=(10, 10), fill='black'))
 
-        return svg_data  # Повертаємо SVG дані як строку
+        # Зберігає SVG у StringIO
+        svg_data = StringIO()
+        dwg.write(svg_data)
+        svg_data.seek(0)
+        return svg_data.getvalue()  # Повертає SVG як рядок
 
     def qr_code_link(self):
         if self.id:
@@ -128,4 +149,3 @@ class Postcard(models.Model):
 
     qr_code_link.allow_tags = True
     qr_code_link.short_description = "Завантажити QR-код"
-
