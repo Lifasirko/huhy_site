@@ -865,7 +865,7 @@ li {
     margin-left: 15%;
     margin-right: 15%;
     font-family: 'Lato',
-        sans-serif;
+    sans-serif;
     font-size: 40px;
     font-weight: 800;
     text-align: center;
@@ -874,7 +874,6 @@ li {
 
 
 /* //////////////////// frontend_the_fourth /////////////////// */
-
 
 
 /* Filters */
@@ -969,40 +968,6 @@ li {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* ////////////// стилі для версії frontend_the_third ////////////// */
 
 .pagination-container {
@@ -1046,7 +1011,7 @@ li {
     background-color: #5f1616;
     color: #ffffff;
     font-family: 'Lato',
-        sans-serif;
+    sans-serif;
     font-size: 15px;
     text-align: center;
     display: flex;
@@ -1060,7 +1025,7 @@ li {
 
 .game-name {
     font-family: 'Lato',
-        sans-serif;
+    sans-serif;
     font-size: 13px;
     font-weight: 600;
     font-style: italic;
@@ -1078,7 +1043,7 @@ li {
 
 .span-for-icons {
     font-family: 'Lato',
-        sans-serif;
+    sans-serif;
     font-size: 14px;
     font-weight: 600;
     text-align: left;
@@ -1120,7 +1085,6 @@ li {
 }
 
 
-
 #next-btn:disabled,
 #prev-btn:disabled {
     background-color: #ddd;
@@ -1151,7 +1115,6 @@ li {
 }
 
 
-
 .sign-up {
     background-color: #000000;
     color: white;
@@ -1168,7 +1131,7 @@ li {
     /*width: 100%;*/
     max-width: 100%; /* Використай всю ширину контейнера */
     white-space: nowrap; /* Забороняє перенесення тексту */
-    overflow: hidden;    /* Ховає текст, який не поміщається */
+    overflow: hidden; /* Ховає текст, який не поміщається */
     text-overflow: ellipsis; /* Додає три крапки (...) в кінці тексту, якщо він не поміщається */
 
 }
@@ -1177,7 +1140,6 @@ li {
     background-color: #024853;
     transform: scale(1.05);
 }
-
 
 
 /* ////////////////////////////////////////////////////////////////////////// */
@@ -1475,7 +1437,7 @@ p {
 }
 
 .social-link svg:hover {
-    fill: #00f7a9;
+    fill: #024853;
 }
 
 .all-rights {
@@ -1483,8 +1445,6 @@ p {
     color: #00000088;
     font-weight: 400;
 }
-
-
 
 
 @media (max-width: 900px) {
@@ -1530,7 +1490,6 @@ p {
 }
 
 
-
 @media (max-width: 360px) {
 
     iframe {
@@ -1562,7 +1521,6 @@ p {
 /* ************************************************** Huhy-Men for Footer ********************************************* */
 
 
-
 .huhy-footer-photos {
     position: relative;
     margin-top: 20px;
@@ -1579,11 +1537,7 @@ p {
 }
 
 
-
 /* max-width: 900px ----------- from row to column */
-
-
-
 
 
 /* #1 верхній хухі зліва */
@@ -1618,22 +1572,8 @@ p {
 } */
 
 
-
-
-
-@media (max-width: 900px) {}
-
-
-
-
-
-
-
-
-
-
-
-
+@media (max-width: 900px) {
+}
 
 
 /* Адаптація для малих екранів */
@@ -1668,3 +1608,56 @@ p {
         bottom: 40%;
     }
 } */
+
+
+/* Центрування контенту */
+.confirmation-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 70vh;
+    padding: 20px;
+}
+
+.container {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.confirmation-message {
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    padding: 40px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.confirmation-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.confirmation-text {
+    font-size: 18px;
+    color: #555;
+    margin-bottom: 30px;
+}
+
+.confirmation-btn {
+    display: inline-block;
+    padding: 12px 24px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #024853;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.confirmation-btn:hover {
+    background-color: #024853;
+}
+

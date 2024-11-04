@@ -30,7 +30,7 @@ def home(request):
             message = str(form.as_text())
             send_telegram_message(message)
             print("Повідомлення відправлено в Telegram.")
-            return redirect('home')
+            return redirect('thank_you')  # Перенаправлення на сторінку подяки
         else:
             print("Форма не пройшла валідацію.")
     else:
@@ -175,12 +175,12 @@ def events_api(request):
     return JsonResponse({
         'events': events_data,
         'has_more': end < len(all_events)
-    })  # TODO: пофіксити ширину кнопки запису на гру на телефонах
+    })
 
 
 def get_unique_filters():
-    now = datetime.now(timezone.utc).isoformat()  # Поточний час у форматі UTC
-    thirty_days_later = (datetime.now(timezone.utc) + timedelta(days=30)).isoformat()  # Час через 30 днів
+    now = datetime.now(timezone.utc).isoformat()
+    thirty_days_later = (datetime.now(timezone.utc) + timedelta(days=30)).isoformat()
 
     service = build('calendar', 'v3', developerKey=GOOGLE_CALENDAR_API_KEY)
     events_result = service.events().list(
@@ -196,25 +196,40 @@ def get_unique_filters():
     masters = set()
     systems = set()
     for event in events:
-        description = event.get('description', '')
         summary = event.get('summary', '')
+        description = event.get('description', '')
 
-        # Парсимо майстра та систему з опису або назви події
+        # Парсимо майстра
         master_match = re.search(r"[Мм]айстер\s(.+)", summary)
         if master_match:
             masters.add(master_match.group(1).strip())
 
-        # Приклад парсингу системи - це може залежати від формату ваших даних
-        system_match = re.search(r"[Сс]истема\s(.+)", description)
-        if system_match:
-            systems.add(system_match.group(1).strip())
+        # Парсимо систему/гру в summary
+        game_match_summary = re.search(r"^(.*?)\s*[.-]\s*[Мм]айстер", summary)
+        if game_match_summary:
+            systems.add(game_match_summary.group(1).strip())
+
+        # Парсимо систему/гру в description, якщо це можливо
+        game_match_description = re.search(r"[Сс]истема\s*:\s*(.+)", description)
+        if game_match_description:
+            systems.add(game_match_description.group(1).strip())
+
+    # Перевірка зібраних значень для діагностики
+    print("Masters collected:", masters)  # Для відладки
+    print("Systems collected:", systems)  # Для відладки
 
     return list(masters), list(systems)
 
-
 def get_filters(request):
     masters, systems = get_unique_filters()
+    print("Sending filters response:", {"masters": masters, "systems": systems})  # Для відладки
     return JsonResponse({
         'masters': masters,
         'systems': systems
     })
+
+
+def thank_you(request):
+    return render(request, 'thankyoupage.html')
+
+
