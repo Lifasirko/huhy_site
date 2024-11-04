@@ -41,7 +41,13 @@ ALLOWED_HOSTS = ['annoyed-jaquenette-stark-industries-jarvis-6e5d8fa2.koyeb.app'
                  '45.91.169.29',
                  'huhy.space',
                  'www.huhy.space']
+
 SITE_URL = "huhy.space"
+CSRF_TRUSTED_ORIGINS = [
+    'https://huhy.space',
+    'https://www.huhy.space',
+]
+
 
 # Application definition
 

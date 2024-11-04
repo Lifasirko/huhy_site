@@ -42,7 +42,10 @@ def send_telegram_message(message: str):
     for admin_id in admin_ids:
         try:
             # Переконайтеся, що admin_id є цілим числом
+            if admin_id is None:
+                raise ValueError("TELEGRAM_ADMIN_ID is not set in the environment.")
             admin_id = int(admin_id)
+
             url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
             data = {"chat_id": admin_id, "text": message}
             response = requests.post(url, data=data)
