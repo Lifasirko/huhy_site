@@ -859,17 +859,24 @@ li {
     width: 70%;
     margin: 0 auto;
     text-align: center;
+    align-items: center;
 }
 
 .calendar-header {
     margin-left: 15%;
     margin-right: 15%;
     font-family: 'Lato',
-    sans-serif;
+        sans-serif;
     font-size: 40px;
     font-weight: 800;
     text-align: center;
     margin-bottom: 0px;
+}
+
+@media (max-width: 600px) {
+    .calendar-header {
+        font-size: 30px;
+    }
 }
 
 
@@ -894,7 +901,7 @@ li {
 /* Event cards */
 .events {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     flex-wrap: wrap;
     gap: 20px;
     padding: 20px;
@@ -972,7 +979,7 @@ li {
 
 .pagination-container {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     gap: 20px;
     height: auto;
@@ -985,6 +992,7 @@ li {
     flex-wrap: wrap;
     gap: 35px;
     margin-bottom: 0;
+    align-items: center;
 }
 
 .event-card {
@@ -1011,7 +1019,7 @@ li {
     background-color: #5f1616;
     color: #ffffff;
     font-family: 'Lato',
-    sans-serif;
+        sans-serif;
     font-size: 15px;
     text-align: center;
     display: flex;
@@ -1025,7 +1033,7 @@ li {
 
 .game-name {
     font-family: 'Lato',
-    sans-serif;
+        sans-serif;
     font-size: 13px;
     font-weight: 600;
     font-style: italic;
@@ -1043,7 +1051,7 @@ li {
 
 .span-for-icons {
     font-family: 'Lato',
-    sans-serif;
+        sans-serif;
     font-size: 14px;
     font-weight: 600;
     text-align: left;
@@ -1108,9 +1116,12 @@ li {
     margin-top: auto;
     padding: 10px;
     text-align: center;
-    display: flex; /* Додає flex-контейнер */
-    justify-content: center; /* Вирівнює кнопку по центру */
-    align-items: center; /* Вирівнює кнопку по вертикалі */
+    display: flex;
+    /* Додає flex-контейнер */
+    justify-content: center;
+    /* Вирівнює кнопку по центру */
+    align-items: center;
+    /* Вирівнює кнопку по вертикалі */
 
 }
 
@@ -1129,10 +1140,14 @@ li {
     text-decoration: none;
     display: inline-block;
     /*width: 100%;*/
-    max-width: 100%; /* Використай всю ширину контейнера */
-    white-space: nowrap; /* Забороняє перенесення тексту */
-    overflow: hidden; /* Ховає текст, який не поміщається */
-    text-overflow: ellipsis; /* Додає три крапки (...) в кінці тексту, якщо він не поміщається */
+    max-width: 100%;
+    /* Використай всю ширину контейнера */
+    white-space: nowrap;
+    /* Забороняє перенесення тексту */
+    overflow: hidden;
+    /* Ховає текст, який не поміщається */
+    text-overflow: ellipsis;
+    /* Додає три крапки (...) в кінці тексту, якщо він не поміщається */
 
 }
 
@@ -1155,11 +1170,35 @@ li {
     #calendar-events {
         flex-direction: column;
         gap: 20px;
+        justify-content: center;
     }
 
     .event-card {
         flex: 0 0 100%;
         height: auto;
+    }
+
+    .event-card:hover {
+        transform: none;
+    }
+
+    .calendar-imgs {
+        max-height: 15vh;
+        min-height: auto;
+    }
+
+    .sign-up {
+        font-size: 12px;
+        padding: 6px 35px;
+    }
+
+    .span-for-icons {
+        font-size: 12px;
+    }
+
+    .calendar-icon {
+        max-height: 18px;
+        max-width: 18px;
     }
 }
 
@@ -1437,7 +1476,7 @@ p {
 }
 
 .social-link svg:hover {
-    fill: #024853;
+    fill: #ff0000;
 }
 
 .all-rights {
@@ -1572,8 +1611,7 @@ p {
 } */
 
 
-@media (max-width: 900px) {
-}
+@media (max-width: 900px) {}
 
 
 /* Адаптація для малих екранів */
