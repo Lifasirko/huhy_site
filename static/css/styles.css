@@ -1114,7 +1114,7 @@ li {
 
 .telegram-button-container {
     margin-top: auto;
-    padding: 10px;
+    padding: 15px;
     text-align: center;
     display: flex;
     /* Додає flex-контейнер */
@@ -1130,11 +1130,11 @@ li {
     background-color: #000000;
     color: white;
     cursor: pointer;
-    padding: 8px 10px;
+    padding: 7px 30px;
     font-size: 14px;
     border: none;
     border-radius: 20px;
-    transition: background-color 0.3s ease, transform 0.3s ease;
+    /* transition: background-color 0.3s ease, transform 0.3s ease; */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     text-align: center;
     text-decoration: none;
@@ -1153,7 +1153,7 @@ li {
 
 .sign-up:hover {
     background-color: #024853;
-    transform: scale(1.05);
+    /* transform: scale(1.05); */
 }
 
 
@@ -1171,6 +1171,44 @@ li {
         flex-direction: column;
         gap: 20px;
         justify-content: center;
+        width: 100%;
+    }
+
+    .event-card:hover {
+        transform: none;
+    }
+}
+
+@media (max-width: 640px) {
+    .calendar-imgs {
+        max-height: 18vh;
+        min-height: 13vh;
+    }
+}
+
+@media (max-width: 550px) {
+    .calendar-imgs {
+        max-height: 18vh;
+        min-height: 13vh;
+    }
+
+    .sign-up {
+        font-size: 14px;
+        padding: 7px 30px;
+    }
+}
+
+@media (max-width: 480px) {
+
+    #calendar {
+        width: 100%;
+    }
+
+    #calendar-events {
+        flex-direction: column;
+        gap: 20px;
+        justify-content: center;
+        width: 100%;
     }
 
     .event-card {
@@ -1178,18 +1216,46 @@ li {
         height: auto;
     }
 
-    .event-card:hover {
-        transform: none;
+    .event-card h3 {
+        font-size: 14px;
+        max-height: 50px;
     }
 
     .calendar-imgs {
         max-height: 15vh;
-        min-height: auto;
+        min-height: 10vh;
     }
 
     .sign-up {
-        font-size: 12px;
-        padding: 6px 35px;
+        font-size: 14px;
+        padding: 7px 30px;
+    }
+
+    .span-for-icons {
+        font-size: 13px;
+    }
+
+    .calendar-icon {
+        max-height: 20px;
+        max-width: 20px;
+    }
+}
+
+@media (max-width: 430px) {
+
+    .event-card h3 {
+        font-size: 13px;
+        max-height: 45px;
+    }
+
+    .calendar-imgs {
+        max-height: 15vh;
+        min-height: 10vh;
+    }
+
+    .sign-up {
+        font-size: 13px;
+        padding: 8px 25px;
     }
 
     .span-for-icons {
