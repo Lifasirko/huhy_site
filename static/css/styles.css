@@ -1166,7 +1166,46 @@ li {
     }
 }
 
-@media (max-width: 750px) {
+@media (min-width: 850px) and (max-width: 900px) {
+
+    .pagination-container {
+        min-height: 345px;
+    }
+
+    .event-card {
+        max-height: 345px;
+    }
+
+    .calendar-imgs {
+        max-height: 13vh;
+        min-height: 6vh;
+    }
+
+    .event-card h3 {
+        font-size: 13px;
+        max-height: 55px;
+    }
+
+    .game-name {
+        font-size: 13px;
+    }
+
+    .span-for-icons {
+        font-size: 12px;
+    }
+
+    .calendar-icon {
+        max-height: 16px;
+        max-width: 16px;
+    }
+
+    .sign-up {
+        font-size: 15px;
+        padding: 7px 30px;
+    }
+}
+
+@media (max-width: 850px) {
     #calendar-events {
         flex-direction: column;
         gap: 20px;
@@ -1177,12 +1216,58 @@ li {
     .event-card:hover {
         transform: none;
     }
+
+    .calendar-imgs {
+        min-height: 120px;
+    }
+
+    .event-card h3 {
+        font-size: 18px;
+        max-height: 59px;
+    }
+
+    .game-name {
+        font-size: 15px;
+    }
+
+    .span-for-icons {
+        font-size: 18px;
+    }
+
+    .calendar-icon {
+        max-height: 25px;
+        max-width: 25px;
+    }
+
+    .sign-up {
+        font-size: 18px;
+        padding: 7px 30px;
+    }
 }
 
-@media (max-width: 640px) {
+
+@media (max-width: 690px) {
     .calendar-imgs {
-        max-height: 18vh;
-        min-height: 13vh;
+        max-height: 22vh;
+        min-height: 14vh;
+    }
+
+    .game-name {
+        font-size: 14px;
+    }
+
+    .span-for-icons {
+        font-size: 17px;
+    }
+
+    .calendar-icon {
+        max-height: 24px;
+        max-width: 24px;
+    }
+
+    .sign-up {
+        font-size: 16px;
+        padding: 7px 30px;
     }
 }
 
@@ -1193,8 +1278,17 @@ li {
     }
 
     .sign-up {
-        font-size: 14px;
+        font-size: 16px;
         padding: 7px 30px;
+    }
+
+    .span-for-icons {
+        font-size: 16px;
+    }
+
+    .calendar-icon {
+        max-height: 22px;
+        max-width: 22px;
     }
 }
 
@@ -1216,32 +1310,57 @@ li {
         height: auto;
     }
 
-    .event-card h3 {
+    .game-name {
         font-size: 14px;
-        max-height: 50px;
+    }
+
+    .event-card h3 {
+        font-size: 16px;
+        max-height: 57px;
     }
 
     .calendar-imgs {
-        max-height: 15vh;
-        min-height: 10vh;
+        max-height: 17vh;
+        min-height: 13vh;
     }
 
     .sign-up {
-        font-size: 14px;
+        font-size: 15px;
         padding: 7px 30px;
     }
 
     .span-for-icons {
-        font-size: 13px;
+        font-size: 16px;
     }
 
     .calendar-icon {
-        max-height: 20px;
-        max-width: 20px;
+        max-height: 23px;
+        max-width: 23px;
     }
 }
 
 @media (max-width: 430px) {
+
+    .game-name {
+        font-size: 14px;
+    }
+
+    .event-card h3 {
+        font-size: 15px;
+        max-height: 54px;
+    }
+
+    .span-for-icons {
+        font-size: 15px;
+    }
+
+    .calendar-icon {
+        max-height: 19px;
+        max-width: 19px;
+    }
+}
+
+@media (max-width: 390px) {
 
     .event-card h3 {
         font-size: 13px;
@@ -1542,7 +1661,7 @@ p {
 }
 
 .social-link svg:hover {
-    fill: #ff0000;
+    fill: #00ff2f;
 }
 
 .all-rights {
