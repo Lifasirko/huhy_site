@@ -1160,13 +1160,363 @@ li {
 /* ////////////////////////////////////////////////////////////////////////// */
 
 
+@media (min-width: 1460px) {
+
+    .calendar-imgs {
+        max-height: 150px;
+        min-height: 130px;
+    }
+
+    .event-card h3 {
+        font-size: 14px;
+        max-height: 55px;
+    }
+
+    .game-name {
+        font-size: 14px;
+    }
+
+    .span-for-icons {
+        font-size: 14px;
+    }
+
+    .calendar-icon {
+        max-height: 19px;
+        max-width: 19px;
+    }
+
+    .sign-up {
+        font-size: 15px;
+        padding: 7px 30px;
+    }
+
+    .telegram-button-container {
+        padding-top: 10px;
+        padding-bottom: 15px;
+    }
+}
+
+@media (min-width: 1430px) and (max-width: 1460px) {
+
+    .calendar-imgs {
+        max-height: 17vh;
+        min-height: 9vh;
+    }
+
+    .event-card h3 {
+        font-size: 14px;
+        max-height: 55px;
+    }
+
+    .game-name {
+        font-size: 14px;
+    }
+
+    .span-for-icons {
+        font-size: 14px;
+    }
+
+    .calendar-icon {
+        max-height: 19px;
+        max-width: 19px;
+    }
+
+    .sign-up {
+        font-size: 15px;
+        padding: 7px 30px;
+    }
+
+    .telegram-button-container {
+        padding-top: 10px;
+        padding-bottom: 15px;
+    }
+}
+
+@media (min-width: 1360px) and (max-width: 1430px) {
+
+    .calendar-imgs {
+        max-height: 16vh;
+        min-height: 9vh;
+    }
+
+    .event-card h3 {
+        font-size: 14px;
+        max-height: 55px;
+    }
+
+    .game-name {
+        font-size: 14px;
+    }
+
+    .span-for-icons {
+        font-size: 14px;
+    }
+
+    .calendar-icon {
+        max-height: 19px;
+        max-width: 19px;
+    }
+
+    .sign-up {
+        font-size: 15px;
+        padding: 7px 30px;
+    }
+
+    .telegram-button-container {
+        padding-top: 10px;
+        padding-bottom: 15px;
+    }
+}
+
+@media (min-width: 1280px) and (max-width: 1360px) {
+
+    .pagination-container {
+        min-height: 370px;
+    }
+
+    .event-card {
+        max-height: 370px;
+    }
+
+    .calendar-imgs {
+        max-height: 20vh;
+        min-height: 15vh;
+    }
+
+    .event-card h3 {
+        font-size: 14px;
+        max-height: 55px;
+    }
+
+    .game-name {
+        font-size: 14px;
+    }
+
+    .span-for-icons {
+        font-size: 13px;
+    }
+
+    .calendar-icon {
+        max-height: 17px;
+        max-width: 17px;
+    }
+
+    .sign-up {
+        font-size: 15px;
+        padding: 5px 30px;
+    }
+
+    .telegram-button-container {
+        padding-top: 10px;
+        padding-bottom: 15px;
+    }
+}
+
 @media (max-width: 1280px) {
     #calendar {
         width: 90%;
     }
 }
 
-@media (min-width: 850px) and (max-width: 900px) {
+@media (min-width: 1240px) and (max-width: 1280px) {
+
+    .calendar-imgs {
+        max-height: 23vh;
+        min-height: 19vh;
+    }
+
+    .event-card h3 {
+        font-size: 14px;
+        max-height: 50px;
+    }
+
+    .game-name {
+        font-size: 13px;
+    }
+
+    .span-for-icons {
+        font-size: 14px;
+    }
+
+    .calendar-icon {
+        max-height: 19px;
+        max-width: 19px;
+    }
+
+    .sign-up {
+        font-size: 15px;
+        padding: 5px 30px;
+    }
+
+    .telegram-button-container {
+        padding-top: 10px;
+        padding-bottom: 15px;
+    }
+}
+
+@media (min-width: 1180px) and (max-width: 1240px) {
+
+    .calendar-imgs {
+        max-height: 22vh;
+        min-height: 18vh;
+    }
+
+    .event-card h3 {
+        font-size: 15px;
+        max-height: 57px;
+    }
+
+    .game-name {
+        font-size: 14px;
+    }
+
+    .span-for-icons {
+        font-size: 14px;
+    }
+
+    .calendar-icon {
+        max-height: 19px;
+        max-width: 19px;
+    }
+
+    .sign-up {
+        font-size: 15px;
+        padding: 5px 30px;
+    }
+
+    .telegram-button-container {
+        padding-top: 12px;
+        padding-bottom: 15px;
+    }
+}
+
+@media (min-width: 1120px) and (max-width: 1180px) {
+
+    .calendar-imgs {
+        max-height: 20vh;
+        min-height: 17vh;
+    }
+
+    .event-card h3 {
+        font-size: 15px;
+        max-height: 65px;
+    }
+
+    .game-name {
+        font-size: 14px;
+    }
+
+    .span-for-icons {
+        font-size: 14px;
+    }
+
+    .calendar-icon {
+        max-height: 19px;
+        max-width: 19px;
+    }
+
+    .sign-up {
+        font-size: 15px;
+        padding: 6px 30px;
+    }
+}
+
+@media (min-width: 1060px) and (max-width: 1120px) {
+
+    .calendar-imgs {
+        max-height: 20vh;
+        min-height: 16vh;
+    }
+
+    .event-card h3 {
+        font-size: 15px;
+        max-height: 65px;
+    }
+
+    .game-name {
+        font-size: 14px;
+    }
+
+    .span-for-icons {
+        font-size: 14px;
+    }
+
+    .calendar-icon {
+        max-height: 19px;
+        max-width: 19px;
+    }
+
+    .sign-up {
+        font-size: 15px;
+        padding: 8px 30px;
+    }
+}
+
+@media (min-width: 1000px) and (max-width: 1060px) {
+
+    .calendar-imgs {
+        max-height: 15vh;
+        min-height: 6vh;
+    }
+
+    .event-card h3 {
+        font-size: 15px;
+        max-height: 55px;
+    }
+
+    .game-name {
+        margin-top: 15px;
+        font-size: 14px;
+    }
+
+    .span-for-icons {
+        font-size: 14px;
+    }
+
+    .calendar-icon {
+        max-height: 19px;
+        max-width: 19px;
+    }
+
+    .sign-up {
+        font-size: 15px;
+        padding: 8px 30px;
+    }
+}
+
+@media (min-width: 950px) and (max-width: 1000px) {
+
+    .calendar-imgs {
+        max-height: 14vh;
+        min-height: 6vh;
+    }
+
+    .event-card h3 {
+        font-size: 15px;
+        max-height: 55px;
+    }
+
+    .game-name {
+        margin-top: 15px;
+        font-size: 14px;
+    }
+
+    .span-for-icons {
+        font-size: 14px;
+    }
+
+    .calendar-icon {
+        max-height: 19px;
+        max-width: 19px;
+    }
+
+    .sign-up {
+        font-size: 15px;
+        padding: 8px 30px;
+    }
+}
+
+@media (min-width: 850px) and (max-width: 950px) {
 
     .pagination-container {
         min-height: 345px;
@@ -1661,7 +2011,7 @@ p {
 }
 
 .social-link svg:hover {
-    fill: #00ff2f;
+    fill: #b43339;
 }
 
 .all-rights {
