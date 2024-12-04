@@ -145,7 +145,10 @@ def events_api(request):
     if master_filter:
         all_events = [event for event in all_events if master_filter in event.get('summary', '')]
     if system_filter:
-        all_events = [event for event in all_events if system_filter in event.get('description', '')]
+        all_events = [
+            event for event in all_events
+            if system_filter in event.get('summary', '') #or system_filter in event.get('description', '')
+        ]
 
     start = (page - 1) * limit
     end = start + limit
@@ -207,12 +210,17 @@ def get_unique_filters():
         # Парсимо систему/гру в summary
         game_match_summary = re.search(r"^(.*?)\s*[.-]\s*[Мм]айстер", summary)
         if game_match_summary:
-            systems.add(game_match_summary.group(1).strip())
+            game_name = game_match_summary.group(1).strip()[:21]
+        else:
+            game_name = "Вільна кімната"
+
+        systems.add(game_name)
 
         # Парсимо систему/гру в description, якщо це можливо
-        game_match_description = re.search(r"[Сс]истема\s*:\s*(.+)", description)
-        if game_match_description:
-            systems.add(game_match_description.group(1).strip())
+        # game_match_description = re.search(r"[Сс]истема\s*:\s*(.+)", description)
+        # if game_match_description:
+        #     game_name = game_match_description.group(1).strip()[:21]
+        #     systems.add(game_name)
 
     # Перевірка зібраних значень для діагностики
     print("Masters collected:", masters)  # Для відладки
