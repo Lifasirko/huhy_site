@@ -1555,6 +1555,12 @@ li {
     }
 }
 
+@media (min-width: 690px) and (max-width: 850px) {
+    #calendar {
+        width: 80%;
+    }
+}
+
 @media (max-width: 850px) {
     #calendar-events {
         flex-direction: column;
@@ -1592,6 +1598,14 @@ li {
     .sign-up {
         font-size: 18px;
         padding: 7px 30px;
+    }
+}
+
+@media (min-width: 730px) and (max-width: 800px) {
+
+    .calendar-imgs {
+        max-height: 22vh;
+        min-height: 14vh;
     }
 }
 
