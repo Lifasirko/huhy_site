@@ -862,10 +862,6 @@ li {
     align-items: center;
 }
 
-/* #calendar {
-    min-width: 700px;
-} */
-
 .calendar-header {
     margin-left: 15%;
     margin-right: 15%;
@@ -881,25 +877,6 @@ li {
     .calendar-header {
         font-size: 30px;
     }
-}
-
-
-/* //////////////////// frontend_the_fourth /////////////////// */
-
-
-/* Filters */
-.filters {
-    display: flex;
-    justify-content: left;
-    gap: 10px;
-    margin: 20px 0;
-}
-
-.filters select {
-    padding: 10px;
-    font-size: 16px;
-    border-radius: 5px;
-    border: 1px solid #ddd;
 }
 
 /* Event cards */
@@ -960,7 +937,6 @@ li {
     .event-card {
         width: 90%;
     }
-
 }
 
 @media (max-width: 600px) {
@@ -977,9 +953,6 @@ li {
         flex-direction: column;
     }
 }
-
-
-/* ////////////// стилі для версії frontend_the_third ////////////// */
 
 .pagination-container {
     display: flex;
@@ -1089,7 +1062,6 @@ li {
     background-color: #7a7777;
     cursor: pointer;
     border-radius: 100px;
-
 }
 
 #next-btn:hover,
@@ -1122,12 +1094,8 @@ li {
     padding: 15px;
     text-align: center;
     display: flex;
-    /* Додає flex-контейнер */
     justify-content: center;
-    /* Вирівнює кнопку по центру */
     align-items: center;
-    /* Вирівнює кнопку по вертикалі */
-
 }
 
 
@@ -1146,7 +1114,6 @@ li {
     display: inline-block;
     /*width: 100%;*/
     max-width: 100%;
-    /* Використай всю ширину контейнера */
     white-space: nowrap;
     /* Забороняє перенесення тексту */
     overflow: hidden;
@@ -1175,7 +1142,7 @@ li {
     .event-card {
         flex: 1 1 calc(33.333% - 25px);
         max-width: 350px;
-        min-width: 330px;
+        min-width: 300px;
     }
 
     .event-card h3 {
@@ -1822,22 +1789,83 @@ li {
     }
 }
 
-/* .button-container {
+
+/* Master and System filters */
+
+
+.filters {
+    display: flex;
+    gap: 15px;
+    justify-content: left;
+    margin: 20px 0;
+    margin-top: 15px;
+}
+
+.filters select {
+    width: 145px;
+    height: 30px;
+    padding: 5px 10px;
+    font-size: 15px;
+    color: #7c7c7c;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.filters select:hover {
+    border-color: #0078d4;
+    box-shadow: 0 2px 6px rgba(0, 120, 212, 0.2);
+}
+
+.filters select:focus {
+    border-color: #0056a4;
+    box-shadow: 0 2px 8px rgba(0, 86, 164, 0.3);
+    outline: none;
+}
+
+
+/* Date filter */
+
+#date-picker {
+    /* Скидання стилів браузера */
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    box-sizing: border-box;
+
+    width: 145px;
+    height: 30px;
+    padding: 5px 10px;
+    font-size: 15px;
+    line-height: 1.2;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+#date-picker:hover {
+    border-color: #0078d4;
+    box-shadow: 0 2px 6px rgba(0, 120, 212, 0.2);
+}
+
+#date-picker:focus {
+    border-color: #0056a4;
+    box-shadow: 0 2px 8px rgba(0, 86, 164, 0.3);
+    outline: none;
+}
+
+#date-picker::placeholder {
+    color: #7c7c7c;
+}
+
+/* Скидання для Firefox */
+input[type="date"]::-webkit-calendar-picker-indicator {
     display: none;
-} */
-
-/* @media (max-width: 1200px) {
-    #calendar-header {
-        flex-direction: column;
-        align-items: center;
-        position: static;
-    }
-
-    #today {
-        position: static;
-        margin-top: 40px;
-    }
-} */
+}
 
 
 /********************************************* Секція "Альфа-Фоточки з текстом" ***************************************/

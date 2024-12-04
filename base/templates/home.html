@@ -234,11 +234,12 @@
 
 
 
-    <!-- Секція "Календар подій" версії "frontend_the_fourth" -->
+    <!-- Секція "Календар подій" -->
     <section id="calendar" class="calendar-section">
         <h2 class="calendar-header">Календар подій</h2>
         <div class="filters">
-            <input type="date" id="date-picker" placeholder="Оберіть день">
+            <input type="text" id="date-picker" placeholder="Оберіть день" onfocus="(this.type='date')"
+                onblur="(this.type='text')" />
             <select id="master-filter">
                 <option value="">Майстер</option>
             </select>
@@ -263,103 +264,6 @@
         <span id="events-url" data-url="{% url 'events_api' %}"></span>
 
     </section>
-
-    <!-- <div class="events">
-            <div class="event-card">
-                <img src="dnd.jpg" alt="Dungeons and Dragons">
-                <div class="event-info">
-                    <h2>Таємниця дварфійських копалень | Ваншот | Ідеально для новачків</h2>
-                    <p>Підземелля та Дракони (D&D)</p>
-                    <div class="event-details">
-                        <p><strong>Майстер:</strong> Антон</p>
-                        <p><strong>П'ятниця:</strong> 25.10.2024 | 18:00</p>
-                        <p><strong>600 грн / гравця / сесія</strong></p>
-                        <p>3 / 5 місць заброньовано</p>
-                    </div>
-                    <button class="signup-btn">Записатись на гру</button>
-                </div>
-            </div>
-
-            <div class="event-card">
-                <img src="vampires.jpg" alt="Вампіри: Маскарад">
-                <div class="event-info">
-                    <h2>Криваві вбивства у Венеції | Кампанія | Темні світи</h2>
-                    <p>Вампіри: Маскарад</p>
-                    <div class="event-details">
-                        <p><strong>Майстер:</strong> Баюн</p>
-                        <p><strong>Субота:</strong> 26.10.2024 | 13:30</p>
-                        <p><strong>500 грн / гравця / сесія</strong></p>
-                        <p>1 / 5 місць заброньовано</p>
-                    </div>
-                    <button class="signup-btn">Записатись на гру</button>
-                </div>
-            </div>
-
-            <div class="event-card">
-                <img src="horror.jpg" alt="Містичний детектив">
-                <div class="event-info">
-                    <h2>Містичний детектив | Ваншот | Легкий хоррор</h2>
-                    <p>Весін</p>
-                    <div class="event-details">
-                        <p><strong>Майстер:</strong> Іллайр</p>
-                        <p><strong>Субота:</strong> 26.10.2024 | 18:00</p>
-                        <p><strong>500 грн / гравця / сесія</strong></p>
-                        <p>2 / 5 місць заброньовано</p>
-                    </div>
-                    <button class="signup-btn">Записатись на гру</button>
-                </div>
-            </div>
-        </div> -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <!-- Секція "Календар подій" версії "frontend_the_third" -->
-    <!-- <section id="calendar" class="calendar-section">
-
-        <h2 class="calendar-header">Розклад</h2>
-
-        <div class="pagination-container">
-
-            <div id="calendar-events">
-                <div class="event-card">
-                </div>
-            </div>
-
-        </div> -->
-
-    <!-- Перемикачі під блоком подій -->
-    <!-- <div class="button-container">
-            <button id="prev-btn" disabled>←</button>
-            <button id="next-btn">→</button>
-        </div>
-
-        <span id="events-url" data-url="{% url 'events_api' %}"></span>
-
-    </section> -->
-
-
-
-
-
-
-
-
 
 
 

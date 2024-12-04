@@ -208,9 +208,14 @@ def get_unique_filters():
             masters.add(master_match.group(1).strip())
 
         # Парсимо систему/гру в summary
-        game_match_summary = re.search(r"^(.*?)\s*[.-]\s*[Мм]айстер", summary)
+        game_match_summary = re.search(r"^(.+?)(?:\s*[.-]\s*(?:Кімната\s.*\s)?)?[Мм]айстер\s(.+)$", summary)
         if game_match_summary:
             game_name = game_match_summary.group(1).strip()[:21]
+
+            game_name = game_name.replace("Підземелля та Дракони", "Підземелля та дракони")
+            game_name = game_name.replace("Підземелля і дракони", "Підземелля та дракони")
+            game_name = game_name.rstrip(".")
+
         else:
             game_name = "Вільна кімната"
 
