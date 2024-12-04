@@ -1801,6 +1801,15 @@ li {
     margin-top: 15px;
 }
 
+@media (max-width: 850px) {
+
+    .filters {
+        justify-content: center;
+    }
+}
+
+
+
 .filters select {
     width: 145px;
     height: 30px;
@@ -1865,6 +1874,18 @@ li {
 /* Скидання для Firefox */
 input[type="date"]::-webkit-calendar-picker-indicator {
     display: none;
+}
+
+@media (max-width: 605px) {
+    .filters {
+        flex-direction: column;
+    }
+
+    #date-picker,
+    #master-filter,
+    #system-filter {
+        width: 90%;
+    }
 }
 
 
