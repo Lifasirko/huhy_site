@@ -13,9 +13,16 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import os
 
+from environs import Env
+
+env = Env()
+env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+GOOGLE_CALENDAR_API_KEY = env('GOOGLE_CALENDAR_API_KEY')
+CALENDAR_ID = env('CALENDAR_ID')
 
 
 # Quick-start development settings - unsuitable for production
@@ -27,7 +34,19 @@ SECRET_KEY = 'django-insecure-)97#k+w379b@m2ax5dz2*o!_&*al*duwg)51-a^$ci97e2cr21
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['annoyed-jaquenette-stark-industries-jarvis-6e5d8fa2.koyeb.app',
+                 'tall-beaver-olena-c12ee0c3.koyeb.app',
+                 'localhost',
+                 '127.0.0.1',
+                 '45.91.169.29',
+                 'huhy.space',
+                 'www.huhy.space']
+
+SITE_URL = "huhy.space"
+CSRF_TRUSTED_ORIGINS = [
+    'https://huhy.space',
+    'https://www.huhy.space',
+]
 
 
 # Application definition
@@ -124,9 +143,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, "static"),]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static"), ]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = 'base.CustomUser'
+
+TELEGRAM_ADMIN_IDS = env.list('TELEGRAM_ADMIN_IDS')
+TGBOT_TOKEN = env('TGBOT_TOKEN')

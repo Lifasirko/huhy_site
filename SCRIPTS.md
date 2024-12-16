@@ -9,42 +9,42 @@
 Запускає локальний сервер для розробки.
 
 ```bash
-poetry run python manage.py runserver
+python manage.py runserver
 ```
 ### Створення нової міграції
 Генерує файл міграції на основі змін у моделях.
 
 ```bash
-poetry run python manage.py makemigrations
+python manage.py makemigrations
 ```
 
 ### Проведення міграцій бази даних
 Виконує всі міграції для актуалізації бази даних відповідно до змін у моделях.
 
 ```bash
-poetry run python manage.py migrate
+python manage.py migrate
 ```
 
 ### Створення адміністративного користувача
 Ця команда створює суперкористувача для доступу до адміністративної панелі.
 
 ```bash
-poetry run python manage.py createsuperuser
+python manage.py createsuperuser
 ```
 
 ### Запуск інтерактивної оболонки Django
 Запускає інтерактивну консоль Django для виконання скриптів безпосередньо в середовищі проекту.
 
 ```bash
-poetry run python manage.py shell
+python manage.py shell
 ```
 
 ### Очистка бази даних та запуск фікстур
 Очищає базу даних і заповнює її початковими даними (фікстурами).
 
 ```bash
-poetry run python manage.py flush
-poetry run python manage.py loaddata <назва_фікстури>
+python manage.py flush
+python manage.py loaddata <назва_фікстури>
 ```
 
 ## Docker-команди
