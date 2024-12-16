@@ -77,7 +77,7 @@ body {
 }
 
 .nav-links a:hover {
-    color: #f27825;
+    color: #b43339;
 }
 
 /* Іконка меню для мал. екран. (спочатку прихована) */
@@ -126,7 +126,7 @@ body {
     }
 
     .menu-icon:hover {
-        color: #e5671b;
+        color: #b43339;
     }
 
     .menu-icon.rotate {
@@ -424,14 +424,15 @@ body {
 
 .game p,
 .game li {
-    font-size: 15px;
     text-align: justify;
     position: relative;
 }
 
 .dd-text {
-    margin-left: 20%;
-    margin-right: 20%;
+    box-sizing: border-box;
+    margin-top: 10px;
+    padding-left: 15%;
+    padding-right: 15%;
 }
 
 .game ul {
@@ -458,8 +459,8 @@ body {
     }
 
     .dd-text {
-        margin-left: 0;
-        margin-right: 0;
+        padding-left: 0;
+        padding-right: 0;
     }
 
     .other-games {
@@ -849,228 +850,1041 @@ li {
 
 .calendar-section h2::before {
     content: "";
-    display: block;
     height: 80px;
     margin-top: -80px;
 }
 
 #calendar {
     scroll-margin-top: 80px;
+    width: 70%;
+    margin: 0 auto;
+    text-align: center;
+    align-items: center;
 }
+
+.calendar-header {
+    margin-left: 15%;
+    margin-right: 15%;
+    font-family: 'Lato',
+        sans-serif;
+    font-size: 40px;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 0px;
+}
+
+@media (max-width: 600px) {
+    .calendar-header {
+        font-size: 30px;
+    }
+}
+
+/* Event cards */
+.events {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px;
+}
+
+.event-card {
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    width: 32%;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.event-card:hover {
+    transform: translate(0, 5px);
+    /* transform: scale(1.03); */
+}
+
+.event-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.event-info {
+    padding: 15px;
+}
+
+.event-info h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.event-details {
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+.signup-btn {
+    display: block;
+    width: 100%;
+}
+
+/* Responsiveness */
+@media (max-width: 1000px) {
+    .events {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .event-card {
+        width: 90%;
+    }
+}
+
+@media (max-width: 600px) {
+    .filters {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .filters select {
+        width: 90%;
+    }
+
+    .header-content {
+        flex-direction: column;
+    }
+}
+
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    height: auto;
+    min-height: 380px;
+    margin-bottom: 0;
+}
+
+#calendar-events {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 35px;
+    margin-bottom: 0;
+    align-items: center;
+    justify-content: center;
+}
+
+.event-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex: 0 0 calc(33.333% - 25px);
+    background-color: rgb(255, 255, 255);
+    border-radius: 5px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    margin-bottom: 20px;
+    height: 400px;
+    box-sizing: border-box;
+}
+
+.calendar-imgs {
+    min-height: 120px;
+}
+
+.event-card h3 {
+    font-size: 18px;
+    margin: 0;
+    background-color: #5f1616;
+    color: #ffffff;
+    font-family: 'Lato',
+        sans-serif;
+    font-size: 15px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 60px;
+    padding: 10px;
+    box-sizing: border-box;
+    margin-bottom: 0px;
+}
+
+.game-name {
+    font-family: 'Lato',
+        sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    font-style: italic;
+    margin: 10px 0px 10px 20px;
+
+    text-align: left;
+}
+
+.calendar-icon {
+    max-height: 22px;
+    max-width: 22px;
+    margin-left: 30px;
+    margin-bottom: 5px;
+}
+
+.span-for-icons {
+    font-family: 'Lato',
+        sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: left;
+    margin: 4px 5px 4px 8px;
+}
+
+.master-div {
+    display: flex;
+    flex-direction: row;
+}
+
+.event-card span {
+    width: 95%;
+    display: inline-block;
+}
+
+.event-card p {
+    text-align: left;
+    font-size: 9px;
+    margin-left: 10px;
+    width: 95%;
+}
+
+#next-btn,
+#prev-btn {
+    margin: 5px;
+    padding: 7px 15px 10px 15px;
+    border: none;
+    color: white;
+    background-color: #7a7777;
+    cursor: pointer;
+    border-radius: 100px;
+}
+
+#next-btn:hover,
+#prev-btn:hover {
+    background-color: #333;
+}
+
+
+#next-btn:disabled,
+#prev-btn:disabled {
+    background-color: #ddd;
+    cursor: not-allowed;
+}
+
+.event-card-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.button-container {
+    margin-bottom: 60px;
+    padding: 0 5px 0 5px;
+    margin-top: 0;
+    text-align: center;
+}
+
+.telegram-button-container {
+    margin-top: auto;
+    padding: 15px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.sign-up {
+    background-color: #000000;
+    color: white;
+    cursor: pointer;
+    padding: 7px 30px;
+    font-size: 14px;
+    border: none;
+    border-radius: 20px;
+    /* transition: background-color 0.3s ease, transform 0.3s ease; */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    /*width: 100%;*/
+    max-width: 100%;
+    white-space: nowrap;
+    /* Забороняє перенесення тексту */
+    overflow: hidden;
+    /* Ховає текст, який не поміщається */
+    text-overflow: ellipsis;
+    /* Додає три крапки (...) в кінці тексту, якщо він не поміщається */
+
+}
+
+.sign-up:hover {
+    background-color: #024853;
+    /* transform: scale(1.05); */
+}
+
 
 /* ////////////////////////////////////////////////////////////////////////// */
 
 
+@media (min-width: 1460px) {
 
-.calendar-section {
-    padding: 50px 20px;
-    background-color: #ffffff;
-    text-align: center;
-}
-
-.calendar-section h2 {
-    font-size: 36px;
-    margin-bottom: 40px;
-    color: #444;
-}
-
-#calendar-header {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 20px;
-    padding: 0 20px;
-    position: relative;
-}
-
-.month-navigation {
-    display: flex;
-    align-items: center;
-}
-
-#calendar-header button {
-    background: none;
-    font-size: 24px;
-    cursor: pointer;
-    padding: 0 10px;
-}
-
-#current-month {
-    font-size: 24px;
-    font-weight: bold;
-    margin: 0 20px;
-}
-
-#today {
-    padding: 0 20px;
-    border: 1px solid #3E767D;
-    color: #3E767D;
-    background: none;
-    cursor: pointer;
-    position: absolute;
-    top: 50%;
-    right: 100px;
-    transform: translateY(-50%);
-}
-
-#calendar-header button:hover {
-    color: #000;
-    background-color: #e5671b;
-}
-
-#prev-month,
-#next-month {
-    border: none;
-}
-
-.event-list {
-    list-style-type: none;
-    padding: 0 50px;
-    margin: 0 50px;
-}
-
-.day-block {
-    display: flex;
-    padding-bottom: 10px;
-    align-items: flex-start;
-    position: relative;
-    padding-left: 20px;
-    border-top: 1px solid #e0e0e0;
-    padding-top: 20px;
-}
-
-.day-date {
-    font-size: 18px;
-    font-weight: bold;
-    min-width: 70px;
-    text-align: left;
-    padding-top: 10px;
-}
-
-.day-events {
-    flex-grow: 1;
-    padding-left: 20px;
-    color: black;
-}
-
-.day-block::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 2px;
-}
-
-.current-day {
-    color: #3E767D;
-}
-
-.event-item {
-    background-color: #f8f9fa;
-    padding: 10px 15px;
-    margin-bottom: 10px;
-    border-left: 3px solid #B2B2B2;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-}
-
-.event-item:hover {
-    background-color: #F0F0F0;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.event-title {
-    font-weight: bold;
-    margin-bottom: 5px;
-    font-size: 16px;
-}
-
-.event-time {
-    color: #6c757d;
-    font-size: 14px;
-}
-
-.event-popup {
-    display: none;
-    position: fixed;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    background-color: white;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    z-index: 1000;
-}
-
-.event-popup-content {
-    max-width: 300px;
-}
-
-.close-popup {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    cursor: pointer;
-    font-size: 20px;
-}
-
-.overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 999;
-}
-
-.past-events {
-    display: none;
-}
-
-.show-past-events {
-    cursor: pointer;
-    color: #3E767D;
-    text-decoration: underline;
-    margin-bottom: 10px;
-    display: inline-block;
-}
-
-#show-more-btn {
-    display: none;
-    margin: 20px auto;
-    padding: 10px 20px;
-    background-color: #3E767D;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-#show-more-btn:hover {
-    background-color: #2C5A5F;
-}
-
-
-
-
-
-
-
-
-@media (max-width: 1200px) {
-    #calendar-header {
-        flex-direction: column;
-        align-items: center;
-        position: static;
+    .calendar-imgs {
+        max-height: 150px;
+        min-height: 130px;
     }
 
-    #today {
-        position: static;
-        margin-top: 40px;
+    .event-card {
+        flex: 1 1 calc(33.333% - 25px);
+        max-width: 350px;
+        min-width: 300px;
+    }
+
+    .event-card h3 {
+        font-size: 14px;
+        max-height: 55px;
+    }
+
+    .game-name {
+        font-size: 14px;
+    }
+
+    .span-for-icons {
+        font-size: 14px;
+    }
+
+    .calendar-icon {
+        max-height: 19px;
+        max-width: 19px;
+    }
+
+    .sign-up {
+        font-size: 15px;
+        padding: 7px 30px;
+    }
+
+    .telegram-button-container {
+        padding-top: 10px;
+        padding-bottom: 15px;
+    }
+}
+
+@media (min-width: 1430px) and (max-width: 1460px) {
+
+    .calendar-imgs {
+        max-height: 17vh;
+        min-height: 9vh;
+    }
+
+    .event-card {
+        flex: 1 1 calc(33.333% - 25px);
+        max-width: 312px;
+        min-width: 305px;
+    }
+
+    .event-card h3 {
+        font-size: 14px;
+        max-height: 55px;
+    }
+
+    .game-name {
+        font-size: 14px;
+    }
+
+    .span-for-icons {
+        font-size: 14px;
+    }
+
+    .calendar-icon {
+        max-height: 19px;
+        max-width: 19px;
+    }
+
+    .sign-up {
+        font-size: 15px;
+        padding: 7px 30px;
+    }
+
+    .telegram-button-container {
+        padding-top: 10px;
+        padding-bottom: 15px;
+    }
+}
+
+@media (min-width: 1360px) and (max-width: 1430px) {
+
+    .calendar-imgs {
+        max-height: 16vh;
+        min-height: 9vh;
+    }
+
+    .event-card {
+        flex: 1 1 calc(33.333% - 25px);
+        max-width: 307px;
+        min-width: 289px;
+    }
+
+    .event-card h3 {
+        font-size: 14px;
+        max-height: 55px;
+    }
+
+    .game-name {
+        font-size: 14px;
+    }
+
+    .span-for-icons {
+        font-size: 14px;
+    }
+
+    .calendar-icon {
+        max-height: 19px;
+        max-width: 19px;
+    }
+
+    .sign-up {
+        font-size: 15px;
+        padding: 7px 30px;
+    }
+
+    .telegram-button-container {
+        padding-top: 10px;
+        padding-bottom: 15px;
+    }
+}
+
+@media (min-width: 1281px) and (max-width: 1360px) {
+
+    .pagination-container {
+        min-height: 370px;
+    }
+
+    .event-card {
+        max-height: 370px;
+    }
+
+    .event-card {
+        flex: 1 1 calc(33.333% - 25px);
+        max-width: 289px;
+        min-width: 270px;
+    }
+
+    .calendar-imgs {
+        max-height: 20vh;
+        min-height: 15vh;
+    }
+
+    .event-card h3 {
+        font-size: 14px;
+        max-height: 55px;
+    }
+
+    .game-name {
+        font-size: 14px;
+    }
+
+    .span-for-icons {
+        font-size: 13px;
+    }
+
+    .calendar-icon {
+        max-height: 17px;
+        max-width: 17px;
+    }
+
+    .sign-up {
+        font-size: 15px;
+        padding: 5px 30px;
+    }
+
+    .telegram-button-container {
+        padding-top: 10px;
+        padding-bottom: 15px;
+    }
+}
+
+@media (max-width: 1281px) {
+    #calendar {
+        width: 90%;
+    }
+}
+
+@media (min-width: 1240px) and (max-width: 1281px) {
+
+    .calendar-imgs {
+        max-height: 23vh;
+        min-height: 19vh;
+    }
+
+    .event-card {
+        flex: 1 1 calc(33.333% - 25px);
+        max-width: 354px;
+        min-width: 342px;
+    }
+
+    .event-card h3 {
+        font-size: 14px;
+        max-height: 50px;
+    }
+
+    .game-name {
+        font-size: 13px;
+    }
+
+    .span-for-icons {
+        font-size: 14px;
+    }
+
+    .calendar-icon {
+        max-height: 19px;
+        max-width: 19px;
+    }
+
+    .sign-up {
+        font-size: 15px;
+        padding: 5px 30px;
+    }
+
+    .telegram-button-container {
+        padding-top: 10px;
+        padding-bottom: 15px;
+    }
+}
+
+@media (min-width: 1180px) and (max-width: 1240px) {
+
+    .calendar-imgs {
+        max-height: 22vh;
+        min-height: 18vh;
+    }
+
+    .event-card {
+        flex: 1 1 calc(33.333% - 25px);
+        max-width: 341px;
+        min-width: 324px;
+    }
+
+    .event-card h3 {
+        font-size: 15px;
+        max-height: 57px;
+    }
+
+    .game-name {
+        font-size: 14px;
+    }
+
+    .span-for-icons {
+        font-size: 14px;
+    }
+
+    .calendar-icon {
+        max-height: 19px;
+        max-width: 19px;
+    }
+
+    .sign-up {
+        font-size: 15px;
+        padding: 5px 30px;
+    }
+
+    .telegram-button-container {
+        padding-top: 12px;
+        padding-bottom: 15px;
+    }
+}
+
+@media (min-width: 1120px) and (max-width: 1180px) {
+
+    .calendar-imgs {
+        max-height: 20vh;
+        min-height: 17vh;
+    }
+
+    .event-card {
+        flex: 1 1 calc(33.333% - 25px);
+        max-width: 323px;
+        min-width: 306px;
+    }
+
+    .event-card h3 {
+        font-size: 15px;
+        max-height: 65px;
+    }
+
+    .game-name {
+        font-size: 14px;
+    }
+
+    .span-for-icons {
+        font-size: 14px;
+    }
+
+    .calendar-icon {
+        max-height: 19px;
+        max-width: 19px;
+    }
+
+    .sign-up {
+        font-size: 15px;
+        padding: 6px 30px;
+    }
+}
+
+@media (min-width: 1060px) and (max-width: 1120px) {
+
+    .calendar-imgs {
+        max-height: 20vh;
+        min-height: 16vh;
+    }
+
+    .event-card {
+        flex: 1 1 calc(33.333% - 25px);
+        max-width: 305px;
+        min-width: 288px;
+    }
+
+    .event-card h3 {
+        font-size: 15px;
+        max-height: 65px;
+    }
+
+    .game-name {
+        font-size: 14px;
+    }
+
+    .span-for-icons {
+        font-size: 14px;
+    }
+
+    .calendar-icon {
+        max-height: 19px;
+        max-width: 19px;
+    }
+
+    .sign-up {
+        font-size: 15px;
+        padding: 8px 30px;
+    }
+}
+
+@media (min-width: 1000px) and (max-width: 1060px) {
+
+    .calendar-imgs {
+        max-height: 15vh;
+        min-height: 6vh;
+    }
+
+    .event-card {
+        flex: 1 1 calc(33.333% - 25px);
+        max-width: 287px;
+        min-width: 271px;
+    }
+
+    .event-card h3 {
+        font-size: 15px;
+        max-height: 55px;
+    }
+
+    .game-name {
+        margin-top: 15px;
+        font-size: 14px;
+    }
+
+    .span-for-icons {
+        font-size: 14px;
+    }
+
+    .calendar-icon {
+        max-height: 19px;
+        max-width: 19px;
+    }
+
+    .sign-up {
+        font-size: 15px;
+        padding: 8px 30px;
+    }
+}
+
+@media (min-width: 950px) and (max-width: 1000px) {
+
+    .calendar-imgs {
+        max-height: 14vh;
+        min-height: 6vh;
+    }
+
+    .event-card {
+        flex: 1 1 calc(33.333% - 25px);
+        max-width: 268px;
+        min-width: 255px;
+    }
+
+    .event-card h3 {
+        font-size: 15px;
+        max-height: 55px;
+    }
+
+    .game-name {
+        margin-top: 15px;
+        font-size: 14px;
+    }
+
+    .span-for-icons {
+        font-size: 14px;
+    }
+
+    .calendar-icon {
+        max-height: 19px;
+        max-width: 19px;
+    }
+
+    .sign-up {
+        font-size: 15px;
+        padding: 8px 30px;
+    }
+}
+
+@media (min-width: 850px) and (max-width: 950px) {
+
+    .pagination-container {
+        min-height: 345px;
+    }
+
+    .event-card {
+        max-height: 345px;
+    }
+
+    .event-card {
+        flex: 1 1 calc(33.333% - 25px);
+        max-width: 250px;
+        min-width: 225px;
+    }
+
+    .calendar-imgs {
+        max-height: 13vh;
+        min-height: 6vh;
+    }
+
+    .event-card h3 {
+        font-size: 13px;
+        max-height: 55px;
+    }
+
+    .game-name {
+        font-size: 13px;
+    }
+
+    .span-for-icons {
+        font-size: 12px;
+    }
+
+    .calendar-icon {
+        max-height: 16px;
+        max-width: 16px;
+    }
+
+    .sign-up {
+        font-size: 15px;
+        padding: 7px 30px;
+    }
+}
+
+@media (min-width: 690px) and (max-width: 850px) {
+    #calendar {
+        width: 80%;
+    }
+}
+
+@media (max-width: 850px) {
+    #calendar-events {
+        flex-direction: column;
+        gap: 20px;
+        justify-content: center;
+        width: 100%;
+    }
+
+    .event-card:hover {
+        transform: none;
+    }
+
+    .calendar-imgs {
+        min-height: 120px;
+    }
+
+    .event-card h3 {
+        font-size: 18px;
+        max-height: 59px;
+    }
+
+    .game-name {
+        font-size: 15px;
+    }
+
+    .span-for-icons {
+        font-size: 18px;
+    }
+
+    .calendar-icon {
+        max-height: 25px;
+        max-width: 25px;
+    }
+
+    .sign-up {
+        font-size: 18px;
+        padding: 7px 30px;
+    }
+}
+
+@media (min-width: 730px) and (max-width: 800px) {
+
+    .calendar-imgs {
+        max-height: 22vh;
+        min-height: 14vh;
+    }
+}
+
+
+@media (max-width: 690px) {
+    .calendar-imgs {
+        max-height: 22vh;
+        min-height: 14vh;
+    }
+
+    .game-name {
+        font-size: 14px;
+    }
+
+    .span-for-icons {
+        font-size: 17px;
+    }
+
+    .calendar-icon {
+        max-height: 24px;
+        max-width: 24px;
+    }
+
+    .sign-up {
+        font-size: 16px;
+        padding: 7px 30px;
+    }
+}
+
+@media (max-width: 550px) {
+    .calendar-imgs {
+        max-height: 18vh;
+        min-height: 13vh;
+    }
+
+    .sign-up {
+        font-size: 16px;
+        padding: 7px 30px;
+    }
+
+    .span-for-icons {
+        font-size: 16px;
+    }
+
+    .calendar-icon {
+        max-height: 22px;
+        max-width: 22px;
+    }
+}
+
+@media (max-width: 480px) {
+
+    #calendar {
+        width: 100%;
+    }
+
+    #calendar-events {
+        flex-direction: column;
+        gap: 20px;
+        justify-content: center;
+        width: 100%;
+    }
+
+    .event-card {
+        flex: 0 0 100%;
+        height: auto;
+    }
+
+    .game-name {
+        font-size: 14px;
+    }
+
+    .event-card h3 {
+        font-size: 16px;
+        max-height: 57px;
+    }
+
+    .calendar-imgs {
+        max-height: 17vh;
+        min-height: 13vh;
+    }
+
+    .sign-up {
+        font-size: 15px;
+        padding: 7px 30px;
+    }
+
+    .span-for-icons {
+        font-size: 16px;
+    }
+
+    .calendar-icon {
+        max-height: 23px;
+        max-width: 23px;
+    }
+}
+
+@media (max-width: 430px) {
+
+    .game-name {
+        font-size: 14px;
+    }
+
+    .event-card h3 {
+        font-size: 15px;
+        max-height: 54px;
+    }
+
+    .span-for-icons {
+        font-size: 15px;
+    }
+
+    .calendar-icon {
+        max-height: 19px;
+        max-width: 19px;
+    }
+}
+
+@media (max-width: 390px) {
+
+    .event-card h3 {
+        font-size: 13px;
+        max-height: 45px;
+    }
+
+    .calendar-imgs {
+        max-height: 15vh;
+        min-height: 10vh;
+    }
+
+    .sign-up {
+        font-size: 13px;
+        padding: 8px 25px;
+    }
+
+    .span-for-icons {
+        font-size: 12px;
+    }
+
+    .calendar-icon {
+        max-height: 18px;
+        max-width: 18px;
+    }
+}
+
+
+/* Master and System filters */
+
+
+.filters {
+    display: flex;
+    gap: 15px;
+    justify-content: left;
+    margin: 20px 0;
+    margin-top: 15px;
+}
+
+@media (max-width: 850px) {
+
+    .filters {
+        justify-content: center;
+    }
+}
+
+
+
+.filters select {
+    width: 145px;
+    height: 30px;
+    padding: 5px 10px;
+    font-size: 15px;
+    color: #7c7c7c;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.filters select:hover {
+    border-color: #0078d4;
+    box-shadow: 0 2px 6px rgba(0, 120, 212, 0.2);
+}
+
+.filters select:focus {
+    border-color: #0056a4;
+    box-shadow: 0 2px 8px rgba(0, 86, 164, 0.3);
+    outline: none;
+}
+
+
+/* Date filter */
+
+#date-picker {
+    /* Скидання стилів браузера */
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    box-sizing: border-box;
+
+    width: 145px;
+    height: 30px;
+    padding: 5px 10px;
+    font-size: 15px;
+    line-height: 1.2;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+#date-picker:hover {
+    border-color: #0078d4;
+    box-shadow: 0 2px 6px rgba(0, 120, 212, 0.2);
+}
+
+#date-picker:focus {
+    border-color: #0056a4;
+    box-shadow: 0 2px 8px rgba(0, 86, 164, 0.3);
+    outline: none;
+}
+
+#date-picker::placeholder {
+    color: #7c7c7c;
+}
+
+/* Скидання для Firefox */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    display: none;
+}
+
+@media (max-width: 605px) {
+    .filters {
+        flex-direction: column;
+    }
+
+    #date-picker,
+    #master-filter,
+    #system-filter {
+        width: 90%;
     }
 }
 
@@ -1190,7 +2004,7 @@ p {
 }
 
 .contact-section button:hover {
-    background-color: #e5671b;
+    background-color: #b43339;
 }
 
 @media (max-width: 1000px) {
@@ -1308,7 +2122,7 @@ p {
 }
 
 .contacts a:hover {
-    color: #e5671b;
+    color: #b43339;
 }
 
 .contacts span {
@@ -1331,7 +2145,7 @@ p {
 }
 
 .social-link svg:hover {
-    fill: #e5671b;
+    fill: #b43339;
 }
 
 .all-rights {
@@ -1339,6 +2153,7 @@ p {
     color: #00000088;
     font-weight: 400;
 }
+
 
 @media (max-width: 900px) {
 
@@ -1383,7 +2198,6 @@ p {
 }
 
 
-
 @media (max-width: 360px) {
 
     iframe {
@@ -1409,4 +2223,208 @@ p {
     .social-icons {
         margin-top: 0;
     }
+}
+
+
+/* ************************************************** Huhy-Men for Footer ********************************************* */
+
+
+.huhy-footer-photos {
+    position: relative;
+    margin-top: 20px;
+}
+
+/* тут щось зроби з шириною і висотою, бо вони на розмір фото при зменшенні впливають */
+.huhy-footer-photos img {
+    position: absolute;
+    width: 10%;
+    max-width: 80px;
+    min-width: 50px;
+    height: auto;
+    object-fit: cover;
+}
+
+
+/* max-width: 900px ----------- from row to column */
+
+
+/* #1 верхній хухі зліва */
+.huhy-footer-photos img:nth-child(1) {
+    left: 15%;
+    top: 20%;
+}
+
+/* #2 нижній хухі справа */
+.huhy-footer-photos img:nth-child(2) {
+    right: 5%;
+    top: 27vh;
+}
+
+/* #3 нижній хухі справа */
+/* .huhy-footer-photos img:nth-child(3) {
+    left: 140px;
+    bottom: -260px;
+} */
+
+/* #4 плоский хухі, з верхнього лівого боку */
+/* .huhy-footer-photos img:nth-child(4) {
+    left: 240px;
+    bottom: -20px;
+} */
+
+/* #5 плоский хухі, з верхнього лівого боку */
+/* .huhy-footer-photos img:nth-child(5) {
+    left: 500px;
+    bottom: -60px;
+    transform: rotate(70deg);
+} */
+
+
+@media (max-width: 900px) {}
+
+
+/* Адаптація для малих екранів */
+/* @media (max-width: 768px) {
+    .huhy-footer-photos img {
+        width: 15%;
+        max-width: 60px;
+    }
+
+    .huhy-footer-photos img:nth-child(1) {
+        left: 10%;
+        top: 10%;
+    }
+
+    .huhy-footer-photos img:nth-child(2) {
+        right: 10%;
+        top: 40%;
+    }
+
+    .huhy-footer-photos img:nth-child(3) {
+        left: 20%;
+        bottom: 20%;
+    }
+
+    .huhy-footer-photos img:nth-child(4) {
+        left: 30%;
+        bottom: 30%;
+    }
+
+    .huhy-footer-photos img:nth-child(5) {
+        left: 40%;
+        bottom: 40%;
+    }
+} */
+
+
+/* Центрування контенту */
+.confirmation-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 70vh;
+    padding: 20px;
+}
+
+.container {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.confirmation-message {
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    padding: 40px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.confirmation-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.confirmation-text {
+    font-size: 18px;
+    color: #555;
+    margin-bottom: 30px;
+}
+
+.confirmation-btn {
+    display: inline-block;
+    padding: 12px 24px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #024853;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.confirmation-btn:hover {
+    background-color: #024853;
+}
+
+
+
+
+/* CSS для сторінки листівки */
+.postcard-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 70vh;
+    padding: 20px;
+}
+
+.container {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.postcard-message {
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    padding: 40px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.postcard-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.postcard-text {
+    font-size: 18px;
+    color: #555;
+    margin-bottom: 30px;
+}
+
+.postcard-contact {
+    font-size: 16px;
+    color: #777;
+}
+
+
+
+.button {
+    display: inline-block;
+    padding: 8px 12px;
+    margin: 4px 0;
+    background-color: #007bff;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.button:hover {
+    background-color: #0056b3;
 }

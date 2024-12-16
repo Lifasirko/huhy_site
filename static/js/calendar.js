@@ -1,20 +1,17 @@
 document.addEventListener('DOMContentLoaded', () => {
     const selectors = {
-        prevMonthBtn: 'prev-month',
-        nextMonthBtn: 'next-month',
-        todayBtn: 'today',
-        currentMonthSpan: 'current-month',
-        eventList: 'event-list',
-        showMoreBtn: 'show-more-btn',
+        calendarEvents: 'calendar-events',
         eventsUrl: 'events-url',
-        showPastEventsBtn: 'show-past-events',
-        eventPopup: 'event-popup',
-        overlay: 'overlay',
-        popupEventTitle: 'popup-event-title',
-        popupEventTime: 'popup-event-time',
-        popupEventDescription: 'popup-event-description',
-        closePopupBtn: '.close-popup'
+        prevBtn: 'prev-btn',
+        nextBtn: 'next-btn',
+        datePicker: 'date-picker',
+        masterFilter: 'master-filter',
+        systemFilter: 'system-filter',
     };
+
+    let currentPage = 1;
+    const eventsPerPage = 3;
+    let allEvents = [];
 
     const elements = {};
     Object.keys(selectors).forEach(key => {
@@ -22,159 +19,195 @@ document.addEventListener('DOMContentLoaded', () => {
         elements[key] = document.getElementById(selector) || document.querySelector(selector);
     });
 
-    const monthNames = [
-        "Січень", "Лютий", "Березень", "Квітень", "Травень", "Червень", 
-        "Липень", "Серпень", "Вересень", "Жовтень", "Листопад", "Грудень"
-    ];
-    const weekdays = ['Нд', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
+    function fetchEvents() {
+        const date = elements.datePicker.value;
+        const master = elements.masterFilter.value;
+        const system = elements.systemFilter.value;
 
-    let currentDate = new Date();
-    let allDayBlocks = [];
-    const VISIBLE_DAYS = 15;
+        // Додаємо фільтри до URL запиту
+        const url = new URL(elements.eventsUrl.dataset.url, window.location.origin);
+        url.searchParams.append('page', currentPage);
+        url.searchParams.append('limit', eventsPerPage);
+        if (date) url.searchParams.append('date', date);
+        if (master) url.searchParams.append('master', master);
+        if (system) url.searchParams.append('system', system);
+        console.log("Fetching events with URL:", url.toString());  // Додано для відладки
 
-    const formatDate = dateString => {
-        const date = new Date(dateString);
-        return `${weekdays[date.getDay()]}<br>${date.getDate()}`;
-    };
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                console.log("Fetched events:", data);  // Додано для відладки
+                allEvents = data.events;
+                renderEvents();
+                updateButtonStates(data.has_more);
+            })
+            .catch(error => console.error('Error fetching events:', error));
+    }
 
-    const formatTime = timeString => timeString.split('T')[1].substring(0, 5);
+    // Завантаження унікальних значень для майстрів і систем
+    function loadFilters() {
+        fetch('/api/filters/')
+            .then(response => response.json())
+            .then(data => {
+                populateFilter(elements.masterFilter, data.masters, 'Майстер');
+                populateFilter(elements.systemFilter, data.systems, 'Система');
+            })
+            .catch(error => console.error('Error fetching filters:', error));
+    }
 
-    const groupEventsByDate = events => events.reduce((acc, event) => {
-        const date = event.start.split('T')[0];
-        acc[date] = acc[date] || [];
-        acc[date].push(event);
-        return acc;
-    }, {});
-
-    const showEventPopup = event => {
-        elements.popupEventTitle.textContent = event.summary;
-        elements.popupEventTime.textContent = `${formatTime(event.start)} - ${formatTime(event.end)}`;
-        elements.popupEventDescription.textContent = event.description || 'Опис відсутній';
-        elements.eventPopup.style.display = 'block';
-        elements.overlay.style.display = 'block';
-    };
-
-    const closeEventPopup = () => {
-        elements.eventPopup.style.display = 'none';
-        elements.overlay.style.display = 'none';
-    };
-
-    const updateCalendar = date => {
-        const year = date.getFullYear();
-        const month = date.getMonth() + 1;
-    
-        elements.currentMonthSpan.textContent = `${monthNames[date.getMonth()]} ${year}`;
-        elements.eventList.innerHTML = '';
-    
-        try {
-            const xhr = new XMLHttpRequest();
-            xhr.open('GET', `${elements.eventsUrl.dataset.url}?year=${year}&month=${month}`, false); // false makes it synchronous
-            xhr.send();
-    
-            if (xhr.status === 200) {
-                const data = JSON.parse(xhr.responseText);
-    
-                if (data.events?.length > 0) {
-                    const today = new Date().toISOString().split('T')[0];
-                    const currentYear = new Date().getFullYear();
-                    const currentMonth = new Date().getMonth() + 1;
-                    const eventsByDate = groupEventsByDate(data.events);
-
-                    let visibleDays = 0;
-                    let hasPastEvents = false;
-    
-                    allDayBlocks = [];
-    
-                    Object.entries(eventsByDate).forEach(([date, events]) => {
-                        const dayBlock = document.createElement('div');
-                        dayBlock.className = `day-block ${date === today ? 'current-day' : ''} ${date < today && currentMonth == month && currentYear == year ? 'past-events' : ''}`;
-                        
-                        if (date < today && currentMonth == month && currentYear == year) hasPastEvents = true;
-    
-                        dayBlock.innerHTML = `
-                            <div class="day-date">${formatDate(date)}</div>
-                            <div class="day-events">
-                                ${events.map(event => `
-                                    <div class="event-item">
-                                        <div class="event-title">${event.summary}</div>
-                                        <div class="event-time">${formatTime(event.start)} - ${formatTime(event.end)}</div>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        `;
-    
-                        dayBlock.querySelectorAll('.event-item').forEach((item, index) => {
-                            item.addEventListener('click', () => showEventPopup(events[index]));
-                        });
-    
-                        if (visibleDays < VISIBLE_DAYS) {
-                            elements.eventList.appendChild(dayBlock);
-                        } else {
-                            dayBlock.style.display = 'none';
-                            allDayBlocks.push(dayBlock);
-                        }
-    
-                        visibleDays++;
-                    });
-
-                    elements.showMoreBtn.textContent = allDayBlocks.length > 0 ? 'Показати ще' : '';
-                    elements.showMoreBtn.style.display = allDayBlocks.length > 0 ? 'block' : 'none';
-    
-                    if (hasPastEvents) {
-                        elements.showPastEventsBtn.style.display = 'inline-block';
-                        elements.showPastEventsBtn.textContent = 'Показати минулі події';
-                        elements.showPastEventsBtn.onclick = () => {
-                            const pastEvents = document.querySelectorAll('.past-events');
-                            pastEvents.forEach(event => event.style.display = 'flex');
-                            elements.showPastEventsBtn.textContent = '';
-                        };
-                    } else {
-                        elements.showPastEventsBtn.style.display = 'none';
-                    }
-    
-                } else {
-                    elements.eventList.innerHTML = '<p>Немає подій</p>';
-                    elements.showPastEventsBtn.style.display = 'none';
-                    elements.showMoreBtn.style.display = 'none'
-                }
-            } else {
-                elements.eventList.innerHTML = '<p>Помилка завантаження подій</p>';
-                elements.showPastEventsBtn.style.display = 'none';
-                elements.showMoreBtn.style.display = 'none';
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            elements.eventList.innerHTML = '<p>Помилка завантаження подій</p>';
-            elements.showPastEventsBtn.style.display = 'none';
-            elements.showMoreBtn.style.display = 'none';
-        }
-    };
-    
-    elements.closePopupBtn.addEventListener('click', closeEventPopup);
-    elements.overlay.addEventListener('click', closeEventPopup);
-
-    elements.prevMonthBtn.addEventListener('click', () => {
-        currentDate.setMonth(currentDate.getMonth() - 1);
-        updateCalendar(currentDate);
-    });
-
-    elements.nextMonthBtn.addEventListener('click', () => {
-        currentDate.setMonth(currentDate.getMonth() + 1);
-        updateCalendar(currentDate);
-    });
-
-    elements.todayBtn.addEventListener('click', () => {
-        currentDate = new Date();
-        updateCalendar(currentDate);
-    });
-
-    elements.showMoreBtn.addEventListener('click', () => {
-        allDayBlocks.splice(0, VISIBLE_DAYS).forEach(dayBlock => {
-            dayBlock.style.display = 'flex';
-            elements.eventList.appendChild(dayBlock);
+    // Заповнення випадаючого списку унікальними значеннями з назвою поля як перше значення
+    function populateFilter(selectElement, options, placeholder) {
+        selectElement.innerHTML = `<option value="">${placeholder}</option>`;
+        options.forEach(option => {
+            const opt = document.createElement('option');
+            opt.value = option;
+            opt.textContent = option;
+            selectElement.appendChild(opt);
         });
-        if (!allDayBlocks.length) elements.showMoreBtn.style.display = 'none';
+    }
+
+    function parseEventDescription(summary, description) {
+        // Регулярні вирази для витягування полів
+        const summaryRegex = /^(.+?)(?:\s*[.-]\s*(?:Кімната\s.*\s)?)?[Мм]айстер\s(.+)$/;  // Витягуємо майстра та назву гри
+        const freeSeatsRegex = /Вільні місця:\s(\d+)/;  // Витягуємо вільні місця
+        const costRegex = /(?:[Вв]артість\s*:?\s*)(\d+(?:\s*[\wа-яА-Я]+)*)(?=\s*Щоб записатись|$)/;  // Витягуємо вартість
+        const locationRegex = /(лісові|печерні|степові)\s*хухи/i;
+
+        const gameMatch = summary.match(summaryRegex);
+        const freeSeatsMatch = description.match(freeSeatsRegex);
+        const costMatch = description.match(costRegex);
+        const locationMatch = summary.match(locationRegex);
+
+        // Парсинг результатів
+        const master = gameMatch ? gameMatch[2] : '—';
+        const game = gameMatch ? gameMatch[1].slice(0, 21) : 'Вільна кімната';
+        const freeSeats = freeSeatsMatch ? parseInt(freeSeatsMatch[1], 10) : null;
+        const cost = costMatch ? costMatch[1] : '—';
+        const totalSeats = 5;
+        const bookedSeatsText = freeSeats !== null ? `${totalSeats - freeSeats}/${totalSeats} місць заброньовані` : '—';
+
+        // Determine location
+        const location = locationMatch
+            ? `${locationMatch[1][0].toUpperCase()}${locationMatch[1].slice(1).toLowerCase()} Хухи`
+            : 'Онлайн партія';
+
+        return {
+            game,
+            master,
+            freeSeats,
+            cost,
+            bookedSeatsText,
+            location,
+            remainingDescription: description.split("Щоб записатись")[0].trim(),
+        };
+    }
+
+    function renderEvents() {
+        const carouselContainer = elements.calendarEvents;
+        carouselContainer.innerHTML = '';
+
+        const images = {
+            'підземелля': "../static/images/calendar_pics/dd.png",
+            'star': "../static/images/calendar_pics/sw.jpg",
+            'вільна': "../static/images/calendar_pics/free_chamber.png",
+            'coriolis': "../static/images/calendar_pics/coriolis_edit.jpg",
+            'vampire': "../static/images/calendar_pics/vampire.jpg",
+            'vessen': "../static/images/calendar_pics/vessen.jpg",
+            'warhammer': "../static/images/calendar_pics/warhammer.jpg"
+        };
+
+        const defaultImage = "../static/images/calendar_pics/slay.png"; // Заглушка, якщо зображення немає
+
+        allEvents.forEach(event => {
+            const startDateTime = new Date(event.start);
+            const endDateTime = new Date(event.end);
+
+            // Формат дня, дати і часу
+            const dayOfWeek = startDateTime.toLocaleDateString('uk-UA', { weekday: 'long' });
+            const formattedDate = startDateTime.toLocaleDateString('uk-UA', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+            const formattedTime = startDateTime.toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' });
+            const fullDateDisplay = `${dayOfWeek.charAt(0).toUpperCase() + dayOfWeek.slice(1)} | ${formattedDate} | ${formattedTime}`;
+
+            const parsedDescription = parseEventDescription(event.summary, event.description || '');
+
+            // Пошук відповідного зображення
+            let gameImage = defaultImage;
+            for (const key in images) {
+                if (parsedDescription.game.toLowerCase().includes(key)) {
+                    gameImage = images[key];
+                    break;
+                }
+            }
+
+            const eventImage = event.image_url || gameImage;
+
+            const eventCard = document.createElement('div');
+            eventCard.className = 'event-card';
+            eventCard.innerHTML = `
+                <img class="calendar-imgs" src="${gameImage}" alt="${parsedDescription.game}" class="event-image">
+                <div class="event-card-content">
+                    <h3><span>${event.summary}</span></h3>
+                    <span class="game-name">${parsedDescription.game}</span>
+
+                    <div class="master-div">
+                        <img class="calendar-icon" src="../static/images/calendar_icons/school.png">
+                        <span class="span-for-icons">Майстер: ${parsedDescription.master}</span>
+                    </div>
+
+                    <div class="master-div">
+                        <img class="calendar-icon" src="../static/images/calendar_icons/calendar.png">
+                        <span class="span-for-icons">${fullDateDisplay}</span>
+                    </div>
+
+                    <div class="master-div">
+                        <img class="calendar-icon" src="../static/images/calendar_icons/profit.png">
+                        <span class="span-for-icons">${parsedDescription.cost}</span>
+                    </div>
+
+                    <div class="master-div">
+                        <img class="calendar-icon" src="../static/images/calendar_icons/group.png">
+                        <span class="span-for-icons">${parsedDescription.bookedSeatsText}</span>
+                    </div>
+
+                    <div class="master-div">
+                        <img class="calendar-icon" src="../static/images/calendar_icons/location.png">
+                        <span class="span-for-icons">${parsedDescription.location}</span>
+                    </div>
+                </div>
+                <div class="telegram-button-container">
+                    <a href="https://t.me/hyhu_space" class="sign-up" target="_blank">Записатись на гру</a>
+                </div> 
+            `;
+            carouselContainer.appendChild(eventCard);
+        });
+    }
+
+    function updateButtonStates(hasMore) {
+        elements.prevBtn.disabled = currentPage === 1;
+        elements.nextBtn.disabled = !hasMore;
+    }
+
+    // Додаємо обробники подій для фільтрів
+    elements.datePicker.addEventListener('change', fetchEvents);
+    elements.masterFilter.addEventListener('change', fetchEvents);
+    elements.systemFilter.addEventListener('change', fetchEvents);
+
+    elements.prevBtn.addEventListener('click', () => {
+        if (currentPage > 1) {
+            currentPage--;
+            fetchEvents();
+        }
     });
 
-    updateCalendar(currentDate);
+    elements.nextBtn.addEventListener('click', () => {
+        currentPage++;
+        fetchEvents();
+    });
+
+    loadFilters();
+    fetchEvents();
 });
