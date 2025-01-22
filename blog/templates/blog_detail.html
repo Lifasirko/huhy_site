@@ -1,0 +1,14 @@
+<article>
+    <img src="{{ post.main_image.url }}" alt="{{ post.title }}">
+    <h1>{{ post.title }}</h1>
+    <p>{{ post.published_date|date:"d M Y" }} — Автор: {{ post.author }}</p>
+    <div>{{ post.content|safe }}</div>
+</article>
+<h3>Схожі статті:</h3>
+<div>
+    {% for related_post in related_posts %}
+    <div>
+        <a href="{{ related_post.slug }}">{{ related_post.title }}</a>
+    </div>
+    {% endfor %}
+</div>

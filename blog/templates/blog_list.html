@@ -1,0 +1,8 @@
+{% for post in posts %}
+<article>
+    <img src="{{ post.main_image.url }}" alt="{{ post.title }}">
+    <h2><a href="{{ post.slug }}">{{ post.title }}</a></h2>
+    <p>{{ post.published_date|date:"d M Y" }} — Автор: {{ post.author }}</p>
+    <p>{{ post.content|truncatechars:200 }}</p>
+</article>
+{% endfor %}

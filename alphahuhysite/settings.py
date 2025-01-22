@@ -24,7 +24,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 GOOGLE_CALENDAR_API_KEY = env('GOOGLE_CALENDAR_API_KEY')
 CALENDAR_ID = env('CALENDAR_ID')
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
@@ -48,7 +47,6 @@ CSRF_TRUSTED_ORIGINS = [
     'https://www.huhy.space',
 ]
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -60,6 +58,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'base',
+    'blog',
 ]
 
 MIDDLEWARE = [
@@ -92,7 +91,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'alphahuhysite.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
@@ -106,7 +104,6 @@ DATABASES = {
         'PORT': '5432',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -126,7 +123,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
@@ -137,7 +133,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
