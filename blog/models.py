@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils.text import slugify
-
+from django.utils.timezone import now
 
 class BlogPost(models.Model):
     title = models.CharField(max_length=200, unique=True, verbose_name="Заголовок")
@@ -8,7 +8,7 @@ class BlogPost(models.Model):
     content = models.TextField(verbose_name="Контент")
     main_image = models.ImageField(upload_to='blog/main_images/', verbose_name="Головне зображення")
     author = models.CharField(max_length=100, verbose_name="Автор")
-    published_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата публікації")
+    published_date = models.DateTimeField(default=now, verbose_name="Дата публікації")
     tags = models.ManyToManyField('Tag', blank=True, verbose_name="Теги")
 
     def save(self, *args, **kwargs):

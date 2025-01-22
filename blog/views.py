@@ -6,15 +6,24 @@ from .models import BlogPost, Tag
 def blog_list(request):
     posts = BlogPost.objects.all()
     tags = Tag.objects.all()
-    search_query = request.GET.get('q', '')
-    selected_tag = request.GET.get('tag', '')
 
+    # Пошук за назвою
+    search_query = request.GET.get('q', '').strip()
     if search_query:
         posts = posts.filter(title__icontains=search_query)
-    if selected_tag:
-        posts = posts.filter(tags__slug=selected_tag)
 
-    return render(request, 'blog_list.html', {'posts': posts, 'tags': tags})
+    # Фільтрація за тегами
+    selected_tag_slug = request.GET.get('tag', '').strip()
+    if selected_tag_slug:
+        posts = posts.filter(tags__slug=selected_tag_slug)
+
+    return render(request, 'blog_list.html', {
+        'posts': posts,
+        'tags': tags,
+        'search_query': search_query,
+        'selected_tag_slug': selected_tag_slug,
+    })
+
 
 
 def blog_detail(request, slug):
