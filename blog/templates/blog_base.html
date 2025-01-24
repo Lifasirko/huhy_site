@@ -1,0 +1,25 @@
+{% extends "base/base.html" %}
+
+{% block title %}Блог{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Додаткові стилі для блогу */
+    body {
+        background-color: #f5f5f5;
+        color: #333;
+    }
+    article img {
+        border-radius: 5px;
+        margin-bottom: 15px;
+    }
+    .tags ul {
+        display: flex;
+        gap: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    {% block blog_content %}{% endblock %}
+{% endblock %}
