@@ -1,25 +1,111 @@
-{% extends "base/base.html" %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Блог{% endblock %}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        header {
+            margin-bottom: 20px;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            width: 80%;
+            max-width: 500px;
+            margin-right: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .tags {
+            margin-bottom: 20px;
+        }
+        .tags ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            gap: 10px;
+        }
+        .tags li {
+            margin: 0;
+        }
+        .tags a {
+            padding: 5px 10px;
+            background-color: #e0e0e0;
+            color: #333;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .tags a.active {
+            background-color: #007bff;
+            color: #fff;
+        }
+        article {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            padding: 20px;
+        }
+        article img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        article h2 {
+            margin-top: 0;
+        }
+        article a {
+            text-decoration: none;
+            color: #007bff;
+        }
+        article a:hover {
+            text-decoration: underline;
+        }
+        article p {
+            margin: 5px 0;
+        }
+        .no-results {
+            text-align: center;
+            color: #777;
+            font-size: 18px;
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
 
-{% block title %}Блог{% endblock %}
+    <!-- Header -->
+    {% include "base/header.html" %}
 
-{% block extra_css %}
-<style>
-    /* Додаткові стилі для блогу */
-    body {
-        background-color: #f5f5f5;
-        color: #333;
-    }
-    article img {
-        border-radius: 5px;
-        margin-bottom: 15px;
-    }
-    .tags ul {
-        display: flex;
-        gap: 10px;
-    }
-</style>
-{% endblock %}
+    <!-- Main Content -->
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
 
-{% block content %}
-    {% block blog_content %}{% endblock %}
-{% endblock %}
+    <!-- Footer -->
+    {% include "base/footer.html" %}
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
