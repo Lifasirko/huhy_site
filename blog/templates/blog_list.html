@@ -3,46 +3,69 @@
 {% block title %}Список статей{% endblock %}
 
 {% block content %}
-    <header>
-        <h1>Блог</h1>
-    </header>
+<header style="margin-top: 60px; text-align: center;">
+    <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">Блог</h1>
+</header>
 
-    <!-- Пошук -->
-    <form method="get">
-        <input type="text" name="q" value="{{ search_query }}" placeholder="Пошук за назвою...">
-        <button type="submit">Шукати</button>
-    </form>
+<!-- Пошук -->
+<form method="get" style="display: flex; justify-content: center; margin-bottom: 2rem;">
+    <input type="text" name="q" value="{{ search_query }}" placeholder="Пошук за назвою..." style="padding: 8px; font-size: 1rem; width: 40%; max-width: 300px; border: 1px solid #ccc; border-radius: 5px;">
+    <button type="submit" style="padding: 8px 15px; margin-left: 10px; font-size: 1rem; background-color: #007bff; color: #fff; border: none; border-radius: 5px; cursor: pointer;">Шукати</button>
+</form>
 
-    <!-- Фільтрація за тегами -->
-    <div class="tags">
-        <h4>Фільтрація за тегами:</h4>
-        <ul>
-            <li><a href="?" class="{% if not selected_tag_slug %}active{% endif %}">Всі</a></li>
+<!-- Фільтрація за тегами -->
+<div class="tags" style="margin-bottom: 2rem; text-align: center;">
+    <h4 style="margin-bottom: 1rem;">Фільтрація за тегами:</h4>
+    <details>
+        <summary style="cursor: pointer; font-size: 1rem;">Показати/Сховати теги</summary>
+        <ul style="list-style: none; padding: 10px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+            <li><a href="?" class="{% if not selected_tag_slug %}active{% endif %}" style="padding: 5px 15px; background-color: #e0e0e0; border-radius: 5px; text-decoration: none;">Всі</a></li>
             {% for tag in tags %}
             <li>
-                <a href="?tag={{ tag.slug }}" class="{% if tag.slug == selected_tag_slug %}active{% endif %}">
-                    {{ tag.name }}
-                </a>
+                <a href="?tag={{ tag.slug }}" class="{% if tag.slug == selected_tag_slug %}active{% endif %}" style="padding: 5px 15px; background-color: {% if tag.slug == selected_tag_slug %}#007bff; color: #fff;{% else %}#e0e0e0;{% endif %}; border-radius: 5px; text-decoration: none;">{{ tag.name }}</a>
             </li>
             {% endfor %}
         </ul>
-    </div>
+    </details>
+</div>
 
-    <!-- Відображення статей -->
+<!-- Відображення статей -->
+<div style="display: flex; flex-direction: column; gap: 40px; align-items: center;">
     {% for post in posts %}
-    <article>
+    <article style="width: 80%; max-width: 80%; max-height: 40%; background-color: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); text-align: center;">
+        <!-- Назва статті -->
+        <h2 style="font-size: 1.5rem; margin-bottom: 10px;">
+            <a href="{% url 'blog_detail' slug=post.slug %}" style="text-decoration: none; color: #333;">{{ post.title }}</a>
+        </h2>
+
+        <!-- Картинка -->
         {% if post.main_image %}
-            <div style="width: 66%; margin: 0 auto;">
-                <img src="{{ post.main_image.url }}" alt="{{ post.title }}" style="width: 100%; height: auto; aspect-ratio: 16/9; object-fit: cover;">
-            </div>
+        <a href="{% url 'blog_detail' slug=post.slug %}">
+            <img src="{{ post.main_image.url }}" alt="{{ post.title }}" style="width: 100%; height: auto; max-height: 80%; aspect-ratio: 16/9; object-fit: cover; border-radius: 15px; margin-bottom: 15px;">
+        </a>
         {% endif %}
-        <h2><a href="{% url 'blog_detail' slug=post.slug %}">{{ post.title }}</a></h2>
-        <p>{{ post.published_date|date:"d M Y" }} — Автор: {{ post.author }}</p>
-        <p>{{ post.content|truncatechars:200 }}</p>
+
+        <!-- Автор і дата -->
+        <p style="font-size: 0.9rem; color: #555; margin-bottom: 20px;">Автор: {{ post.author }} | {{ post.published_date|date:"d M Y" }}</p>
+
+        <!-- Текст -->
+        <p style="margin: 10px 0; font-size: 1rem; line-height: 1.5;">{{ post.content|truncatechars:300 }}</p>
+
+        <!-- Теги -->
+        <div class="tags" style="margin-top: 15px;">
+            <ul style="list-style: none; padding: 0; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+                {% for tag in post.tags.all %}
+                <li>
+                    <a href="?tag={{ tag.slug }}" style="padding: 5px 10px; background-color: #e0e0e0; border-radius: 5px; text-decoration: none;">{{ tag.name }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
     </article>
     {% empty %}
-    <div class="no-results">
+    <div class="no-results" style="text-align: center; font-size: 1.2rem; color: #777;">
         <p>Немає статей за вашим запитом.</p>
     </div>
     {% endfor %}
+</div>
 {% endblock %}
