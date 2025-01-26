@@ -80,6 +80,19 @@ body {
     color: #b43339;
 }
 
+.hover-link a {
+    text-decoration: none;
+    font-size: 18px;
+    color: beige;
+    font-weight: 700;
+    padding: 5px 10px;
+    transition: color 0.3s ease;
+}
+
+.hover-link a:hover {
+    color: #b43339;
+}
+
 /* Іконка меню для мал. екран. (спочатку прихована) */
 .menu-icon {
     display: none;

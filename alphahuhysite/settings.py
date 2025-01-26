@@ -57,8 +57,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'django.contrib.sitemaps',
+    'debug_toolbar',
+
     'base',
     'blog',
+
+    'meta',
 ]
 
 MIDDLEWARE = [
@@ -69,6 +74,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'alphahuhysite.urls'
@@ -150,3 +157,9 @@ AUTH_USER_MODEL = 'base.CustomUser'
 TELEGRAM_ADMIN_IDS = env.list('TELEGRAM_ADMIN_IDS')
 TGBOT_TOKEN = env('TGBOT_TOKEN')
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+    }
+}

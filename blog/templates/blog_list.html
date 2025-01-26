@@ -1,10 +1,22 @@
 {% extends "blog_base.html" %}
 
+{% block extra_css %}
+<meta name="description" content="Читайте останні статті на нашому блозі: корисна інформація, цікаві факти та новини.">
+<meta name="keywords" content="блог, статті, новини, цікавинки, поради">
+<meta name="author" content="Huhy Space">
+<meta name="robots" content="index, follow">
+<meta property="og:title" content="Список статей | Huhy Space">
+<meta property="og:description" content="Читайте останні статті на нашому блозі: корисна інформація, цікаві факти та новини.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ request.build_absolute_uri }}">
+<meta name="twitter:card" content="summary">
+{% endblock %}
+
 {% block title %}Список статей{% endblock %}
 
 {% block content %}
-<header style="margin-top: 60px; text-align: center;">
-    <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">Блог</h1>
+<header style="margin-top: 80px; text-align: center;">
+    <h1 style="font-size: 2.5rem; margin-bottom: 1.5rem;">Блог</h1>
 </header>
 
 <!-- Пошук -->
@@ -32,7 +44,7 @@
 <!-- Відображення статей -->
 <div style="display: flex; flex-direction: column; gap: 40px; align-items: center;">
     {% for post in posts %}
-    <article style="width: 80%; max-width: 80%; max-height: 40%; background-color: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); text-align: center;">
+    <article style="width: 80%; max-width: 1200px; max-height: 70vw; height: 70%; background-color: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); text-align: center;">
         <!-- Назва статті -->
         <h2 style="font-size: 1.5rem; margin-bottom: 10px;">
             <a href="{% url 'blog_detail' slug=post.slug %}" style="text-decoration: none; color: #333;">{{ post.title }}</a>
@@ -41,12 +53,12 @@
         <!-- Картинка -->
         {% if post.main_image %}
         <a href="{% url 'blog_detail' slug=post.slug %}">
-            <img src="{{ post.main_image.url }}" alt="{{ post.title }}" style="width: 100%; height: auto; max-height: 80%; aspect-ratio: 16/9; object-fit: cover; border-radius: 15px; margin-bottom: 15px;">
+            <img src="{{ post.main_image.url }}" alt="{{ post.title }}" style="width: 100%; max-height: 40vh; height: auto; object-fit: cover; border-radius: 15px; margin-bottom: 15px;">
         </a>
         {% endif %}
 
         <!-- Автор і дата -->
-        <p style="font-size: 0.9rem; color: #555; margin-bottom: 20px;">Автор: {{ post.author }} | {{ post.published_date|date:"d M Y" }}</p>
+        <p style="font-size: 0.9rem; color: #555; margin-bottom: 20px;">Автор: {{ post.author }} | {{ post.published_date|date:"d.m.Y" }}</p>
 
         <!-- Текст -->
         <p style="margin: 10px 0; font-size: 1rem; line-height: 1.5;">{{ post.content|truncatechars:300 }}</p>

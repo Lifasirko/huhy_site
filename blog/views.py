@@ -1,10 +1,12 @@
 from django.shortcuts import render, get_object_or_404
 
 from .models import BlogPost, Tag
+from django.views.decorators.cache import cache_page
 
-
+@cache_page(60 * 15)  # Кешування на 15 хвилин
 def blog_list(request):
-    posts = BlogPost.objects.all()
+    # posts = BlogPost.objects.all()
+    posts = BlogPost.objects.prefetch_related('tags').all()
     tags = Tag.objects.all()
 
     # Пошук за назвою
@@ -25,7 +27,7 @@ def blog_list(request):
     })
 
 
-
+@cache_page(60 * 15)  # Кешування на 15 хвилин
 def blog_detail(request, slug):
     post = get_object_or_404(BlogPost, slug=slug)
     related_posts = BlogPost.objects.filter(tags__in=post.tags.all()).exclude(id=post.id)[:5]

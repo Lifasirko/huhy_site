@@ -1,11 +1,18 @@
 <!DOCTYPE html>
 <html lang="uk">
-
+    {% load static %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Головна | Huhy Space</title>
-    {% load static %}
+    <meta name="description" content="Huhy Space — це простір для настільних ігор, творчості та відпочинку. Зіграйте в улюблені ігри, розкрийте свій творчий потенціал і насолоджуйтесь затишком.">
+    <meta name="keywords" content="настільні ігри, творчість, відпочинок, Huhy Space, D&D, Warhammer, майстер-класи, 3D друк">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Головна | Huhy Space">
+    <meta property="og:description" content="Huhy Space — це простір для настільних ігор, творчості та відпочинку. Зіграйте в улюблені ігри, розкрийте свій творчий потенціал і насолоджуйтесь затишком.">
+    <meta property="og:image" content="{% static 'images/banner.jpg' %}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta name="twitter:card" content="summary_large_image">
     <link rel="shortcut icon" type="image/jpg" href="{% static 'images/favicon.jpg' %}" />
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
@@ -225,7 +232,7 @@
 {#                    <button type="button" id="tomorrow-btn" style="padding: 5px 10px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer;">Завтра</button>#}
 {#                </div>#}
             </div>
-    
+
             <select id="master-filter">
                 <option value="">Майстер</option>
             </select>
@@ -233,29 +240,29 @@
                 <option value="">Система</option>
             </select>
         </div>
-    
+
         <div class="pagination-container">
-    
+
             <div id="calendar-events">
                 <div class="event-card">
                 </div>
             </div>
-    
+
         </div>
         <div class="button-container">
             <button id="prev-btn" disabled>←</button>
             <button id="next-btn">→</button>
         </div>
-    
+
         <span id="events-url" data-url="{% url 'events_api' %}"></span>
-    
+
     </section>
-    
+
     <!-- Підключення Flatpickr -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/uk.js"></script>
-    
+
     <script>
         // Ініціалізація Flatpickr з українською локалізацією
         const datePicker = flatpickr("#date-picker", {
@@ -263,13 +270,13 @@
             dateFormat: "Y-m-d",
             locale: "uk", // Установка локалізації на українську
         });
-    
+
         // Кнопка "Сьогодні"
         document.getElementById("today-btn").addEventListener("click", () => {
             const today = new Date().toISOString().split('T')[0];
             datePicker.setDate(today);
         });
-    
+
         // Кнопка "Завтра"
         document.getElementById("tomorrow-btn").addEventListener("click", () => {
             const tomorrow = new Date();
