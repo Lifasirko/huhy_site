@@ -1,27 +1,17 @@
-<!-- templates/postcard_detail.html -->
-<!DOCTYPE html>
-<html lang="uk">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ postcard.title }}</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-</head>
+{% extends "base/base.html" %}
 
-<body>
-    {% include 'base/header.html' %}
+{% load static %}
 
-    <main class="postcard-content">
-        <div class="container">
-            <div class="postcard-message">
-                <h1 class="postcard-title">{{ postcard.title }}</h1>
-                <p class="postcard-text">{{ postcard.content }}</p>
-<!--                <p class="postcard-contact">Для додаткової інформації телефонуйте: {{ postcard.contact_number }}</p>-->
-            </div>
+{% block title %}{{ postcard.title }}{% endblock %}
+
+{% block content %}
+<main class="postcard-content">
+    <div class="container">
+        <div class="postcard-message">
+            <h1 class="postcard-title">{{ postcard.title }}</h1>
+            <p class="postcard-text">{{ postcard.content }}</p>
+            <!-- <p class="postcard-contact">Для додаткової інформації телефонуйте: {{ postcard.contact_number }}</p> -->
         </div>
-    </main>
-
-    {% include 'base/footer.html' %}
-</body>
-</html>
+    </div>
+</main>
+{% endblock %}

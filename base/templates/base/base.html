@@ -1,34 +1,35 @@
 <!DOCTYPE html>
 <html lang="uk">
+{% load static %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Сайт{% endblock %}</title>
-    
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2QHHH09R2W"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-2QHHH09R2W');
-    </script>
-
+    <meta name="description" content="{% block meta_description %}Huhy Space — простір для настільних ігор, творчості та відпочинку.{% endblock %}">
+    <meta name="keywords" content="{% block meta_keywords %}настільні ігри, творчість, відпочинок, Huhy Space, D&D, Warhammer{% endblock %}">
+    <meta name="robots" content="{% block meta_robots %}index, follow{% endblock %}">
+    <meta property="og:title" content="{% block og_title %}Huhy Space{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}Huhy Space — простір для настільних ігор, творчості та відпочинку.{% endblock %}">
+    <meta property="og:image" content="{% static 'images/banner.jpg' %}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{% block og_url %}{{ request.build_absolute_uri }}{% endblock %}">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="shortcut icon" type="image/jpg" href="{% static 'images/favicon.jpg' %}" />
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <title>{% block title %}Huhy Space{% endblock %}</title>
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <!-- Header -->
+    <!-- Шапка -->
     {% include "base/header.html" %}
 
-    <!-- Main Content -->
+    <!-- Основний контент -->
     <main>
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Footer -->
+    <!-- Підвал -->
     {% include "base/footer.html" %}
 
-    {% block extra_js %}{% endblock %}
+
 </body>
 </html>

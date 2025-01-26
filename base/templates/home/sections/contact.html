@@ -1,0 +1,29 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+<!-- Секція "Альфа-Фоточки з текстом" -->
+    <section class="image-grid">
+        <div class="image-item">
+            <img src="{% static 'images/dice.png' %}" alt="Image 1">
+            <p class="image-text">Зіграй у НРІ та настілки!</p>
+        </div>
+        <div class="image-item">
+            <img src="{% static 'images/threads.png' %}" alt="Image 2">
+            <p class="image-text">Твори на майстеркласі!</p>
+        </div>
+        <div class="image-item">
+            <img src="{% static 'images/book-plant.png' %}" alt="Image 3">
+            <p class="image-text">Відпочивай від навколишнього світу!</p>
+        </div>
+    </section>
+    <section id="contact" class="contact-section">
+        <h2>Лишилися питання, хочеш щоб ми зв'язалися і <br>розповіли більше? Лиши контакти:)</h2>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Відправити</button>
+        </form>
+    </section>
+
+    <!-- НЕ ВИДАЛЯТИ! Можливо ще знадобиться -->
+    <!-- <input placeholder="Ім'я" type="text" id="name" name="name" required> -->
+    <!-- <input placeholder="Телефон" type="tel" id="phone" name="phone" required> -->

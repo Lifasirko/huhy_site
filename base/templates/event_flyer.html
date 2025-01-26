@@ -1,32 +1,27 @@
-<!-- templates/event_flyer.html -->
-<!DOCTYPE html>
-<html lang="uk">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ event.title }} | Flyer</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-</head>
-<body>
-    <div class="flyer-container">
-        <header class="flyer-header">
-            <h1>{{ event.title }}</h1>
-            <p class="flyer-date">{{ event.date|date:"d.m.Y" }} о {{ event.time|date:"H:i" }}</p>
-        </header>
+{% extends "base/base.html" %}
 
-        <section class="flyer-content">
-            <img src="{{ event.image.url }}" alt="{{ event.title }}" class="flyer-image">
-            <p class="flyer-description">{{ event.description }}</p>
-            <p class="flyer-location"><strong>Місце проведення:</strong> {{ event.location }}</p>
-            <p class="flyer-price"><strong>Вартість:</strong> {{ event.price }} грн</p>
-        </section>
+{% load static %}
 
-        <footer class="flyer-footer">
-            <p>Контакти для запису: <a href="tel:+380993696969">099-369-69-69</a></p>
-            <p>Організатор: ХУХИ Space</p>
-            <a href="https://www.huhy.space" class="flyer-link">www.huhy.space</a>
-        </footer>
-    </div>
-</body>
-</html>
+{% block title %}{{ event.title }} | Flyer{% endblock %}
+
+{% block content %}
+<div class="flyer-container">
+    <header class="flyer-header">
+        <h1>{{ event.title }}</h1>
+        <p class="flyer-date">{{ event.date|date:"d.m.Y" }} о {{ event.time|date:"H:i" }}</p>
+    </header>
+
+    <section class="flyer-content">
+        <img src="{{ event.image.url }}" alt="{{ event.title }}" class="flyer-image">
+        <p class="flyer-description">{{ event.description }}</p>
+        <p class="flyer-location"><strong>Місце проведення:</strong> {{ event.location }}</p>
+        <p class="flyer-price"><strong>Вартість:</strong> {{ event.price }} грн</p>
+    </section>
+
+    <footer class="flyer-footer">
+        <p>Контакти для запису: <a href="tel:+380993696969">099-369-69-69</a></p>
+        <p>Організатор: ХУХИ Space</p>
+        <a href="https://www.huhy.space" class="flyer-link">www.huhy.space</a>
+    </footer>
+</div>
+{% endblock %}
