@@ -16,6 +16,17 @@
     <link rel="shortcut icon" type="image/jpg" href="{% static 'images/favicon.jpg' %}" />
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <title>{% block title %}Huhy Space{% endblock %}</title>
+    
+        <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2QHHH09R2W"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-2QHHH09R2W');
+    </script>
+    
     {% block extra_css %}{% endblock %}
 </head>
 <body>
@@ -30,6 +41,11 @@
     <!-- Підвал -->
     {% include "base/footer.html" %}
 
+    <!-- Загальні скрипти -->
+    <script src="{% static 'js/header.js' %}"></script>
+    <script src="{% static 'js/carousel.js' %}"></script>
+    <script src="{% static 'js/calendar.js' %}"></script>
+    {% block extra_js %}{% endblock %}
 
 </body>
 </html>
