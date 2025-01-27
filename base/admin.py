@@ -1,4 +1,8 @@
+import os
+
+from django.conf import settings
 from django.contrib import admin
+from django.core.management import call_command
 from django.http import HttpResponse
 from django.urls import path
 
@@ -7,6 +11,7 @@ from .models import Banner, RPG, AboutUs, Event, ContactFormSubmission, Footer, 
 
 class CustomUserAdmin(admin.ModelAdmin):
     list_display = ('username', 'email')
+
 
 @admin.register(Postcard)
 class PostcardAdmin(admin.ModelAdmin):
@@ -31,11 +36,35 @@ class PostcardAdmin(admin.ModelAdmin):
         return response
 
 
+class ExportDBAdmin(admin.ModelAdmin):
+    change_list_template = "admin/export_db.html"
+
+    def export_db(self, request):
+        # Створення резервної копії
+        backup_dir = os.path.join(settings.BASE_DIR, 'backups')
+        os.makedirs(backup_dir, exist_ok=True)
+
+        file_path = os.path.join(backup_dir, 'backup.json')
+        with open(file_path, 'w', encoding='utf-8') as backup_file:
+            call_command('dumpdata', indent=2, stdout=backup_file)
+
+        # Завантаження файлу
+        with open(file_path, 'rb') as file:
+            response = HttpResponse(file, content_type='application/json')
+            response['Content-Disposition'] = f'attachment; filename="backup.json"'
+            return response
+
+
+@admin.register(Banner, RPG, AboutUs, Event, ContactFormSubmission, Footer, Form)
+class GeneralAdmin(ExportDBAdmin):
+    pass
+
+
 admin.site.register(CustomUser, CustomUserAdmin)
-admin.site.register(Form)
-admin.site.register(Banner)
-admin.site.register(RPG)
-admin.site.register(AboutUs)
-admin.site.register(Event)
-admin.site.register(ContactFormSubmission)
-admin.site.register(Footer)
+# admin.site.register(Form)
+# admin.site.register(Banner)
+# admin.site.register(RPG)
+# admin.site.register(AboutUs)
+# admin.site.register(Event)
+# admin.site.register(ContactFormSubmission)
+# admin.site.register(Footer)
