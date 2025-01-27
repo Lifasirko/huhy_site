@@ -1,8 +1,9 @@
 {% extends "admin/change_list.html" %}
 
 {% block object-tools %}
-{{ block.super }}
-<li>
-    <a href="{% url 'admin:postcard_import' %}" class="button">Імпорт</a>
-</li>
+
+    <div class="object-tools">
+        {{ block.super }}
+        <a href="{% url 'admin:postcard_import' %}" class="button">Імпорт</a>
+    </div>
 {% endblock %}

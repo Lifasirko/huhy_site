@@ -59,6 +59,7 @@ INSTALLED_APPS = [
 
     'django.contrib.sitemaps',
     'debug_toolbar',
+    'import_export',
 
     'base',
     'blog',
