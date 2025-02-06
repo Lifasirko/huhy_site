@@ -166,3 +166,4 @@ cython_debug/
 
 # Visual Studio Code settings folder
 .vscode
+/blog/main_images/

@@ -1,5 +1,5 @@
 {% extends "blog_base.html" %}
-
+{% load static %}
 {% block extra_css %}
 <meta name="description" content="Читайте останні статті на нашому блозі: корисна інформація, цікаві факти та новини.">
 <meta name="keywords" content="блог, статті, новини, цікавинки, поради">
@@ -16,30 +16,48 @@
 
 {% block content %}
 <header style="margin-top: 80px; text-align: center;">
-    <h1 style="font-size: 2.5rem; margin-bottom: 1.5rem;">Блог</h1>
+    <h1 style="font-size: 2.5rem; margin-bottom: 1.5rem; font-family: 'Beer-Money', sans-serif;">Блог</h1>
 </header>
 
-<!-- Пошук -->
-<form method="get" style="display: flex; justify-content: center; margin-bottom: 2rem;">
-    <input type="text" name="q" value="{{ search_query }}" placeholder="Пошук за назвою..." style="padding: 8px; font-size: 1rem; width: 40%; max-width: 300px; border: 1px solid #ccc; border-radius: 5px;">
-    <button type="submit" style="padding: 8px 15px; margin-left: 10px; font-size: 1rem; background-color: #007bff; color: #fff; border: none; border-radius: 5px; cursor: pointer;">Шукати</button>
-</form>
+<!-- Блок фільтрації та пошуку -->
+<div class="filter-container" style="margin-bottom: 2rem; text-align: center;">
+    <details style="display: inline-block;">
+        <summary style="cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; gap: 8px; justify-content: center;">
+            <span>⚙️ Фільтри</span>
+        </summary>
 
-<!-- Фільтрація за тегами -->
-<div class="tags" style="margin-bottom: 2rem; text-align: center;">
-    <h4 style="margin-bottom: 1rem;">Фільтрація за тегами:</h4>
-    <details>
-        <summary style="cursor: pointer; font-size: 1rem;">Показати/Сховати теги</summary>
-        <ul style="list-style: none; padding: 10px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
-            <li><a href="?" class="{% if not selected_tag_slug %}active{% endif %}" style="padding: 5px 15px; background-color: #e0e0e0; border-radius: 5px; text-decoration: none;">Всі</a></li>
-            {% for tag in tags %}
-            <li>
-                <a href="?tag={{ tag.slug }}" class="{% if tag.slug == selected_tag_slug %}active{% endif %}" style="padding: 5px 15px; background-color: {% if tag.slug == selected_tag_slug %}#007bff; color: #fff;{% else %}#e0e0e0;{% endif %}; border-radius: 5px; text-decoration: none;">{{ tag.name }}</a>
-            </li>
-            {% endfor %}
-        </ul>
+        <div style="padding: 15px; border: 1px solid #ddd; border-radius: 5px; margin-top: 10px; display: inline-block;">
+
+            <!-- Пошук -->
+            <form method="get" style="display: flex; justify-content: center; align-items: center; gap: 10px;">
+                <input type="text" name="q" value="{{ search_query }}" placeholder="Пошук за назвою..."
+                    style="padding: 8px; font-size: 1rem; width: 40%; max-width: 300px; border: 1px solid #ccc; border-radius: 5px;">
+                <button type="submit" style="background: none; border: none; cursor: pointer;">
+                    🔍
+                </button>
+            </form>
+
+            <!-- Фільтрація за тегами -->
+            <ul style="list-style: none; padding: 10px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 10px;">
+                <li>
+                    <a href="?" class="{% if not selected_tag_slug %}active{% endif %}"
+                        style="padding: 5px 15px; background-color: #e0e0e0; border-radius: 5px; text-decoration: none;">
+                        Всі
+                    </a>
+                </li>
+                {% for tag in tags %}
+                <li>
+                    <a href="?tag={{ tag.slug }}" class="{% if tag.slug == selected_tag_slug %}active{% endif %}"
+                        style="padding: 5px 15px; background-color: {% if tag.slug == selected_tag_slug %}#007bff; color: #fff;{% else %}#e0e0e0;{% endif %}; border-radius: 5px; text-decoration: none;">
+                        {{ tag.name }}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
     </details>
 </div>
+
 
 <!-- Відображення статей -->
 <div style="display: flex; flex-direction: column; gap: 40px; align-items: center;">
@@ -61,7 +79,7 @@
         <p style="font-size: 0.9rem; color: #555; margin-bottom: 20px;">Автор: {{ post.author }} | {{ post.published_date|date:"d.m.Y" }}</p>
 
         <!-- Текст -->
-        <p style="margin: 10px 0; font-size: 1rem; line-height: 1.5;">{{ post.content|truncatechars:300 }}</p>
+        <p style="margin: 10px 0; font-size: 1rem; line-height: 1.5;">{{ post.content|truncatewords:40|striptags }}</p>
 
         <!-- Теги -->
         <div class="tags" style="margin-top: 15px;">
