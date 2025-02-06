@@ -9,7 +9,7 @@
     <div class="container">
         <div class="postcard-message">
             <h1 class="postcard-title">{{ postcard.title }}</h1>
-            <p class="postcard-text">{{ postcard.content }}</p>
+            <p class="postcard-text">{{ postcard.content|safe }}</p>
             <!-- <p class="postcard-contact">Для додаткової інформації телефонуйте: {{ postcard.contact_number }}</p> -->
         </div>
     </div>

@@ -17,6 +17,7 @@ google-api-python-client = "^2.145.0"
 qrcode = {extras = ["pil"], version = "^8.0"}
 svgwrite = "^1.4.3"
 django-import-export = "^4.3.4"
+django-ckeditor = "^6.7.2"
 
 
 [build-system]

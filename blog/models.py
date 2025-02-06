@@ -1,3 +1,4 @@
+from ckeditor.fields import RichTextField
 from django.db import models
 from django.utils.text import slugify
 from django.utils.timezone import now
@@ -9,7 +10,7 @@ from django.urls import reverse
 class BlogPost(models.Model):
     title = models.CharField(max_length=200, unique=True, verbose_name="Заголовок")
     slug = models.SlugField(max_length=200, unique=True, blank=True, verbose_name="URL")
-    content = models.TextField(verbose_name="Контент")
+    content = RichTextField(verbose_name="Контент")
     main_image = models.ImageField(upload_to='blog/main_images/', verbose_name="Головне зображення")
     main_image_thumbnail = ImageSpecField(
         source='main_image',

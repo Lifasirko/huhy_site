@@ -2,6 +2,7 @@ from io import BytesIO, StringIO
 
 import qrcode
 import svgwrite
+from ckeditor.fields import RichTextField
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
@@ -101,7 +102,7 @@ class Form(models.Model):
 class Postcard(models.Model):
     name = models.CharField(max_length=200)
     title = models.CharField(max_length=200, verbose_name="Назва")
-    content = models.TextField(verbose_name="Текст")
+    content = RichTextField(verbose_name="Текст")
 
     def get_absolute_url(self):
         # Додаємо https://, якщо його немає у базовому URL

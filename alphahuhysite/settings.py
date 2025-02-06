@@ -65,6 +65,9 @@ INSTALLED_APPS = [
     'blog',
 
     'meta',
+
+    'ckeditor',
+    'ckeditor_uploader',
 ]
 
 MIDDLEWARE = [
@@ -163,4 +166,19 @@ CACHES = {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
         'LOCATION': 'unique-snowflake',
     }
+}
+
+CKEDITOR_UPLOAD_PATH = "uploads/"
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',
+        'height': 300,
+        'width': 'auto',
+        'extraPlugins': ','.join([
+            'codesnippet',  # Для вставки коду
+            'image2',       # Покращене управління зображеннями
+        ]),
+    },
 }

@@ -388,6 +388,21 @@ argon2 = ["argon2-cffi (>=19.1.0)"]
 bcrypt = ["bcrypt"]
 
 [[package]]
+name = "django-ckeditor"
+version = "6.7.2"
+description = "Django admin CKEditor integration."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "django_ckeditor-6.7.2-py3-none-any.whl", hash = "sha256:2b3f147ce21eba861db481683e9a4639c11f0ad1f0d37c179003ef07f9eb65a4"},
+    {file = "django_ckeditor-6.7.2.tar.gz", hash = "sha256:a66be4f0ca13924d756e4930260144b31df4164eae8b942ca610f4313df00d5f"},
+]
+
+[package.dependencies]
+Django = ">=3.2"
+django-js-asset = ">=2.0"
+
+[[package]]
 name = "django-import-export"
 version = "4.3.4"
 description = "Django application and library for importing and exporting data with included admin integration."
@@ -413,6 +428,23 @@ tests = ["chardet (==5.2.0)", "coverage (==7.6.4)", "django-extensions (==3.2.3)
 xls = ["tablib[xls]"]
 xlsx = ["tablib[xlsx]"]
 yaml = ["tablib[yaml]"]
+
+[[package]]
+name = "django-js-asset"
+version = "3.0.1"
+description = "script tag with additional attributes for django.forms.Media"
+optional = false
+python-versions = ">=3.10"
+files = [
+    {file = "django_js_asset-3.0.1-py3-none-any.whl", hash = "sha256:0b7ee73c45ca65cccbcc2f60cbe8fbc87ff133b543c282cb64fe6c13d7ca4c10"},
+    {file = "django_js_asset-3.0.1.tar.gz", hash = "sha256:5ad51814edf38d28e6280e6ecad50ee40551363a2f6a6bfe93577dee793dc378"},
+]
+
+[package.dependencies]
+django = ">=4.2"
+
+[package.extras]
+tests = ["coverage"]
 
 [[package]]
 name = "environs"
@@ -1461,4 +1493,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "b4b1650178af6f82fcbdaa43b66d8108cea8836a95168bd733a7139d44132918"
+content-hash = "3d304b801df44c2bbc8e34c0659a5ddc35919411883799c620ad5a535876e38d"
