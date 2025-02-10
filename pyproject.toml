@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "alphahuhysite"
-version = "0.1.0"
+version = "2.1.0"
 description = ""
 authors = ["Amolit <MikeKukPer@gmail.com>"]
 readme = "README.md"
@@ -18,6 +18,9 @@ qrcode = {extras = ["pil"], version = "^8.0"}
 svgwrite = "^1.4.3"
 django-import-export = "^4.3.4"
 django-ckeditor = "^6.7.2"
+django-debug-toolbar = "^5.0.1"
+django-meta = "^2.4.2"
+django-imagekit = "^5.0.0"
 
 
 [build-system]
