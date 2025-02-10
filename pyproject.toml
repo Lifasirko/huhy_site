@@ -21,6 +21,7 @@ django-ckeditor = "^6.7.2"
 django-debug-toolbar = "^5.0.1"
 django-meta = "^2.4.2"
 django-imagekit = "^5.0.0"
+django-js-asset = "^3.0.1"
 
 
 [build-system]
