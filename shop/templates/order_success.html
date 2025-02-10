@@ -1,0 +1,14 @@
+{% extends "base_shop.html" %}
+{% load static %}
+
+{% block title %}Замовлення успішно оформлено{% endblock %}
+
+{% block content %}
+<div class="max-w-screen-2xl mx-auto py-10 px-4 lg:px-8 text-center">
+  <h1 class="text-3xl font-bold mb-6">Дякуємо за ваше замовлення!</h1>
+  <p class="text-lg mb-4">Ваше замовлення успішно оформлено.</p>
+  <a href="{% url 'shop:shop_home' %}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
+    Повернутися до магазину
+  </a>
+</div>
+{% endblock %}

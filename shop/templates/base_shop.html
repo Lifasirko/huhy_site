@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="uk">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{% block meta_description %}Huhy Space — простір для настільних ігор, творчості та відпочинку.{% endblock %}">
+    <meta name="keywords" content="{% block meta_keywords %}настільні ігри, творчість, відпочинок, Huhy Space, D&D, Warhammer{% endblock %}">
+    <meta name="robots" content="{% block meta_robots %}index, follow{% endblock %}">
+    <meta property="og:title" content="{% block og_title %}Huhy Space{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}Huhy Space — простір для настільних ігор, творчості та відпочинку.{% endblock %}">
+    <meta property="og:image" content="{% static 'images/banner.jpg' %}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{% block og_url %}{{ request.build_absolute_uri }}{% endblock %}">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="shortcut icon" type="image/jpg" href="{% static 'images/favicon.jpg' %}" />
+
+    <!-- Підключення TailwindCSS через CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Додаткові стилі або налаштування Tailwind (опційно) -->
+    {% block extra_css %}{% endblock %}
+
+    <title>{% block title %}Huhy Space{% endblock %}</title>
+</head>
+<body class="bg-gray-100 text-gray-800">
+    <!-- Використовуємо окремий магазинний хедер -->
+    {% include "shop_header.html" %}
+
+    <!-- Основний контент -->
+    <main>
+        <header style="margin-top: 80px; text-align: center;">
+            <h1 style="font-size: 2.5rem; margin-bottom: 1.5rem; font-family: 'Beer-Money', sans-serif;">Крамниця</h1>
+        </header>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Підвал із стандартного файлу -->
+    {% include "base/footer.html" %}
+
+    <!-- Загальні скрипти -->
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

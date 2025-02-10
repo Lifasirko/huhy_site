@@ -1,0 +1,38 @@
+{% extends "base_shop.html" %}
+{% load static %}
+
+{% block title %}Головна | Huhy Shop{% endblock %}
+
+{% block content %}
+<div class="max-w-screen-2xl mx-auto py-10 px-4 lg:px-8">
+  <p class="mb-8 text-lg text-gray-700">Ознайомтеся з нашими рекомендованими товарами:</p>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    {% for product in featured_products %}
+    <div class="bg-white rounded-lg shadow hover:shadow-2xl transition overflow-hidden">
+      <a href="{% url 'shop:product_detail' slug=product.slug %}">
+        <div class="w-full h-64 overflow-hidden">
+          <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'images/placeholder.png' %}{% endif %}" alt="{{ product.name }}" class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
+        </div>
+      </a>
+      <div class="p-4">
+        <h3 class="text-xl font-bold text-gray-800 truncate">
+          <a href="{% url 'shop:product_detail' slug=product.slug %}">{{ product.name }}</a>
+        </h3>
+        <p class="mt-2 text-2xl text-green-600 font-semibold">{{ product.price }} грн</p>
+        <!-- Форма для додавання товару до кошика -->
+        <form method="post" action="{% url 'shop:cart' %}" class="mt-4">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="add">
+          <input type="hidden" name="product_id" value="{{ product.id }}">
+          <button type="submit" class="w-full bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition">
+            Купити
+          </button>
+        </form>
+      </div>
+    </div>
+    {% empty %}
+    <p class="text-center text-gray-500">Немає рекомендованих товарів.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

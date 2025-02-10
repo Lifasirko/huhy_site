@@ -1,101 +1,188 @@
 {% extends "blog_base.html" %}
 {% load static %}
+
 {% block extra_css %}
-<meta name="description" content="Читайте останні статті на нашому блозі: корисна інформація, цікаві факти та новини.">
-<meta name="keywords" content="блог, статті, новини, цікавинки, поради">
-<meta name="author" content="Huhy Space">
-<meta name="robots" content="index, follow">
-<meta property="og:title" content="Список статей | Huhy Space">
-<meta property="og:description" content="Читайте останні статті на нашому блозі: корисна інформація, цікаві факти та новини.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="{{ request.build_absolute_uri }}">
-<meta name="twitter:card" content="summary">
+  <meta name="description" content="Читайте останні статті на нашому блозі: корисна інформація, цікаві факти та новини.">
+  <meta name="keywords" content="блог, статті, новини, цікавинки, поради">
+  <meta name="author" content="Huhy Space">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="Список статей | Huhy Space">
+  <meta property="og:description" content="Читайте останні статті на нашому блозі: корисна інформація, цікаві факти та новини.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="{{ request.build_absolute_uri }}">
+  <meta name="twitter:card" content="summary">
+  <!-- Важливий мета-тег для адаптивності -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    /* Контейнер для списку статей */
+    .article-list {
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+      align-items: center;
+      padding: 0 10px;
+    }
+
+    /* Стилізація картки статті */
+    .blog-card {
+      width: 90%;
+      max-width: 1200px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    .blog-card h2 {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+
+    .blog-card h2 a {
+      text-decoration: none;
+      color: #333;
+    }
+
+    /* Зображення в картці */
+    .card-image {
+      width: 100%;
+      height: auto;
+      max-height: 40vh;
+      object-fit: cover;
+      border-radius: 15px;
+      margin-bottom: 15px;
+    }
+
+    /* Інформація про автора та дату */
+    .card-meta {
+      font-size: 0.9rem;
+      color: #555;
+      margin-bottom: 20px;
+    }
+
+    /* Текст статті */
+    .card-content {
+      margin: 10px 0;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    /* Список тегів */
+    .card-tags ul {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin: 0;
+    }
+
+    .card-tags li a {
+      padding: 5px 10px;
+      background-color: #e0e0e0;
+      border-radius: 5px;
+      text-decoration: none;
+    }
+
+    /* Адаптивність для мобільних пристроїв */
+    @media (max-width: 768px) {
+      .blog-card {
+        padding: 15px;
+      }
+      .blog-card h2 {
+        font-size: 1.3rem;
+      }
+      .card-meta {
+        font-size: 0.8rem;
+      }
+      .card-content {
+        font-size: 0.95rem;
+      }
+      .card-image {
+        max-height: 30vh;
+      }
+    }
+  </style>
 {% endblock %}
 
 {% block title %}Список статей{% endblock %}
 
 {% block content %}
-<header style="margin-top: 80px; text-align: center;">
-    <h1 style="font-size: 2.5rem; margin-bottom: 1.5rem; font-family: 'Beer-Money', sans-serif;">Блог</h1>
-</header>
+  <header style="margin-top: 80px; text-align: center;">
+    <h1 style="font-family: 'Beer-Money', sans-serif; font-size: 2.5rem; margin-bottom: 1.5rem;">Блог</h1>
+  </header>
 
-<!-- Блок фільтрації та пошуку -->
-<div class="filter-container" style="margin-bottom: 2rem; text-align: center;">
+  <!-- Блок фільтрації та пошуку (залишаємо без змін або теж адаптуємо при потребі) -->
+  <div class="filter-container" style="margin-bottom: 2rem; text-align: center;">
     <details style="display: inline-block;">
-        <summary style="cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; gap: 8px; justify-content: center;">
-            <span>⚙️ Фільтри</span>
-        </summary>
-
-        <div style="padding: 15px; border: 1px solid #ddd; border-radius: 5px; margin-top: 10px; display: inline-block;">
-
-            <!-- Пошук -->
-            <form method="get" style="display: flex; justify-content: center; align-items: center; gap: 10px;">
-                <input type="text" name="q" value="{{ search_query }}" placeholder="Пошук за назвою..."
-                    style="padding: 8px; font-size: 1rem; width: 40%; max-width: 300px; border: 1px solid #ccc; border-radius: 5px;">
-                <button type="submit" style="background: none; border: none; cursor: pointer;">
-                    🔍
-                </button>
-            </form>
-
-            <!-- Фільтрація за тегами -->
-            <ul style="list-style: none; padding: 10px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 10px;">
-                <li>
-                    <a href="?" class="{% if not selected_tag_slug %}active{% endif %}"
-                        style="padding: 5px 15px; background-color: #e0e0e0; border-radius: 5px; text-decoration: none;">
-                        Всі
-                    </a>
-                </li>
-                {% for tag in tags %}
-                <li>
-                    <a href="?tag={{ tag.slug }}" class="{% if tag.slug == selected_tag_slug %}active{% endif %}"
-                        style="padding: 5px 15px; background-color: {% if tag.slug == selected_tag_slug %}#007bff; color: #fff;{% else %}#e0e0e0;{% endif %}; border-radius: 5px; text-decoration: none;">
-                        {{ tag.name }}
-                    </a>
-                </li>
-                {% endfor %}
-            </ul>
-        </div>
+      <summary style="cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; gap: 8px; justify-content: center;">
+        <span>⚙️ Фільтри</span>
+      </summary>
+      <div style="padding: 15px; border: 1px solid #ddd; border-radius: 5px; margin-top: 10px; display: inline-block;">
+        <!-- Пошук -->
+        <form method="get" style="display: flex; justify-content: center; align-items: center; gap: 10px;">
+          <input type="text" name="q" value="{{ search_query }}" placeholder="Пошук за назвою..."
+                 style="padding: 8px; font-size: 1rem; width: 40%; max-width: 300px; border: 1px solid #ccc; border-radius: 5px;">
+          <button type="submit" style="background: none; border: none; cursor: pointer;">🔍</button>
+        </form>
+        <!-- Фільтрація за тегами -->
+        <ul style="list-style: none; padding: 10px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 10px;">
+          <li>
+            <a href="?" class="{% if not selected_tag_slug %}active{% endif %}"
+               style="padding: 5px 15px; background-color: #e0e0e0; border-radius: 5px; text-decoration: none;">Всі</a>
+          </li>
+          {% for tag in tags %}
+            <li>
+              <a href="?tag={{ tag.slug }}" class="{% if tag.slug == selected_tag_slug %}active{% endif %}"
+                 style="padding: 5px 15px; background-color: {% if tag.slug == selected_tag_slug %}#007bff; color: #fff;{% else %}#e0e0e0;{% endif %} border-radius: 5px; text-decoration: none;">
+                {{ tag.name }}
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
     </details>
-</div>
+  </div>
 
-
-<!-- Відображення статей -->
-<div style="display: flex; flex-direction: column; gap: 40px; align-items: center;">
+  <!-- Відображення статей -->
+  <div class="article-list">
     {% for post in posts %}
-    <article style="width: 80%; max-width: 1200px; max-height: 70vw; height: 70%; background-color: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); text-align: center;">
+      <article class="blog-card">
         <!-- Назва статті -->
-        <h2 style="font-size: 1.5rem; margin-bottom: 10px;">
-            <a href="{% url 'blog_detail' slug=post.slug %}" style="text-decoration: none; color: #333;">{{ post.title }}</a>
-        </h2>
+        <h2><a href="{% url 'blog_detail' slug=post.slug %}">{{ post.title }}</a></h2>
 
         <!-- Картинка -->
         {% if post.main_image %}
-        <a href="{% url 'blog_detail' slug=post.slug %}">
-            <img src="{{ post.main_image.url }}" alt="{{ post.title }}" style="width: 100%; max-height: 40vh; height: auto; object-fit: cover; border-radius: 15px; margin-bottom: 15px;">
-        </a>
+          <a href="{% url 'blog_detail' slug=post.slug %}">
+            <img src="{{ post.main_image.url }}" alt="{{ post.title }}" class="card-image">
+          </a>
         {% endif %}
 
         <!-- Автор і дата -->
-        <p style="font-size: 0.9rem; color: #555; margin-bottom: 20px;">Автор: {{ post.author }} | {{ post.published_date|date:"d.m.Y" }}</p>
+        <p class="card-meta">Автор: {{ post.author }} | {{ post.published_date|date:"d.m.Y" }}</p>
 
         <!-- Текст -->
-        <p style="margin: 10px 0; font-size: 1rem; line-height: 1.5;">{{ post.content|truncatewords:40|striptags }}</p>
+        <p class="card-content">{{ post.content|truncatewords:40|safe }}</p>
 
         <!-- Теги -->
-        <div class="tags" style="margin-top: 15px;">
-            <ul style="list-style: none; padding: 0; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
-                {% for tag in post.tags.all %}
-                <li>
-                    <a href="?tag={{ tag.slug }}" style="padding: 5px 10px; background-color: #e0e0e0; border-radius: 5px; text-decoration: none;">{{ tag.name }}</a>
-                </li>
-                {% endfor %}
-            </ul>
+        <div class="card-tags">
+          <ul>
+            {% for tag in post.tags.all %}
+              <li>
+                <a href="?tag={{ tag.slug }}">{{ tag.name }}</a>
+              </li>
+            {% endfor %}
+          </ul>
         </div>
-    </article>
+      </article>
     {% empty %}
-    <div class="no-results" style="text-align: center; font-size: 1.2rem; color: #777;">
+      <div class="no-results" style="text-align: center; font-size: 1.2rem; color: #777;">
         <p>Немає статей за вашим запитом.</p>
-    </div>
+      </div>
     {% endfor %}
-</div>
+  </div>
 {% endblock %}

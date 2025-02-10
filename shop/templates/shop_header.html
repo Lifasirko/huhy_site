@@ -1,4 +1,3 @@
-<!-- base/header.html -->
 {% load static %}
 <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 <header id="SITE_HEADER" class="SITE_HEADER">
@@ -9,11 +8,12 @@
         <a href="{% url 'blog_list' %}" style="font-size: 18px; color: beige; font-weight: 700; padding: 5px 10px; transition: color 0.3s ease;" class="hover-link">Блог</a>
         <a href="{% url 'shop:shop_home' %}" style="font-size: 18px; color: beige; font-weight: 700; padding: 5px 10px; transition: color 0.3s ease;" class="hover-link">Крамниця</a>
 
+        <!-- Меню для магазину -->
         <ul class="nav-links" id="nav-links">
-            <li><a href="#games">Ігри</a></li>
-            <li><a href="#about">Про нас</a></li>
-            <li><a href="#calendar">Календар</a></li>
-            <li><a href="https://t.me/hyhu_space" target="_blank">Записатись</a></li>
+            <li><a href="{% url 'shop:shop_home' %}">Головна</a></li>
+            <li><a href="{% url 'shop:catalog' %}">Каталог</a></li>
+            <li><a href="{% url 'shop:cart' %}">Кошик</a></li>
+            <li><a href="{% url 'shop:personal_cabinet' %}">Особистий кабінет</a></li>
         </ul>
         <div class="menu-icon" onclick="toggleMenu()">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">

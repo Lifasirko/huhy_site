@@ -21,6 +21,7 @@ env.read_env()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Google Calendar API Settings
 GOOGLE_CALENDAR_API_KEY = env('GOOGLE_CALENDAR_API_KEY')
 CALENDAR_ID = env('CALENDAR_ID')
 
@@ -28,10 +29,11 @@ CALENDAR_ID = env('CALENDAR_ID')
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-)97#k+w379b@m2ax5dz2*o!_&*al*duwg)51-a^$ci97e2cr21'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+# DEBUG = env.bool('DEBUG', default=False)
 
 ALLOWED_HOSTS = ['annoyed-jaquenette-stark-industries-jarvis-6e5d8fa2.koyeb.app',
                  'tall-beaver-olena-c12ee0c3.koyeb.app',
@@ -41,7 +43,7 @@ ALLOWED_HOSTS = ['annoyed-jaquenette-stark-industries-jarvis-6e5d8fa2.koyeb.app'
                  'huhy.space',
                  'www.huhy.space']
 
-SITE_URL = "huhy.space"
+SITE_URL = env('SITE_URL', default="localhost")
 CSRF_TRUSTED_ORIGINS = [
     'https://huhy.space',
     'https://www.huhy.space',
@@ -63,6 +65,7 @@ INSTALLED_APPS = [
 
     'base',
     'blog',
+    'shop',
 
     'meta',
 
@@ -108,11 +111,11 @@ WSGI_APPLICATION = 'alphahuhysite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'huhysitedb',
-        'USER': 'amol',
-        'PASSWORD': 'mypassword',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': env('DB_NAME'),
+        'USER': env('DB_USER'),
+        'PASSWORD': env('DB_PASSWORD'),
+        'HOST': env('DB_HOST'),
+        'PORT': env('DB_PORT'),
     }
 }
 
@@ -150,6 +153,8 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static"), ]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -169,8 +174,10 @@ CACHES = {
 }
 
 CKEDITOR_UPLOAD_PATH = "uploads/"
-MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
+
+# MEDIA_URL = "/media/"
+# MEDIA_ROOT = BASE_DIR / "media"
+
 CKEDITOR_CONFIGS = {
     'default': {
         'toolbar': 'full',

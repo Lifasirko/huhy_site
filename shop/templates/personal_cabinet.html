@@ -1,0 +1,25 @@
+{% extends "base_shop.html" %}
+{% load static %}
+
+{% block title %}Особистий кабінет | Huhy Shop{% endblock %}
+
+{% block content %}
+<div class="max-w-screen-2xl mx-auto py-10 px-4 lg:px-8">
+  <h1 class="text-3xl font-bold mb-6">Особистий кабінет</h1>
+  <h2 class="text-2xl font-semibold mb-4">Історія замовлень</h2>
+  {% if orders %}
+  <div class="space-y-6">
+    {% for order in orders %}
+    <div class="bg-white rounded-lg shadow p-6">
+      <p class="font-semibold">Замовлення #{{ order.id }}</p>
+      <p>Статус: {{ order.get_status_display }}</p>
+      <p>Дата: {{ order.created|date:"d.m.Y H:i" }}</p>
+      <a href="#" class="text-blue-600 underline">Деталі замовлення</a>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="text-center text-gray-500">Ви ще не зробили жодного замовлення.</p>
+  {% endif %}
+</div>
+{% endblock %}

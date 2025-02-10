@@ -1,0 +1,106 @@
+{% extends "base_shop.html" %}
+{% load static %}
+{% load querystring_tags %}
+
+{% block title %}Каталог товарів | Huhy Shop{% endblock %}
+
+{% block content %}
+<!-- Використовуємо контейнер з максимальною шириною екрану (до 1536px) з додатковими відступами -->
+<div class="max-w-screen-2xl mx-auto py-10 px-4 lg:px-8">
+  <div class="flex flex-col lg:flex-row gap-8">
+    <!-- Бічна панель з фільтрами та пошуком -->
+    <aside class="w-full lg:w-1/4 bg-white rounded-lg shadow-lg p-6">
+      <h2 class="text-2xl font-semibold mb-6 text-gray-800">Фільтри</h2>
+      <form method="GET" action="{% url 'shop:catalog' %}" class="space-y-5">
+        <!-- Пошук -->
+        <div>
+          <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Пошук</label>
+          <input type="text" name="q" id="search" placeholder="Введіть назву товару" class="block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <!-- Категорії -->
+        <div>
+          <label for="category" class="block text-sm font-medium text-gray-700 mb-1">Категорії</label>
+          <select name="category" id="category" class="block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="">Всі категорії</option>
+            {% for cat in categories %}
+              <option value="{{ cat.slug }}" {% if selected_category == cat.slug %}selected{% endif %}>{{ cat.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <!-- Діапазон цін -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Ціна</label>
+          <div class="flex space-x-2">
+            <input type="number" name="min_price" placeholder="Від" class="w-1/2 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="number" name="max_price" placeholder="До" class="w-1/2 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+        </div>
+        <!-- Сортування -->
+        <div>
+          <label for="sort" class="block text-sm font-medium text-gray-700 mb-1">Сортувати за</label>
+          <select name="sort" id="sort" class="block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="">За замовчуванням</option>
+            <option value="price_asc" {% if request.GET.sort == "price_asc" %}selected{% endif %}>Ціна: за зростанням</option>
+            <option value="price_desc" {% if request.GET.sort == "price_desc" %}selected{% endif %}>Ціна: за спаданням</option>
+            <option value="new" {% if request.GET.sort == "new" %}selected{% endif %}>Новинки</option>
+          </select>
+        </div>
+        <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition">
+          Застосувати фільтри
+        </button>
+      </form>
+    </aside>
+
+    <!-- Список товарів (карточки) -->
+    <section class="w-full lg:w-3/4">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {% for product in products %}
+        <div class="bg-white rounded-lg shadow hover:shadow-2xl transition overflow-hidden">
+          <a href="{% url 'shop:product_detail' slug=product.slug %}">
+            <div class="w-full h-64 overflow-hidden">
+              <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'images/placeholder.png' %}{% endif %}" alt="{{ product.name }}" class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
+            </div>
+          </a>
+          <div class="p-4">
+            <h3 class="text-xl font-bold text-gray-800 truncate">
+              <a href="{% url 'shop:product_detail' slug=product.slug %}">{{ product.name }}</a>
+            </h3>
+            <p class="mt-2 text-2xl text-green-600 font-semibold">{{ product.price }} грн</p>
+            <!-- Форма для додавання товару до кошика -->
+            <form method="post" action="{% url 'shop:cart' %}" class="mt-4">
+              {% csrf_token %}
+              <input type="hidden" name="action" value="add">
+              <input type="hidden" name="product_id" value="{{ product.id }}">
+              <button type="submit" class="w-full bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition">
+                Купити
+              </button>
+            </form>
+          </div>
+        </div>
+        {% empty %}
+        <p class="text-center text-gray-500">Товари не знайдено.</p>
+        {% endfor %}
+      </div>
+
+      <!-- Пагінація -->
+      {% if is_paginated %}
+      <div class="mt-8 flex justify-center items-center space-x-4">
+        {% if page_obj.has_previous %}
+          <a href="?{% query_update page=page_obj.previous_page_number %}" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 transition">
+            Попередня
+          </a>
+        {% endif %}
+        <span class="px-4 py-2 bg-gray-200 rounded">
+          Сторінка {{ page_obj.number }} з {{ page_obj.paginator.num_pages }}
+        </span>
+        {% if page_obj.has_next %}
+          <a href="?{% query_update page=page_obj.next_page_number %}" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 transition">
+            Наступна
+          </a>
+        {% endif %}
+      </div>
+      {% endif %}
+    </section>
+  </div>
+</div>
+{% endblock %}

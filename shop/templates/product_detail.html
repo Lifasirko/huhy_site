@@ -1,0 +1,40 @@
+{% extends "base_shop.html" %}
+{% load static %}
+
+{% block title %}{{ product.name }} | Huhy Shop{% endblock %}
+
+{% block content %}
+<div class="max-w-screen-2xl mx-auto py-10 px-4 lg:px-8">
+  <div class="flex flex-col lg:flex-row gap-8">
+    <!-- Зображення товару -->
+    <div class="w-full lg:w-1/2">
+      <div class="w-full h-96 overflow-hidden rounded-lg">
+        <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'images/placeholder.png' %}{% endif %}" alt="{{ product.name }}" class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
+      </div>
+      {% if product.images.all %}
+      <div class="mt-4 grid grid-cols-4 gap-4">
+        {% for img in product.images.all %}
+        <div class="w-full h-24 overflow-hidden rounded">
+          <img src="{{ img.image.url }}" alt="{{ img.caption }}" class="w-full h-full object-cover">
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+    <!-- Опис товару -->
+    <div class="w-full lg:w-1/2">
+      <h1 class="text-3xl font-bold mb-4">{{ product.name }}</h1>
+      <p class="text-2xl text-green-600 font-semibold mb-4">{{ product.price }} грн</p>
+      <p class="mb-6 text-gray-700">{{ product.description }}</p>
+      <form method="post" action="{% url 'shop:cart' %}" class="mb-4">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="add">
+        <input type="hidden" name="product_id" value="{{ product.id }}">
+        <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 transition">
+          Додати до кошика
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
