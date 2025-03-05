@@ -1,48 +1,40 @@
 {% load static querystring_tags %}
 {% for product in products %}
-  <div class="bg-white rounded-lg shadow hover:shadow-2xl transition overflow-hidden product-card">
-    <a href="{% url 'shop:product_detail' slug=product.slug %}">
-      <div class="w-full overflow-hidden aspect-square">
-        {% if product.image %}
-          <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
-        {% elif product.pack_details %}
-          {% with first_comp=product.pack_details.components.all|first %}
-            {% if first_comp and first_comp.image %}
-              <img src="{{ first_comp.image.url }}" alt="{{ product.name }}" class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
-            {% else %}
-              <img src="{% static 'images/placeholder.png' %}" alt="{{ product.name }}" class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
-            {% endif %}
-          {% endwith %}
-        {% else %}
-          <img src="{% static 'images/placeholder.png' %}" alt="{{ product.name }}" class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
-        {% endif %}
-      </div>
-    </a>
-    <div class="p-4 w-[300px] mx-auto md:w-auto"><!-- Трошки «звужує» картку на дуже малих екранах -->
-      <h3 class="text-xl font-bold text-gray-800 truncate">
-        <a href="{% url 'shop:product_detail' slug=product.slug %}">{{ product.name }}</a>
-      </h3>
-      {% if product.pack_details %}
-        <span class="bg-purple-600 text-white text-xs px-2 py-1 rounded inline-block mb-2">Бандл</span>
+<div class="bg-white rounded-lg shadow hover:shadow-2xl transition overflow-hidden">
+  <a href="{% url 'shop:product_detail' slug=product.slug %}">
+    <div class="w-full overflow-hidden aspect-square">
+      {% if product.image %}
+        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
+      {% elif product.catalog_image %}
+        <img src="{{ product.catalog_image.url }}" alt="{{ product.name }}" class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
+      {% else %}
+        <img src="{% static 'images/placeholder.png' %}" alt="{{ product.name }}" class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
       {% endif %}
-      <p class="mt-2 text-2xl text-green-600 font-semibold">
-        {% if product.discount_active and product.discount_percent > 0 %}
-          <span class="line-through text-red-500">{{ product.price }} грн</span>
-          {{ product.discounted_price|floatformat:2 }} грн
-        {% else %}
-          {{ product.price }} грн
-        {% endif %}
-      </p>
-      <form method="post" action="{% url 'shop:cart' %}" class="mt-4">
-        {% csrf_token %}
-        <input type="hidden" name="action" value="add">
-        <input type="hidden" name="product_id" value="{{ product.id }}">
-        <button type="submit" class="w-full bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition">
-          Купити
-        </button>
-      </form>
     </div>
+  </a>
+  <div class="p-4">
+    <h3 class="text-xl font-bold text-gray-800 truncate">
+      <a href="{% url 'shop:product_detail' slug=product.slug %}">{{ product.name }}</a>
+    </h3>
+    {% if product.pack_details %}
+      <span class="bg-purple-600 text-white text-xs px-2 py-1 rounded inline-block mb-2">Бандл</span>
+    {% endif %}
+    <p class="mt-2 text-2xl text-green-600 font-semibold">
+      {% if product.discount_active and product.discount_percent > 0 %}
+        <span class="line-through text-red-500">{{ product.price }} грн</span>
+        {{ product.discounted_price|floatformat:2 }} грн
+      {% else %}
+        {{ product.price }} грн
+      {% endif %}
+    </p>
+    <form method="post" action="{% url 'shop:cart' %}" class="mt-4">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="add">
+      <input type="hidden" name="product_id" value="{{ product.id }}">
+      <button type="submit" class="w-full bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition">
+        Купити
+      </button>
+    </form>
   </div>
-{% empty %}
-  <p class="text-center text-gray-500">Товари не знайдено.</p>
+</div>
 {% endfor %}
