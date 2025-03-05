@@ -24,7 +24,16 @@
     <!-- Опис товару -->
     <div class="w-full lg:w-1/2">
       <h1 class="text-3xl font-bold mb-4">{{ product.name }}</h1>
-      <p class="text-2xl text-green-600 font-semibold mb-4">{{ product.price }} грн</p>
+      {% if product.discount_active and product.discount_percent > 0 %}
+        <p class="text-2xl text-red-600 font-semibold mb-2">
+            Знижка {{ product.discount_percent }}%!
+        </p>
+        <p class="text-2xl text-green-600 font-semibold mb-4">
+            <span class="line-through text-gray-500">{{ product.price }} грн</span> {{ product.discounted_price|floatformat:2 }} грн
+        </p>
+      {% else %}
+        <p class="text-2xl text-green-600 font-semibold mb-4">{{ product.price }} грн</p>
+      {% endif %}
       <p class="mb-6 text-gray-700">{{ product.description }}</p>
       <form method="post" action="{% url 'shop:cart' %}" class="mb-4">
         {% csrf_token %}
@@ -34,6 +43,18 @@
           Додати до кошика
         </button>
       </form>
+      {% if product.is_bundle %}
+      <div class="bundle-components mt-6">
+        <h2 class="text-2xl font-bold mb-2">У цьому паку входять:</h2>
+        <ul class="list-disc list-inside">
+          {% for comp in product.bundle_components.all %}
+            <li><a href="{% url 'shop:product_detail' slug=comp.slug %}" class="text-blue-600 hover:underline">{{ comp.name }}</a> – {{ comp.price }} грн</li>
+          {% empty %}
+            <li>Компоненти не додано</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
     </div>
   </div>
 </div>

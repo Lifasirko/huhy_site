@@ -5,11 +5,14 @@
 {% block title %}Каталог товарів | Huhy Shop{% endblock %}
 
 {% block content %}
-<!-- Використовуємо контейнер з максимальною шириною екрану (до 1536px) з додатковими відступами -->
 <div class="max-w-screen-2xl mx-auto py-10 px-4 lg:px-8">
+  <!-- Кнопка для сховування/показу фільтрів -->
+  <button id="toggle-filters" class="mb-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+    Показати/Сховати фільтри
+  </button>
   <div class="flex flex-col lg:flex-row gap-8">
     <!-- Бічна панель з фільтрами та пошуком -->
-    <aside class="w-full lg:w-1/4 bg-white rounded-lg shadow-lg p-6">
+    <aside id="filter-sidebar" class="w-full lg:w-1/4 bg-white rounded-lg shadow-lg p-6">
       <h2 class="text-2xl font-semibold mb-6 text-gray-800">Фільтри</h2>
       <form method="GET" action="{% url 'shop:catalog' %}" class="space-y-5">
         <!-- Пошук -->
@@ -52,55 +55,71 @@
     </aside>
 
     <!-- Список товарів (карточки) -->
-    <section class="w-full lg:w-3/4">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {% for product in products %}
-        <div class="bg-white rounded-lg shadow hover:shadow-2xl transition overflow-hidden">
-          <a href="{% url 'shop:product_detail' slug=product.slug %}">
-            <div class="w-full h-64 overflow-hidden">
-              <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'images/placeholder.png' %}{% endif %}" alt="{{ product.name }}" class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
-            </div>
-          </a>
-          <div class="p-4">
-            <h3 class="text-xl font-bold text-gray-800 truncate">
-              <a href="{% url 'shop:product_detail' slug=product.slug %}">{{ product.name }}</a>
-            </h3>
-            <p class="mt-2 text-2xl text-green-600 font-semibold">{{ product.price }} грн</p>
-            <!-- Форма для додавання товару до кошика -->
-            <form method="post" action="{% url 'shop:cart' %}" class="mt-4">
-              {% csrf_token %}
-              <input type="hidden" name="action" value="add">
-              <input type="hidden" name="product_id" value="{{ product.id }}">
-              <button type="submit" class="w-full bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition">
-                Купити
-              </button>
-            </form>
-          </div>
-        </div>
-        {% empty %}
-        <p class="text-center text-gray-500">Товари не знайдено.</p>
-        {% endfor %}
-      </div>
-
-      <!-- Пагінація -->
-      {% if is_paginated %}
-      <div class="mt-8 flex justify-center items-center space-x-4">
-        {% if page_obj.has_previous %}
-          <a href="?{% query_update page=page_obj.previous_page_number %}" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 transition">
-            Попередня
-          </a>
-        {% endif %}
-        <span class="px-4 py-2 bg-gray-200 rounded">
-          Сторінка {{ page_obj.number }} з {{ page_obj.paginator.num_pages }}
-        </span>
-        {% if page_obj.has_next %}
-          <a href="?{% query_update page=page_obj.next_page_number %}" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 transition">
-            Наступна
-          </a>
-        {% endif %}
-      </div>
-      {% endif %}
+    <section id="product-grid" class="w-full lg:w-3/4">
+      {% include "catalog_products.html" %}
     </section>
   </div>
+  <!-- Кнопка "Завантажити ще" для AJAX-підвантаження товарів -->
+  <button id="load-more" class="mt-4 bg-green-600 text-white px-6 py-3 rounded-md hover:bg-green-700 transition">
+    Завантажити ще
+  </button>
 </div>
+
+<script>
+// Функція для оновлення кількості колонок у сітці товарів.
+// Контейнер сітки має id "products-grid", який задається у файлі catalog_products.html.
+function updateGridColumns() {
+    var filterSidebar = document.getElementById('filter-sidebar');
+    var grid = document.getElementById('products-grid');
+    if (!grid) return;
+    if (filterSidebar.style.display === 'none') {
+        grid.classList.remove('lg:grid-cols-3');
+        grid.classList.add('lg:grid-cols-4');
+    } else {
+        grid.classList.remove('lg:grid-cols-4');
+        grid.classList.add('lg:grid-cols-3');
+    }
+}
+
+document.getElementById('toggle-filters').addEventListener('click', function() {
+    var filterSidebar = document.getElementById('filter-sidebar');
+    if (filterSidebar.style.display === 'none' || filterSidebar.style.display === '') {
+        filterSidebar.style.display = 'block';
+    } else {
+        filterSidebar.style.display = 'none';
+    }
+    updateGridColumns();
+});
+
+var currentPage = {{ page_obj.number }};
+var totalPages = {{ page_obj.paginator.num_pages }};
+
+document.getElementById('load-more').addEventListener('click', function() {
+    if (currentPage < totalPages) {
+        var nextPage = currentPage + 1;
+        var xhr = new XMLHttpRequest();
+        var params = new URLSearchParams(window.location.search);
+        params.set('page', nextPage);
+        xhr.open('GET', window.location.pathname + '?' + params.toString(), true);
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                var parser = new DOMParser();
+                var doc = parser.parseFromString(xhr.responseText, 'text/html');
+                var newGridContent = doc.getElementById('products-grid').innerHTML;
+                var grid = document.getElementById('products-grid');
+                grid.innerHTML += newGridContent;
+                currentPage = nextPage;
+                if (currentPage >= totalPages) {
+                    document.getElementById('load-more').style.display = 'none';
+                }
+            }
+        };
+        xhr.send();
+    }
+});
+
+// Виклик при завантаженні сторінки
+updateGridColumns();
+</script>
 {% endblock %}

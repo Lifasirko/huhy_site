@@ -1,7 +1,18 @@
+# huhy_site/shop/models.py
+
 from django.db import models
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
+
+
+# Нова модель для тегів
+class Tag(models.Model):
+    name = models.CharField(max_length=100, unique=True, verbose_name="Назва тегу")
+
+    def __str__(self):
+        return self.name
+
 
 class Category(models.Model):
     name = models.CharField(max_length=255, verbose_name="Назва категорії")
@@ -45,9 +56,41 @@ class Product(models.Model):
     available = models.BooleanField(default=True, verbose_name="Доступний")
     created = models.DateTimeField(auto_now_add=True, verbose_name="Створено")
     updated = models.DateTimeField(auto_now=True, verbose_name="Оновлено")
+    # Поле тегів
+    tags = models.ManyToManyField(Tag, blank=True, related_name='products', verbose_name="Теги")
+    # Перейменовано з is_pack на is_bundle
+    is_bundle = models.BooleanField(default=False, verbose_name="Бандл")
+    # Багато до багатьох зв’язок для компонентів бандлу.
+    bundle_components = models.ManyToManyField('self', symmetrical=False, blank=True, related_name='bundled_in',
+                                               verbose_name="Компоненти бандлу")
+    # Поля знижки (блок у товарі)
+    discount_active = models.BooleanField(default=False, verbose_name="Активна знижка")
+    discount_percent = models.PositiveIntegerField(default=0, verbose_name="Відсоток знижки")
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        from django.urls import reverse
+        return reverse('shop:product_detail', kwargs={'slug': self.slug})
+
+    @property
+    def discounted_price(self):
+        if self.discount_active and self.discount_percent > 0:
+            return self.price * (100 - self.discount_percent) / 100
+        return self.price
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        # Якщо товар є бандлом, додати його назву як тег
+        if self.is_bundle:
+            from django.db import IntegrityError
+            try:
+                tag, created = Tag.objects.get_or_create(name=self.name)
+                if tag not in self.tags.all():
+                    self.tags.add(tag)
+            except IntegrityError:
+                pass
 
 
 class ProductImage(models.Model):

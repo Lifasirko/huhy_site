@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import TemplateView, ListView, DetailView, View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Category, Product, Order, OrderItem
+from django.shortcuts import render
 
 # Додано для Telegram-сповіщення
 import requests
@@ -54,6 +55,14 @@ class CatalogView(ListView):
         context['categories'] = Category.objects.all()
         context['selected_category'] = self.request.GET.get('category', '')
         return context
+
+    def get(self, request, *args, **kwargs):
+        self.object_list = self.get_queryset()
+        context = self.get_context_data()
+        # Замість request.is_ajax() використовуємо перевірку заголовка
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return render(request, 'catalog_products.html', context)
+        return self.render_to_response(context)
 
 
 class ProductDetailView(DetailView):
