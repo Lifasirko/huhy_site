@@ -2,16 +2,12 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import TemplateView, ListView, DetailView, View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Category, Product, Order, OrderItem
-from django.shortcuts import render
-
-# Додано для Telegram-сповіщення
 import requests
 from django.conf import settings
 
-
 def send_telegram_message(message: str):
     bot_token = settings.TGBOT_TOKEN
-    admin_ids = settings.TELEGRAM_ADMIN_IDS  # Переконайтеся, що цей список заданий у налаштуваннях
+    admin_ids = settings.TELEGRAM_ADMIN_IDS
     for admin_id in admin_ids:
         try:
             if admin_id is None:
@@ -20,50 +16,41 @@ def send_telegram_message(message: str):
             url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
             data = {"chat_id": admin_id, "text": message}
             response = requests.post(url, data=data)
-            response.raise_for_status()  # Перевірка на помилки HTTP
+            response.raise_for_status()
         except ValueError:
             print(f"Невірний ID адміністратора: {admin_id}")
         except requests.exceptions.RequestException as e:
             print(f"Error sending message to admin {admin_id}: {e}")
 
-
 class ShopHomeView(TemplateView):
-    # Шаблон знаходиться прямо у shop/templates/index.html
     template_name = 'index.html'
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['featured_products'] = Product.objects.filter(available=True).order_by('-created')[:8]
         return context
-
 
 class CatalogView(ListView):
     model = Product
     template_name = 'catalog.html'
     context_object_name = 'products'
     paginate_by = 12
-
     def get_queryset(self):
         queryset = Product.objects.filter(available=True).order_by('-created')
         category_slug = self.request.GET.get('category')
         if category_slug:
             queryset = queryset.filter(category__slug=category_slug)
         return queryset
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['categories'] = Category.objects.all()
         context['selected_category'] = self.request.GET.get('category', '')
         return context
-
     def get(self, request, *args, **kwargs):
         self.object_list = self.get_queryset()
         context = self.get_context_data()
-        # Замість request.is_ajax() використовуємо перевірку заголовка
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             return render(request, 'catalog_products.html', context)
         return self.render_to_response(context)
-
 
 class ProductDetailView(DetailView):
     model = Product
@@ -71,16 +58,36 @@ class ProductDetailView(DetailView):
     context_object_name = 'product'
     slug_field = 'slug'
     slug_url_kwarg = 'slug'
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['images'] = self.object.images.all()
+        if self.object.is_bundle:
+            # Якщо для бандлу немає окремого зображення, беремо з першого компоненту
+            if self.object.image:
+                main_img = self.object.image
+            else:
+                first_comp = self.object.pack_details.components.first()
+                main_img = first_comp.image if first_comp and first_comp.image else None
+            comp_images = []
+            for comp in self.object.pack_details.components.all():
+                for img in comp.images.all():
+                    if img.image:
+                        comp_images.append(img.image)
+            images = []
+            if main_img:
+                images.append(main_img)
+            images.extend(comp_images)
+            context['images'] = images
+            context['pack_components'] = self.object.pack_details.components.all()
+        else:
+            if self.object.image:
+                context['images'] = [self.object.image] + list(self.object.images.all())
+            else:
+                context['images'] = self.object.images.all()
+        context['packs_in'] = self.object.included_in_packs.all()
         return context
-
 
 class CartView(TemplateView):
     template_name = 'cart.html'
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         cart = self.request.session.get('cart', {})
@@ -98,7 +105,6 @@ class CartView(TemplateView):
         context['cart_items'] = items
         context['total'] = total
         return context
-
     def post(self, request, *args, **kwargs):
         action = request.POST.get('action')
         product_id = request.POST.get('product_id')
@@ -118,16 +124,13 @@ class CartView(TemplateView):
         request.session['cart'] = cart
         return redirect('shop:cart')
 
-
 class CheckoutView(View):
     template_name = 'checkout.html'
-
     def get(self, request, *args, **kwargs):
         cart = request.session.get('cart', {})
         if not cart:
             return redirect('shop:cart')
         return render(request, self.template_name)
-
     def post(self, request, *args, **kwargs):
         cart = request.session.get('cart', {})
         if not cart:
@@ -155,7 +158,6 @@ class CheckoutView(View):
                 quantity=quantity,
                 price=product.price
             )
-        # Відправка повідомлення в Telegram адміну з деталями замовлення
         order_items = order.items.all()
         message_lines = [
             f"Нове замовлення #{order.id}",
@@ -174,14 +176,11 @@ class CheckoutView(View):
         request.session['cart'] = {}
         return redirect('shop:order_success')
 
-
 class OrderSuccessView(TemplateView):
     template_name = 'order_success.html'
 
-
 class PersonalCabinetView(LoginRequiredMixin, TemplateView):
     template_name = 'personal_cabinet.html'
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['orders'] = self.request.user.orders.all().order_by('-created')

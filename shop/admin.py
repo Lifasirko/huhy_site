@@ -1,5 +1,3 @@
-# huhy_site/shop/admin.py
-
 from django.contrib import admin
 from django.http import HttpResponse
 from import_export import resources, fields
@@ -13,12 +11,11 @@ import os
 import io
 import zipfile
 
-from .models import Category, Product, ProductImage, Order, OrderItem, Tag
+from .models import Category, Product, Pack, ProductImage, Order, OrderItem, Tag
 
 User = get_user_model()
 
 
-# Ресурс для категорій
 class CategoryResource(resources.ModelResource):
     parent = fields.Field(
         column_name='parent',
@@ -32,7 +29,6 @@ class CategoryResource(resources.ModelResource):
         export_order = ('id', 'name', 'slug', 'parent')
 
 
-# Ресурс для товарів
 class ProductResource(resources.ModelResource):
     category = fields.Field(
         column_name='category',
@@ -54,6 +50,8 @@ class ProductResource(resources.ModelResource):
             'available',
             'created',
             'updated',
+            'discount_active',
+            'discount_percent',
         )
         export_order = (
             'id',
@@ -67,23 +65,22 @@ class ProductResource(resources.ModelResource):
             'available',
             'created',
             'updated',
+            'discount_active',
+            'discount_percent',
         )
         skip_unchanged = True
         report_skipped = True
-        # Видалено import_id_fields, щоб уникнути помилки при відсутності поля 'id' в заголовках
 
     def before_import_row(self, row, **kwargs):
         if not row.get('slug') and row.get('name'):
             row['slug'] = slugify(row['name'])
 
     def get_instance(self, instance_loader, row):
-        # Якщо ID не вказано – створюємо новий товар
         if not row.get('id'):
             return None
         return super().get_instance(instance_loader, row)
 
 
-# Ресурс для зображень товарів
 class ProductImageResource(resources.ModelResource):
     product = fields.Field(
         column_name='product',
@@ -100,7 +97,6 @@ class ProductImageResource(resources.ModelResource):
         import_id_fields = ('id',)
 
 
-# Ресурс для замовлень
 class OrderResource(resources.ModelResource):
     user = fields.Field(
         column_name='user',
@@ -139,7 +135,6 @@ class OrderResource(resources.ModelResource):
         import_id_fields = ('id',)
 
 
-# Ресурс для позицій замовлення
 class OrderItemResource(resources.ModelResource):
     order = fields.Field(
         column_name='order',
@@ -161,7 +156,6 @@ class OrderItemResource(resources.ModelResource):
         import_id_fields = ('id',)
 
 
-# Кастомний фільтр для заповненості картки товару
 class ProductCompletenessFilter(admin.SimpleListFilter):
     title = "Заповненість картки товару"
     parameter_name = 'completeness'
@@ -181,7 +175,6 @@ class ProductCompletenessFilter(admin.SimpleListFilter):
         return queryset
 
 
-# Адміністративне представлення для категорій
 @admin.register(Category)
 class CategoryAdmin(ImportExportModelAdmin):
     resource_class = CategoryResource
@@ -189,7 +182,6 @@ class CategoryAdmin(ImportExportModelAdmin):
     prepopulated_fields = {"slug": ("name",)}
 
 
-# Адміністративне представлення для товарів
 @admin.register(Product)
 class ProductAdmin(ImportExportModelAdmin):
     resource_class = ProductResource
@@ -197,19 +189,12 @@ class ProductAdmin(ImportExportModelAdmin):
     list_filter = (ProductCompletenessFilter, 'available', 'created', 'updated', 'category')
     search_fields = ('name', 'description')
     prepopulated_fields = {"slug": ("name",)}
-    actions = ['download_images_archive', 'create_bundle']
+    actions = ['download_images_archive']
 
     def view_on_site_link(self, obj):
         return format_html('<a href="{}" target="_blank">Переглянути</a>', obj.get_absolute_url())
 
     view_on_site_link.short_description = "На сайті"
-
-    def save_related(self, request, form, formsets, change):
-        super().save_related(request, form, formsets, change)
-        obj = form.instance
-        if obj.bundle_components.exists() and not obj.is_bundle:
-            obj.is_bundle = True
-            obj.save()
 
     def download_images_archive(self, request, queryset):
         buffer = io.BytesIO()
@@ -239,47 +224,18 @@ class ProductAdmin(ImportExportModelAdmin):
 
     download_images_archive.short_description = "Завантажити зображення товарів як архів"
 
-    def create_bundle(self, request, queryset):
-        if queryset.count() < 2:
-            self.message_user(request, "Виберіть щонайменше 2 товари для створення бандлу", level='error')
-            return
-        total_price = sum([product.price for product in queryset])
-        names = [p.name for p in queryset]
-        bundle_name = "Бандл: " + ", ".join(names)
-        from django.template.defaultfilters import slugify
-        new_bundle = Product.objects.create(
-            category=queryset.first().category,
-            name=bundle_name,
-            slug=slugify(bundle_name),
-            description="Бандл, що містить: " + ", ".join(names),
-            price=total_price,
-            stock=min([p.stock for p in queryset]) if queryset.exists() else 0,
-            available=True,
-            is_bundle=True
-        )
-        new_bundle.bundle_components.set(queryset)
-        # Додаємо тег з назвою бандлу
-        tag, created = Tag.objects.get_or_create(name=bundle_name)
-        new_bundle.tags.add(tag)
-        self.message_user(request, "Бандл створено успішно!")
 
-    create_bundle.short_description = "Створити бандл з вибраних товарів"
-
-
-# Адміністративне представлення для зображень товарів
 @admin.register(ProductImage)
 class ProductImageAdmin(ImportExportModelAdmin):
     resource_class = ProductImageResource
     list_display = ('product', 'caption')
 
 
-# Інлайн представлення для позицій замовлення
 class OrderItemInline(admin.TabularInline):
     model = OrderItem
     extra = 0
 
 
-# Адміністративне представлення для замовлень
 @admin.register(Order)
 class OrderAdmin(ImportExportModelAdmin):
     resource_class = OrderResource
@@ -289,5 +245,36 @@ class OrderAdmin(ImportExportModelAdmin):
     inlines = [OrderItemInline]
 
 
-# Реєстрація моделі тегів
 admin.site.register(Tag)
+
+
+@admin.register(Pack)
+class PackAdmin(admin.ModelAdmin):
+    list_display = ('product', 'components_list', 'get_total_price', 'auto_price', 'product_info')
+    filter_horizontal = ('components',)
+    readonly_fields = ('product_info',)
+    fieldsets = (
+        (None, {
+            'fields': ('product_info', 'auto_price', 'components'),
+        }),
+    )
+
+    def components_list(self, obj):
+        return ", ".join([p.name for p in obj.components.all()])
+
+    components_list.short_description = "Компоненти паку"
+
+    def get_total_price(self, obj):
+        return obj.product.price
+
+    get_total_price.short_description = "Розрахункова ціна паку"
+
+    def product_info(self, obj):
+        info = f"<strong>Назва:</strong> {obj.product.name}<br>"
+        info += f"<strong>Опис:</strong> {obj.product.description}<br>"
+        info += f"<strong>Ціна (редагована):</strong> {obj.product.price} грн<br>"
+        if obj.product.image:
+            info += f'<img src="{obj.product.image.url}" style="max-height:100px;"/><br>'
+        return format_html(info)
+
+    product_info.short_description = "Інформація про товар-пак"

@@ -5,121 +5,194 @@
 {% block title %}Каталог товарів | Huhy Shop{% endblock %}
 
 {% block content %}
-<div class="max-w-screen-2xl mx-auto py-10 px-4 lg:px-8">
-  <!-- Кнопка для сховування/показу фільтрів -->
-  <button id="toggle-filters" class="mb-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
-    Показати/Сховати фільтри
-  </button>
-  <div class="flex flex-col lg:flex-row gap-8">
-    <!-- Бічна панель з фільтрами та пошуком -->
-    <aside id="filter-sidebar" class="w-full lg:w-1/4 bg-white rounded-lg shadow-lg p-6">
+<div class="max-w-screen-2xl mx-auto py-10 px-4 lg:px-8 flex flex-col">
+  <!-- Кнопка для показу/приховування фільтрів (актуально тільки на десктопі) -->
+  <div class="flex flex-col mb-4">
+    <button id="toggle-filters" class="self-start bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+      Показати/Приховати фільтри
+    </button>
+  </div>
+
+  <div class="flex flex-col lg:flex-row gap-8 flex-1">
+    <!-- Бічна панель фільтрів: прихована на малих екранах,
+         фіксована ширина 330px на lg+ (≥1024px). -->
+    <aside id="filter-sidebar"
+           class="hidden lg:block bg-white rounded-lg shadow-lg p-6"
+           style="width:330px; min-width:330px;">
       <h2 class="text-2xl font-semibold mb-6 text-gray-800">Фільтри</h2>
       <form method="GET" action="{% url 'shop:catalog' %}" class="space-y-5">
-        <!-- Пошук -->
         <div>
           <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Пошук</label>
-          <input type="text" name="q" id="search" placeholder="Введіть назву товару" class="block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <input type="text" name="q" id="search" placeholder="Введіть назву товару"
+                 class="block w-full border border-gray-300 rounded-md px-3 py-2
+                        focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
-        <!-- Категорії -->
         <div>
           <label for="category" class="block text-sm font-medium text-gray-700 mb-1">Категорії</label>
-          <select name="category" id="category" class="block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <select name="category" id="category"
+                  class="block w-full border border-gray-300 rounded-md px-3 py-2
+                         focus:outline-none focus:ring-2 focus:ring-blue-500">
             <option value="">Всі категорії</option>
             {% for cat in categories %}
               <option value="{{ cat.slug }}" {% if selected_category == cat.slug %}selected{% endif %}>{{ cat.name }}</option>
             {% endfor %}
           </select>
         </div>
-        <!-- Діапазон цін -->
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Ціна</label>
           <div class="flex space-x-2">
-            <input type="number" name="min_price" placeholder="Від" class="w-1/2 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <input type="number" name="max_price" placeholder="До" class="w-1/2 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="number" name="min_price" placeholder="Від"
+                   class="w-1/2 border border-gray-300 rounded-md px-3 py-2
+                          focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="number" name="max_price" placeholder="До"
+                   class="w-1/2 border border-gray-300 rounded-md px-3 py-2
+                          focus:outline-none focus:ring-2 focus:ring-blue-500">
           </div>
         </div>
-        <!-- Сортування -->
         <div>
           <label for="sort" class="block text-sm font-medium text-gray-700 mb-1">Сортувати за</label>
-          <select name="sort" id="sort" class="block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <select name="sort" id="sort"
+                  class="block w-full border border-gray-300 rounded-md px-3 py-2
+                         focus:outline-none focus:ring-2 focus:ring-blue-500">
             <option value="">За замовчуванням</option>
             <option value="price_asc" {% if request.GET.sort == "price_asc" %}selected{% endif %}>Ціна: за зростанням</option>
             <option value="price_desc" {% if request.GET.sort == "price_desc" %}selected{% endif %}>Ціна: за спаданням</option>
             <option value="new" {% if request.GET.sort == "new" %}selected{% endif %}>Новинки</option>
           </select>
         </div>
-        <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition">
+        <button type="submit"
+                class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition">
           Застосувати фільтри
         </button>
       </form>
     </aside>
 
-    <!-- Список товарів (карточки) -->
-    <section id="product-grid" class="w-full lg:w-3/4">
+    <!-- Контейнер для товарів:
+         - На мобільних/планшетах: 1 або 2 колонки (щоб не були занадто вузькі).
+         - На десктопі (≥1024px): 3 або 4 колонки по 330px.
+    -->
+    <section id="product-grid" class="flex-1 grid gap-8 justify-start">
       {% include "catalog_products.html" %}
     </section>
   </div>
-  <!-- Кнопка "Завантажити ще" для AJAX-підвантаження товарів -->
-  <button id="load-more" class="mt-4 bg-green-600 text-white px-6 py-3 rounded-md hover:bg-green-700 transition">
-    Завантажити ще
-  </button>
+
+  <!-- Нумерована пагінація -->
+  <div id="pagination-links" class="mt-8">
+    {% if is_paginated %}
+      <div class="flex justify-center items-center space-x-2">
+        {% if page_obj.has_previous %}
+          <a href="?{% query_update page=1 %}" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 transition">Перша</a>
+          <a href="?{% query_update page=page_obj.previous_page_number %}" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 transition">Попередня</a>
+        {% endif %}
+        {% for i in page_obj.paginator.page_range %}
+          {% if i >= page_obj.number|add:"-2" and i <= page_obj.number|add:"2" %}
+            {% if i == page_obj.number %}
+              <span class="px-4 py-2 bg-gray-200 rounded font-bold">{{ i }}</span>
+            {% else %}
+              <a href="?{% query_update page=i %}" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 transition">{{ i }}</a>
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+        {% if page_obj.has_next %}
+          <a href="?{% query_update page=page_obj.next_page_number %}" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 transition">Наступна</a>
+          <a href="?{% query_update page=page_obj.paginator.num_pages %}" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 transition">Остання</a>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Кнопка "Завантажити ще" для AJAX -->
+  <div class="mt-4 flex justify-center">
+    <button id="load-more" class="bg-green-600 text-white px-6 py-3 rounded-md hover:bg-green-700 transition">
+      Завантажити ще
+    </button>
+  </div>
 </div>
 
+<!--
+  1) На екранах <640px => 1 колонка.
+  2) На екранах від 640px до 1023px => 2 колонки (repeat(2, 1fr)).
+  3) На екранах ≥1024px => 3 чи 4 колонки по 330px, залежно від показу/сховування фільтрів.
+-->
+<style>
+@media (max-width: 639px) {
+  #product-grid {
+    grid-template-columns: 1fr !important; /* 1 колонка на дуже вузьких екранах */
+  }
+}
+@media (min-width: 640px) and (max-width: 1023px) {
+  #product-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important; /* 2 колонки на середніх */
+  }
+}
+@media (min-width: 1024px) {
+  /* Десктоп: 3 колонки по 330px */
+  #product-grid.lg-3cols {
+    grid-template-columns: repeat(3, 330px) !important;
+  }
+  /* Якщо фільтр схований – 4 колонки */
+  #product-grid.lg-4cols {
+    grid-template-columns: repeat(4, 330px) !important;
+  }
+}
+</style>
+
 <script>
-// Функція для оновлення кількості колонок у сітці товарів.
-// Контейнер сітки має id "products-grid", який задається у файлі catalog_products.html.
 function updateGridColumns() {
-    var filterSidebar = document.getElementById('filter-sidebar');
-    var grid = document.getElementById('products-grid');
-    if (!grid) return;
-    if (filterSidebar.style.display === 'none') {
-        grid.classList.remove('lg:grid-cols-3');
-        grid.classList.add('lg:grid-cols-4');
-    } else {
-        grid.classList.remove('lg:grid-cols-4');
-        grid.classList.add('lg:grid-cols-3');
-    }
+  const filterSidebar = document.getElementById('filter-sidebar');
+  const productsGrid = document.getElementById('product-grid');
+  // Якщо екран <1024px – застосовуються медіа-правила (1 або 2 колонки)
+  if (window.innerWidth < 1024) {
+    productsGrid.classList.remove('lg-3cols', 'lg-4cols');
+    return;
+  }
+  // Інакше, якщо ≥1024px – перемикаємося між 3 і 4 колонками
+  const filterDisplay = window.getComputedStyle(filterSidebar).display;
+  if (filterDisplay === 'none') {
+    productsGrid.classList.remove('lg-3cols');
+    productsGrid.classList.add('lg-4cols');
+  } else {
+    productsGrid.classList.remove('lg-4cols');
+    productsGrid.classList.add('lg-3cols');
+  }
 }
 
-document.getElementById('toggle-filters').addEventListener('click', function() {
-    var filterSidebar = document.getElementById('filter-sidebar');
-    if (filterSidebar.style.display === 'none' || filterSidebar.style.display === '') {
-        filterSidebar.style.display = 'block';
-    } else {
-        filterSidebar.style.display = 'none';
-    }
-    updateGridColumns();
+// Клік по кнопці "Показати/Приховати фільтри"
+document.getElementById('toggle-filters').addEventListener('click', () => {
+  const filterSidebar = document.getElementById('filter-sidebar');
+  const isHidden = window.getComputedStyle(filterSidebar).display === 'none';
+  filterSidebar.style.display = isHidden ? 'block' : 'none';
+  updateGridColumns();
 });
 
-var currentPage = {{ page_obj.number }};
-var totalPages = {{ page_obj.paginator.num_pages }};
+// При завантаженні і ресайзі
+window.addEventListener('load', updateGridColumns);
+window.addEventListener('resize', updateGridColumns);
 
-document.getElementById('load-more').addEventListener('click', function() {
-    if (currentPage < totalPages) {
-        var nextPage = currentPage + 1;
-        var xhr = new XMLHttpRequest();
-        var params = new URLSearchParams(window.location.search);
-        params.set('page', nextPage);
-        xhr.open('GET', window.location.pathname + '?' + params.toString(), true);
-        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-        xhr.onload = function() {
-            if (xhr.status === 200) {
-                var parser = new DOMParser();
-                var doc = parser.parseFromString(xhr.responseText, 'text/html');
-                var newGridContent = doc.getElementById('products-grid').innerHTML;
-                var grid = document.getElementById('products-grid');
-                grid.innerHTML += newGridContent;
-                currentPage = nextPage;
-                if (currentPage >= totalPages) {
-                    document.getElementById('load-more').style.display = 'none';
-                }
-            }
-        };
-        xhr.send();
-    }
+// Кнопка "Завантажити ще" (AJAX)
+let currentPage = {{ page_obj.number }};
+const totalPages = {{ page_obj.paginator.num_pages }};
+
+document.getElementById('load-more').addEventListener('click', () => {
+  if (currentPage < totalPages) {
+    const nextPage = currentPage + 1;
+    const xhr = new XMLHttpRequest();
+    const params = new URLSearchParams(window.location.search);
+    params.set('page', nextPage);
+    xhr.open('GET', window.location.pathname + '?' + params.toString(), true);
+    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        const grid = document.getElementById('product-grid');
+        grid.innerHTML += xhr.responseText;
+        currentPage = nextPage;
+        if (currentPage >= totalPages) {
+          document.getElementById('load-more').style.display = 'none';
+        }
+      }
+    };
+    xhr.send();
+  }
 });
-
-// Виклик при завантаженні сторінки
-updateGridColumns();
 </script>
 {% endblock %}

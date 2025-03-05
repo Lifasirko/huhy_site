@@ -1,12 +1,8 @@
-# huhy_site/shop/models.py
-
 from django.db import models
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
-
-# Нова модель для тегів
 class Tag(models.Model):
     name = models.CharField(max_length=100, unique=True, verbose_name="Назва тегу")
 
@@ -56,14 +52,8 @@ class Product(models.Model):
     available = models.BooleanField(default=True, verbose_name="Доступний")
     created = models.DateTimeField(auto_now_add=True, verbose_name="Створено")
     updated = models.DateTimeField(auto_now=True, verbose_name="Оновлено")
-    # Поле тегів
     tags = models.ManyToManyField(Tag, blank=True, related_name='products', verbose_name="Теги")
-    # Перейменовано з is_pack на is_bundle
-    is_bundle = models.BooleanField(default=False, verbose_name="Бандл")
-    # Багато до багатьох зв’язок для компонентів бандлу.
-    bundle_components = models.ManyToManyField('self', symmetrical=False, blank=True, related_name='bundled_in',
-                                               verbose_name="Компоненти бандлу")
-    # Поля знижки (блок у товарі)
+    # Поля для знижки
     discount_active = models.BooleanField(default=False, verbose_name="Активна знижка")
     discount_percent = models.PositiveIntegerField(default=0, verbose_name="Відсоток знижки")
 
@@ -80,17 +70,49 @@ class Product(models.Model):
             return self.price * (100 - self.discount_percent) / 100
         return self.price
 
+    # Додано для визначення чи товар є бандлом
+    @property
+    def is_bundle(self):
+        return hasattr(self, 'pack_details')
+
+    # Додано для отримання компонентів бандлу
+    @property
+    def bundle_components(self):
+        if hasattr(self, 'pack_details'):
+            return self.pack_details.components.all()
+        return Product.objects.none()
+
+
+# Модель паку (бандлу)
+class Pack(models.Model):
+    # Товар, який представляє пак – створюється окремо в Product
+    product = models.OneToOneField(
+        Product,
+        on_delete=models.CASCADE,
+        related_name='pack_details',
+        verbose_name="Товар-пак"
+    )
+    # Компоненти паку
+    components = models.ManyToManyField(
+        Product,
+        related_name='included_in_packs',
+        verbose_name="Компоненти паку"
+    )
+    # Автооновлення ціни за замовчуванням
+    auto_price = models.BooleanField(default=True, verbose_name="Автооновлення ціни")
+
+    def __str__(self):
+        return f"Pack: {self.product.name}"
+
+    def update_price(self):
+        if self.auto_price:
+            total = sum([p.price for p in self.components.all()])
+            self.product.price = total
+            self.product.save()
+
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        # Якщо товар є бандлом, додати його назву як тег
-        if self.is_bundle:
-            from django.db import IntegrityError
-            try:
-                tag, created = Tag.objects.get_or_create(name=self.name)
-                if tag not in self.tags.all():
-                    self.tags.add(tag)
-            except IntegrityError:
-                pass
+        self.update_price()
 
 
 class ProductImage(models.Model):

@@ -9,14 +9,18 @@
     <!-- Зображення товару -->
     <div class="w-full lg:w-1/2">
       <div class="w-full h-96 overflow-hidden rounded-lg">
-        <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'images/placeholder.png' %}{% endif %}" alt="{{ product.name }}" class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
+        {% if images and images|length > 0 %}
+          <img src="{{ images.0.url }}" alt="{{ product.name }}" class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
+        {% else %}
+          <img src="{% static 'images/placeholder.png' %}" alt="{{ product.name }}" class="w-full h-full object-cover">
+        {% endif %}
       </div>
-      {% if product.images.all %}
+      {% if images and images|length > 1 %}
       <div class="mt-4 grid grid-cols-4 gap-4">
-        {% for img in product.images.all %}
-        <div class="w-full h-24 overflow-hidden rounded">
-          <img src="{{ img.image.url }}" alt="{{ img.caption }}" class="w-full h-full object-cover">
-        </div>
+        {% for img in images|slice:"1:" %}
+          <div class="w-full h-24 overflow-hidden rounded">
+            <img src="{{ img.url }}" alt="{{ product.name }}" class="w-full h-full object-cover">
+          </div>
         {% endfor %}
       </div>
       {% endif %}
@@ -47,10 +51,21 @@
       <div class="bundle-components mt-6">
         <h2 class="text-2xl font-bold mb-2">У цьому паку входять:</h2>
         <ul class="list-disc list-inside">
-          {% for comp in product.bundle_components.all %}
+          {% for comp in product.bundle_components %}
             <li><a href="{% url 'shop:product_detail' slug=comp.slug %}" class="text-blue-600 hover:underline">{{ comp.name }}</a> – {{ comp.price }} грн</li>
           {% empty %}
             <li>Компоненти не додано</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      {% if packs_in %}
+      <div class="mt-6">
+        <h2 class="text-2xl font-bold mb-2">Цей товар входить до наступних пакетів:</h2>
+        <ul class="list-disc list-inside">
+          {% for pack in packs_in %}
+            <li><a href="{% url 'shop:product_detail' slug=pack.product.slug %}" class="text-blue-600 hover:underline">{{ pack.product.name }}</a></li>
           {% endfor %}
         </ul>
       </div>
