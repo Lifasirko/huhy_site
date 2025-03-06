@@ -12,13 +12,6 @@ sudo supervisorctl restart huhy
 
 sudo nginx -t  # Перевірка конфігурації на помилки
 
-git branch
-
-git pull
-
-git checkout <branch_name>
-
-
 
 # DEPLOY.md
 
@@ -93,81 +86,99 @@ for user in User.objects.all():
 
 ## 6. Перезапуск сервісів
 Перезапуск процесу через Supervisor
-
+```
 sudo supervisorctl restart huhy
+```
 
 Перевірка конфігурації Nginx
-
+```
 sudo nginx -t
-
+```
 Якщо конфігурація пройшла успішно, перезапустіть Nginx:
-
+```
 sudo systemctl restart nginx
-
+```
 
 ## 7. Статичні файли та міграції
 Збір статичних файлів
 Перед деплоєм переконайтеся, що всі статичні файли зібрані:
 
-
-python manage.py collectstatic
-
+```
+poetry run python manage.py collectstatic
+```
 
 Виконання міграцій
 Якщо внесено зміни в моделі, виконайте:
+```
+poetry run python manage.py makemigrations
+poetry run python manage.py migrate
 
-python manage.py makemigrations
-python manage.py migrate
-
+```
 
 
 ## 8. Docker (якщо використовується)
 Якщо ваш проект працює у Docker, використовуйте наступні команди:
 
 Запуск контейнерів
-
+```
 docker-compose up -d
+```
 Зупинка контейнерів
-
+```
 docker-compose down
+```
 Перезапуск контейнерів
-
+```
 docker-compose restart
+```
 Вхід у контейнер
-
+```
 docker-compose exec web bash
+```
 Перегляд логів контейнерів
-
+```
 docker-compose logs
+```
 Видалення всіх контейнерів, томів та образів
-
+```
 docker system prune -a --volumes
+```
+
 ## 9. Додаткові корисні команди
 Оновлення залежностей (з Poetry)
-
+```
 poetry update
+```
 Генерація requirements.txt
-
+```
 poetry export -f requirements.txt --output requirements.txt --without-hashes
+```
 Резервне копіювання бази даних
-
+```
 pg_dump -U <user> -h <host> <database_name> > backup.sql
+```
 Відновлення бази даних
-
+```
 psql -U <user> -h <host> <database_name> < backup.sql
+```
 ## 10. GitHub-команди
 Клонування репозиторію
-
+```
 git clone https://github.com/yourusername/huhysite.git
+```
 Перевірка статусу репозиторію
-
+```
 git status
+```
 Додавання змін до коміту
-
+```
 git add .
+```
 Комітування змін
-
+```
 git commit -m "Опис змін"
+```
 Відправлення змін на сервер
-
+```
 git push
+```
