@@ -1,9 +1,11 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import TemplateView, ListView, DetailView, View
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import Category, Product, Order, OrderItem
+from .models import Category, Product, Order, OrderItem, Tag
 import requests
 from django.conf import settings
+import json
+
 
 def send_telegram_message(message: str):
     bot_token = settings.TGBOT_TOKEN
@@ -25,6 +27,7 @@ def send_telegram_message(message: str):
 
 class ShopHomeView(TemplateView):
     template_name = 'index.html'
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['featured_products'] = Product.objects.filter(available=True).order_by('-created')[:8]
@@ -39,15 +42,26 @@ class CatalogView(ListView):
 
     def get_queryset(self):
         queryset = Product.objects.filter(available=True).order_by('-created')
+        # Фільтрація за категорією
         category_slug = self.request.GET.get('category')
         if category_slug:
             queryset = queryset.filter(category__slug=category_slug)
+        # Фільтрація за тегами (очікуємо, що в GET буде кілька значень параметра "tags")
+        tags = self.request.GET.getlist('tags')
+        if tags:
+            queryset = queryset.filter(tags__id__in=tags).distinct()
+        # Фільтрація за бандлами – якщо вибрано чекбокс "Бандли"
+        if self.request.GET.get('bundles') == '1':
+            queryset = queryset.filter(pack_details__isnull=False)
         return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['categories'] = Category.objects.all()
+        context['tags'] = Tag.objects.all()  # Передаємо усі теги для фільтрації
         context['selected_category'] = self.request.GET.get('category', '')
+        context['selected_tags'] = self.request.GET.getlist('tags')
+        context['selected_bundles'] = self.request.GET.get('bundles', '')
 
         # Для кожного товару в списку перевіряємо:
         # Якщо це бандл (hasattr(product, 'pack_details')) і у нього немає product.image,
@@ -72,7 +86,6 @@ class CatalogView(ListView):
                                 break
                         if product.catalog_image:
                             break
-
         return context
 
     def get(self, request, *args, **kwargs):
@@ -122,11 +135,15 @@ class ProductDetailView(DetailView):
             else:
                 context['images'] = self.object.images.all()
         context['packs_in'] = self.object.included_in_packs.all()
+        # Передаємо у контекст JSON-масив URL зображень для каруселі
+        context['image_urls'] = json.dumps([img.url for img in context.get('images', [])])
         return context
+
 
 
 class CartView(TemplateView):
     template_name = 'cart.html'
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         cart = self.request.session.get('cart', {})
@@ -167,6 +184,7 @@ class CartView(TemplateView):
 
 class CheckoutView(View):
     template_name = 'checkout.html'
+
     def get(self, request, *args, **kwargs):
         cart = request.session.get('cart', {})
         if not cart:
@@ -174,7 +192,7 @@ class CheckoutView(View):
         return render(request, self.template_name)
 
     def post(self, request, *args, **kwargs):
-        cart = self.request.session.get('cart', {})
+        cart = request.session.get('cart', {})
         if not cart:
             return redirect('shop:cart')
         full_name = request.POST.get('full_name')
@@ -225,6 +243,7 @@ class OrderSuccessView(TemplateView):
 
 class PersonalCabinetView(LoginRequiredMixin, TemplateView):
     template_name = 'personal_cabinet.html'
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['orders'] = self.request.user.orders.all().order_by('-created')

@@ -1,6 +1,5 @@
 from django.urls import path
 from .views import (
-    ShopHomeView,
     CatalogView,
     ProductDetailView,
     CartView,
@@ -12,7 +11,7 @@ from .views import (
 app_name = 'shop'
 
 urlpatterns = [
-    path('', ShopHomeView.as_view(), name='shop_home'),
+    path('', CatalogView.as_view(), name='shop_home'),  # Головна сторінка – каталог
     path('catalog/', CatalogView.as_view(), name='catalog'),
     path('product/<slug:slug>/', ProductDetailView.as_view(), name='product_detail'),
     path('cart/', CartView.as_view(), name='cart'),

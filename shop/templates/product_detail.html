@@ -6,34 +6,62 @@
 {% block content %}
 <div class="max-w-screen-2xl mx-auto py-10 px-4 lg:px-8">
   <div class="flex flex-col lg:flex-row gap-8">
-    <!-- Зображення товару -->
-    <div class="w-full lg:w-1/2">
-      <div class="w-full h-96 overflow-hidden rounded-lg">
-        {% if images and images|length > 0 %}
-          <img src="{{ images.0.url }}" alt="{{ product.name }}" class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
-        {% else %}
-          <img src="{% static 'images/placeholder.png' %}" alt="{{ product.name }}" class="w-full h-full object-cover">
-        {% endif %}
+    <!-- Секція з зображеннями -->
+    <div class="w-full lg:w-1/2 relative">
+      <!-- Основне зображення у квадратному контейнері -->
+      <div id="main-image-container" class="w-full aspect-square overflow-hidden rounded-lg">
+        <img id="main-image" src="{% if main_image %}{{ main_image.url }}{% elif images and images|length > 0 %}{{ images.0.url }}{% else %}{% static 'images/placeholder.png' %}{% endif %}" alt="{{ product.name }}" class="w-full h-full object-cover transition-transform duration-300">
       </div>
-      {% if images and images|length > 1 %}
-      <div class="mt-4 grid grid-cols-4 gap-4">
-        {% for img in images|slice:"1:" %}
-          <div class="w-full h-24 overflow-hidden rounded">
-            <img src="{{ img.url }}" alt="{{ product.name }}" class="w-full h-full object-cover">
+      <!-- Стрілки для основного зображення -->
+      <button onclick="prevImage()" class="absolute left-2 top-1/2 transform -translate-y-1/2 bg-gray-700 bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-75 z-20">
+        ‹
+      </button>
+      <button onclick="nextImage()" class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-700 bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-75 z-20">
+        ›
+      </button>
+      <!-- Карусель мініатюр -->
+      <div class="relative mt-4">
+        <!-- Ліва стрілка для прокрутки мініатюр -->
+        <button onclick="scrollThumbnails(-1)" class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-700 bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-75 z-10">
+          ‹
+        </button>
+        <div id="thumbnail-carousel" class="flex space-x-2 overflow-x-auto scrollbar-hide">
+          <!-- Перша мініатюра – завжди головне зображення -->
+          {% if main_image %}
+          <div class="flex-shrink-0 w-24 h-24 cursor-pointer" onclick="switchMainImage('{{ main_image.url }}')">
+            <img src="{{ main_image.url }}" alt="Main Thumbnail" class="w-full h-full object-cover rounded">
           </div>
-        {% endfor %}
+          {% endif %}
+          <!-- Інші мініатюри -->
+          {% if gallery_images %}
+            {% for img in gallery_images %}
+            <div class="flex-shrink-0 w-24 h-24 cursor-pointer" onclick="switchMainImage('{{ img.url }}')">
+              <img src="{{ img.url }}" alt="Thumbnail" class="w-full h-full object-cover rounded">
+            </div>
+            {% endfor %}
+          {% elif product.images.all %}
+            {% for img in product.images.all %}
+            <div class="flex-shrink-0 w-24 h-24 cursor-pointer" onclick="switchMainImage('{{ img.image.url }}')">
+              <img src="{{ img.image.url }}" alt="{{ img.caption }}" class="w-full h-full object-cover rounded">
+            </div>
+            {% endfor %}
+          {% endif %}
+        </div>
+        <!-- Права стрілка для прокрутки мініатюр -->
+        <button onclick="scrollThumbnails(1)" class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-700 bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-75 z-10">
+          ›
+        </button>
       </div>
-      {% endif %}
     </div>
-    <!-- Опис товару -->
+    <!-- Секція з описом -->
     <div class="w-full lg:w-1/2">
       <h1 class="text-3xl font-bold mb-4">{{ product.name }}</h1>
       {% if product.discount_active and product.discount_percent > 0 %}
         <p class="text-2xl text-red-600 font-semibold mb-2">
-            Знижка {{ product.discount_percent }}%!
+          Знижка {{ product.discount_percent }}%!
         </p>
         <p class="text-2xl text-green-600 font-semibold mb-4">
-            <span class="line-through text-gray-500">{{ product.price }} грн</span> {{ product.discounted_price|floatformat:2 }} грн
+          <span class="line-through text-gray-500">{{ product.price }} грн</span> {{ product.discounted_price|floatformat:2 }} грн
         </p>
       {% else %}
         <p class="text-2xl text-green-600 font-semibold mb-4">{{ product.price }} грн</p>
@@ -59,18 +87,51 @@
         </ul>
       </div>
       {% endif %}
-
-      {% if packs_in %}
+      <!-- Відображення тегів -->
+      {% if product.tags.all %}
       <div class="mt-6">
-        <h2 class="text-2xl font-bold mb-2">Цей товар входить до наступних пакетів:</h2>
-        <ul class="list-disc list-inside">
-          {% for pack in packs_in %}
-            <li><a href="{% url 'shop:product_detail' slug=pack.product.slug %}" class="text-blue-600 hover:underline">{{ pack.product.name }}</a></li>
+        <h2 class="text-2xl font-bold mb-2">Теги:</h2>
+        <div class="flex flex-wrap gap-2">
+          {% for tag in product.tags.all %}
+          <a href="{% url 'shop:catalog' %}?tags={{ tag.id }}" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 transition">
+            {{ tag.name }}
+          </a>
           {% endfor %}
-        </ul>
+        </div>
       </div>
       {% endif %}
     </div>
   </div>
 </div>
+
+<script>
+var imageUrls = {{ image_urls|safe }};
+var currentIndex = 0;
+function showImage(index) {
+    if (index < 0 || index >= imageUrls.length) return;
+    currentIndex = index;
+    document.getElementById('main-image').src = imageUrls[currentIndex];
+}
+function nextImage() {
+    var newIndex = (currentIndex + 1) % imageUrls.length;
+    showImage(newIndex);
+}
+function prevImage() {
+    var newIndex = (currentIndex - 1 + imageUrls.length) % imageUrls.length;
+    showImage(newIndex);
+}
+function switchMainImage(src) {
+    var index = imageUrls.indexOf(src);
+    if(index !== -1){
+        currentIndex = index;
+    }
+    document.getElementById('main-image').src = src;
+}
+
+// Функція для прокручування каруселі мініатюр
+function scrollThumbnails(direction) {
+  const carousel = document.getElementById('thumbnail-carousel');
+  carousel.scrollBy({ left: direction * 80, behavior: 'smooth' });
+}
+</script>
 {% endblock %}
