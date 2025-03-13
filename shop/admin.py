@@ -250,12 +250,15 @@ admin.site.register(Tag)
 
 @admin.register(Pack)
 class PackAdmin(admin.ModelAdmin):
-    list_display = ('product', 'components_list', 'get_total_price', 'auto_price', 'product_info')
+    list_display = ('id', 'product', 'components_list', 'get_total_price', 'auto_price', 'product_info')
     filter_horizontal = ('components',)
-    readonly_fields = ('product_info',)
+    readonly_fields = (
+        'product_info',
+        'get_total_price',
+    )
     fieldsets = (
         (None, {
-            'fields': ('product_info', 'auto_price', 'components'),
+            'fields': ('product', 'product_info', 'auto_price', 'components', 'get_total_price'),
         }),
     )
 
