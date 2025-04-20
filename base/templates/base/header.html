@@ -3,11 +3,19 @@
 <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 <header id="SITE_HEADER" class="SITE_HEADER">
     <nav class="navbar">
-        <a href="https://www.huhy.space" class="logo">
-            <img src="{% static 'images/huhy_white.jpg' %}" alt="ХУХИ Logo">
-        </a>
-        <a href="{% url 'blog_list' %}" style="font-size: 18px; color: beige; font-weight: 700; padding: 5px 10px; transition: color 0.3s ease;" class="hover-link">Блог</a>
-        <a href="{% url 'shop:shop_home' %}" style="font-size: 18px; color: beige; font-weight: 700; padding: 5px 10px; transition: color 0.3s ease;" class="hover-link">Крамниця</a>
+
+        <div class="nav-left">
+            <a href="https://www.huhy.space" class="logo">
+                <img src="{% static 'images/huhy_white.jpg' %}" alt="ХУХИ Logo">
+            </a>
+
+            <ul class="left-nav-links">
+                <li class="stick">|</li>
+                <li><a href="{% url 'blog_list' %}">Блог</a></li>
+                <li class="stick">|</li>
+                <li><a href="{% url 'shop:shop_home' %}">Крамниця</a></li>
+            </ul>
+        </div>
 
         <ul class="nav-links" id="nav-links">
             <li><a href="#games">Ігри</a></li>
@@ -15,10 +23,12 @@
             <li><a href="#calendar">Календар</a></li>
             <li><a href="https://t.me/hyhu_space" target="_blank">Записатись</a></li>
         </ul>
+
         <div class="menu-icon" onclick="toggleMenu()">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-list"
+                viewBox="0 0 16 16">
                 <path fill-rule="evenodd"
-                      d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
+                    d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5" />
             </svg>
         </div>
     </nav>
