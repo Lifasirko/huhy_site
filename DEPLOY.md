@@ -13,6 +13,14 @@ sudo supervisorctl restart huhy
 sudo nginx -t  # Перевірка конфігурації на помилки
 
 
+ Подивитися останні 50 рядків stdout
+sudo tail -n 50 /var/log/huhy.out.log
+
+ Подивитися останні 50 рядків stderr
+sudo tail -n 50 /var/log/huhy.err.log
+
+./backup_db.sh
+
 # DEPLOY.md
 
 Цей файл містить інструкції та команди для деплою проекту `huhysite` на сервер. Він допоможе швидко виконувати основні операції з оновлення, налаштування та обслуговування сайту.
@@ -33,6 +41,22 @@ ssh root@45.91.169.29
 ```
 cd huhy/huhy_site/
 ```
+Щоби бачити потоковий вивід помилок у реальному часі, зробіть
+
+sudo tail -f /root/huhy/huhy_site/errors.log
+
+```
+cd management/commands/
+```
+```
+nano show_slug_issues.py
+```
+
+```
+cd ../../..
+```
+
+nano /etc/supervisor/conf.d/huhy.conf
 
 ## 3. Оновлення системи
 Перед оновленням проекту рекомендується оновити пакети системи:
@@ -65,7 +89,7 @@ User = get_user_model()
 print(User.objects.values("username"))
 # Змініть пароль конкретного користувача:
 user = User.objects.get(username="admin")  # Вкажіть реальний username
-user.set_password("новий_пароль")
+user.set_password("1111")
 user.save()
 print("Пароль оновлено!")
 ```
@@ -182,3 +206,14 @@ git commit -m "Опис змін"
 ```
 git push
 ```
+
+## 11. Виправлення під’єднання статичних файлів11. Виправлення під’єднання статичних файлів
+Копіювання статичних файлів в директорію для nginX:
+```
+sudo cp -r staticfiles/* /var/www/huhy/staticfiles/
+```
+
+Set ownership and permissions
+sudo chown -R www-data:www-data /var/www/huhy/staticfiles
+sudo chmod -R 755 /var/www/huhy/staticfiles
+

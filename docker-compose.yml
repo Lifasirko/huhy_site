@@ -1,3 +1,4 @@
+name: huhy_site
 version: '3.8'
 
 services:
@@ -14,3 +15,5 @@ services:
 
 volumes:
   postgres_data:
+    external: true
+    name: huhy_site_postgres_data
