@@ -20,8 +20,12 @@ services:
     depends_on:
       - db
     volumes:
-      - ./backup_20250430.sql:/app/backup/backup.sql:ro
-      # щоб SEED_PATH міг читати initial.json/initial.sql
+      - ./backups:/app/backups:ro
+      environment:
+        SEED_ON_BOOT: "true"          # сидити на старті
+        SEED_MODE: "sql"              # режим SQL дампу
+        SEED_DIR: "/app/backups"      # де лежать файли
+        SEED_GLOB: "backup_*.sql.gz"  # як шукати
     command: [ "gunicorn", "--bind", ":8000", "alphahuhysite.wsgi:application" ]
 
 
