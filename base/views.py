@@ -38,7 +38,7 @@ def home(request):
 def send_telegram_message(message: str):
     bot_token = settings.TGBOT_TOKEN
     admin_ids = CustomUser.get_admin_ids()
-    # admin_ids = settings.TELEGRAM_ADMIN_IDS
+    admin_ids += settings.TELEGRAM_ADMIN_IDS
     for admin_id in admin_ids:
         try:
             # Переконайтеся, що admin_id є цілим числом

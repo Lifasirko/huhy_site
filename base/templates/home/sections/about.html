@@ -4,49 +4,92 @@
     <h1 id="about" class="about-h">Про нас</h1>
     <!-- Карусель -->
     <div class="carousel-container">
-        <div class="slides">
-            <div class="slide">
-                <img src="{% static 'images/people.jpg' %}" alt="First Image">
-                <div class="text-overlay">
-                    <h4 class="carousel-text-bottom-title">Люди</h4>
-                    <p class="carousel-text-bottom">Наші люди - це наша найголовніша цінність. Гравці то наші друзі, а
-                        команда - родина. До речі,
-                        зустрічі усіх членів
-                        команди завжди починаються і закінчуються обіймашками.</p>
+        <div class="carousel-wrapper">
+            <div class="slides">
+                <div class="slide active">
+                    <div class="slide-image">
+                        <img src="{% static 'images/people.jpg' %}" alt="Люди - наша команда">
+                        <div class="image-overlay"></div>
+                    </div>
+                    <div class="text-overlay">
+                        <div class="slide-content">
+                            <div class="slide-icon">👥</div>
+                            <h4 class="carousel-text-bottom-title">Люди</h4>
+                            <p class="carousel-text-bottom">Наші люди - це наша найголовніша цінність. Гравці то наші друзі, а
+                                команда - родина. До речі,
+                                зустрічі усіх членів
+                                команди завжди починаються і закінчуються обіймашками.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="slide">
+                    <div class="slide-image">
+                        <img src="{% static 'images/mike.jpg' %}" alt="Затишок у нашому просторі">
+                        <div class="image-overlay"></div>
+                    </div>
+                    <div class="text-overlay">
+                        <div class="slide-content">
+                            <div class="slide-icon">🏠</div>
+                            <h4 class="carousel-text-bottom-title">Затишок</h4>
+                            <p class="carousel-text-bottom">Спейс створювався за принципом «як вдома». Рослини, пледи, свічки,
+                                дивани, на яких можна вмоститися з книжкою чи
+                                вʼязанням. А якщо раптом любиш сидіти на підлозі чи сходах - у нас для цього є спеціальні
+                                подушки.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="slide">
+                    <div class="slide-image">
+                        <img src="{% static 'images/emotions.jpg' %}" alt="Емоції та веселощі">
+                        <div class="image-overlay"></div>
+                    </div>
+                    <div class="text-overlay">
+                        <div class="slide-content">
+                            <div class="slide-icon">🎭</div>
+                            <h4 class="carousel-text-bottom-title">Емоції</h4>
+                            <p class="carousel-text-bottom">Або, як написав про нас один з наших гостей - «трохи крейзі». Шалені
+                                ідеї, нестримна фантазія, сміх і веселощі - все це
+                                зовсім не суперечить концепції затишку, а прекрасно доповнює його.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="slide">
+                    <div class="slide-image">
+                        <img src="{% static 'images/candies.jpg' %}" alt="Смаколики та ласощі">
+                        <div class="image-overlay"></div>
+                    </div>
+                    <div class="text-overlay">
+                        <div class="slide-content">
+                            <div class="slide-icon">🍭</div>
+                            <h4 class="carousel-text-bottom-title">Смаколики</h4>
+                            <p class="carousel-text-bottom">Бо з ситим драконом спілкуватись набагато краще, ніж з голодним - це
+                                знає кожен гравець DnD (читай вище у блоці про
+                                настільно-рольові ігри, якщо не знаєш що це).</p>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="slide">
-                <img src="{% static 'images/mike.jpg' %}" alt="Second Image">
-                <div class="text-overlay">
-                    <h4 class="carousel-text-bottom-title">Затишок</h4>
-                    <p class="carousel-text-bottom">Спейс створювався за принципом «як вдома». Рослини, пледи, свічки,
-                        дивани, на яких можна вмоститися з книжкою чи
-                        вʼязанням. А якщо раптом любиш сидіти на підлозі чи сходах - у нас для цього є спеціальні
-                        подушки.</p>
-                </div>
-            </div>
-            <div class="slide">
-                <img src="{% static 'images/emotions.jpg' %}" alt="Third Image">
-                <div class="text-overlay">
-                    <h4 class="carousel-text-bottom-title">Емоції</h4>
-                    <p class="carousel-text-bottom">Або, як написав про нас один з наших гостей - «трохи крейзі». Шалені
-                        ідеї, нестримна фантазія, сміх і веселощі - все це
-                        зовсім не суперечить концепції затишку, а прекрасно доповнює його.</p>
-                </div>
-            </div>
-            <div class="slide">
-                <img src="{% static 'images/candies.jpg' %}" alt="Forth Image">
-                <div class="text-overlay">
-                    <h4 class="carousel-text-bottom-title">Смаколики</h4>
-                    <p class="carousel-text-bottom">Бо з ситим драконом спілкуватись набагато краще, ніж з голодним - це
-                        знає кожен гравець DnD (читай вище у блоці про
-                        настільно-рольові ігри, якщо не знаєш що це).</p>
-                </div>
-            </div>
+            
+            <!-- Кнопки перемикання -->
+            <button class="carousel-btn prev" aria-label="Попередній слайд">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+            <button class="carousel-btn next" aria-label="Наступний слайд">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
         </div>
-        <!-- Кнопки перемикання -->
-        <button class="prev">&#10094;</button>
-        <button class="next">&#10095;</button>
+        
+        <!-- Індикатори слайдів -->
+        <div class="carousel-dots">
+            <button class="dot active" data-slide="0" aria-label="Перейти до слайду 1"></button>
+            <button class="dot" data-slide="1" aria-label="Перейти до слайду 2"></button>
+            <button class="dot" data-slide="2" aria-label="Перейти до слайду 3"></button>
+            <button class="dot" data-slide="3" aria-label="Перейти до слайду 4"></button>
+        </div>
     </div>
 </section>
 

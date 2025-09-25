@@ -388,6 +388,185 @@ body {
     margin-bottom: 0;
 }
 
+.under-banner-cta {
+    margin-top: 32px;
+    display: flex;
+    justify-content: center;
+}
+
+.cta-button {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 32px;
+    font-size: 18px;
+    font-weight: 700;
+    font-family: 'Lato', sans-serif;
+    color: #ffffff;
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 25%, #ff9ff3 50%, #54a0ff 75%, #5f27cd 100%);
+    background-size: 300% 300%;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 10px 25px -5px rgba(255, 107, 107, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    transform: translateY(0);
+    backdrop-filter: blur(8px);
+    animation: gradient-shift 3s ease infinite, float 6s ease-in-out infinite;
+}
+
+.cta-button::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, #ff9ff3 0%, #54a0ff 25%, #5f27cd 50%, #ff6b6b 75%, #ee5a24 100%);
+    background-size: 300% 300%;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 12px;
+    animation: gradient-shift 2s ease infinite reverse;
+}
+
+.cta-button::after {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(from 0deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    animation: spin 2s linear infinite;
+}
+
+.cta-button-text {
+    position: relative;
+    z-index: 2;
+    transition: transform 0.3s ease;
+}
+
+.cta-button-icon {
+    position: relative;
+    z-index: 2;
+    transition: transform 0.3s ease;
+    stroke-width: 2.5;
+}
+
+.cta-button:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 25px 50px -12px rgba(255, 107, 107, 0.6), 0 10px 20px -4px rgba(0, 0, 0, 0.1);
+    animation-play-state: paused;
+}
+
+.cta-button:hover::before {
+    opacity: 1;
+}
+
+.cta-button:hover::after {
+    opacity: 1;
+}
+
+.cta-button:hover .cta-button-icon {
+    transform: translateX(6px) rotate(15deg);
+}
+
+.cta-button:hover .cta-button-text {
+    transform: scale(1.05);
+}
+
+.cta-button:active {
+    transform: translateY(-1px) scale(0.98);
+    transition: all 0.1s ease;
+}
+
+.cta-button:focus {
+    outline: none;
+    ring: 4px solid rgba(239, 68, 68, 0.3);
+    box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 0 0 4px rgba(239, 68, 68, 0.3);
+}
+
+/* Colorful animations */
+@keyframes gradient-shift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes rainbow-pulse {
+    0%, 100% {
+        box-shadow: 0 10px 25px -5px rgba(255, 107, 107, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+    25% {
+        box-shadow: 0 10px 25px -5px rgba(84, 160, 255, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+    50% {
+        box-shadow: 0 10px 25px -5px rgba(255, 159, 243, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+    75% {
+        box-shadow: 0 10px 25px -5px rgba(95, 39, 205, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+}
+
+.cta-button {
+    animation: gradient-shift 3s ease infinite, float 6s ease-in-out infinite, rainbow-pulse 4s ease-in-out infinite;
+}
+
+@media (max-width: 768px) {
+    .cta-button {
+        padding: 14px 28px;
+        font-size: 16px;
+        gap: 10px;
+    }
+    
+    .cta-button-icon {
+        width: 18px;
+        height: 18px;
+    }
+}
+
+@media (max-width: 480px) {
+    .cta-button {
+        padding: 12px 24px;
+        font-size: 15px;
+        gap: 8px;
+    }
+    
+    .cta-button-icon {
+        width: 16px;
+        height: 16px;
+    }
+}
+
 @media (max-width: 760px) {
 
     .under-banner {
@@ -620,117 +799,362 @@ body {
 .carousel-container {
     position: relative;
     width: 100%;
-    overflow: hidden;
+    max-width: 1200px;
     margin: 0 auto;
-    margin-top: 10px;
-    background-color: #ffffff;
+    margin-top: 20px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.carousel-wrapper {
+    position: relative;
+    overflow: hidden;
+    border-radius: 20px;
 }
 
 .slides {
     display: flex;
-    transition: transform 0.5s ease-in-out;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    height: 500px;
 }
 
 .slide {
     min-width: 100%;
-    box-sizing: border-box;
     position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.slide-image {
+    position: relative;
+    height: 60%;
+    overflow: hidden;
 }
 
 .slide img {
     width: 100%;
-    margin-bottom: 0;
     height: 100%;
-    height: 550px;
     object-fit: cover;
+    transition: transform 0.6s ease;
+}
+
+.image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.1) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.slide:hover .image-overlay {
+    opacity: 1;
+}
+
+.slide:hover img {
+    transform: scale(1.05);
 }
 
 .text-overlay {
     position: relative;
     width: 100%;
-    background-color: #f8f9fa;
-    color: rgb(0, 0, 0);
-    text-align: left;
-    font-size: 18px;
-    padding: 10px 0;
-    margin-bottom: 40px;
+    height: 40%;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    color: #333;
+    display: flex;
+    align-items: center;
+    padding: 30px;
+    box-sizing: border-box;
+}
+
+.slide-content {
+    width: 100%;
+    text-align: center;
+}
+
+.slide-icon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    display: block;
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
 }
 
 .carousel-text-bottom-title {
-    font-weight: 600;
-    font-size: 25px;
-    margin-top: 10px;
-    margin-bottom: 5px;
-    margin-left: 2%;
-    box-sizing: border-box;
+    font-weight: 700;
+    font-size: 28px;
+    margin: 0 0 15px 0;
+    color: #2c3e50;
+    font-family: 'Lato', sans-serif;
 }
 
 .carousel-text-bottom {
-    font-weight: 300;
-    font-size: 15px;
-    text-align: left;
-    width: 100%;
-    max-width: 100%;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #555;
+    margin: 0;
+    text-align: center;
+    max-width: 600px;
     margin: 0 auto;
-    padding-left: 2%;
-    padding-right: 2%;
-    padding-bottom: 2%;
-    box-sizing: border-box;
-    overflow: hidden;
-    white-space: normal;
 }
 
-/* Стилі для кнопок перемикання (карусель)*/
-button.prev,
-button.next {
+/* Стилі для кнопок перемикання */
+.carousel-btn {
     position: absolute;
-    top: 35%;
+    top: 50%;
     transform: translateY(-50%);
-    background-color: rgba(0, 0, 0, 0.5);
-    color: white;
+    background: rgba(255, 255, 255, 0.9);
+    color: #333;
     border: none;
-    padding: 10px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
     cursor: pointer;
-    z-index: 900;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(10px);
 }
 
-button.prev {
-    left: 10px;
+.carousel-btn:hover {
+    background: rgba(255, 255, 255, 1);
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
-button.next {
-    right: 10px;
+.carousel-btn:active {
+    transform: translateY(-50%) scale(0.95);
 }
 
-button:hover {
-    background-color: rgba(0, 0, 0, 0.8);
+.carousel-btn.prev {
+    left: 20px;
 }
 
+.carousel-btn.next {
+    right: 20px;
+}
+
+.carousel-btn svg {
+    transition: transform 0.3s ease;
+}
+
+.carousel-btn:hover svg {
+    transform: scale(1.1);
+}
+
+/* Індикатори слайдів */
+.carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    padding: 20px 0;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+.dot:hover {
+    background: rgba(0, 0, 0, 0.4);
+    transform: scale(1.2);
+}
+
+.dot.active {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+    transform: scale(1.3);
+    box-shadow: 0 2px 8px rgba(255, 107, 107, 0.4);
+}
+
+.dot.active::after {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 107, 107, 0.3);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1.4);
+        opacity: 0;
+    }
+}
+
+/* Responsive Design */
 @media (max-width: 1200px) {
-
-    .about-h {
-        margin-top: 0;
-        margin-bottom: 0;
-    }
-
     .carousel-container {
-        width: 90%;
+        width: 95%;
+        margin-top: 15px;
     }
 
-    .slide img {
-        max-height: 60vh;
+    .slides {
+        height: 450px;
     }
 
-    .text-overlay {
-        font-size: 0.9rem;
-    }
-
-    .carousel-text-bottom {
-        padding-right: 10%;
+    .slide-icon {
+        font-size: 2.5rem;
     }
 
     .carousel-text-bottom-title {
-        font-size: 1.2rem;
+        font-size: 24px;
+    }
+
+    .carousel-text-bottom {
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 768px) {
+    .carousel-container {
+        width: 100%;
+        margin-top: 10px;
+        border-radius: 15px;
+    }
+
+    .carousel-wrapper {
+        border-radius: 15px;
+    }
+
+    .slides {
+        height: 400px;
+    }
+
+    .slide-image {
+        height: 50%;
+    }
+
+    .text-overlay {
+        height: 50%;
+        padding: 20px;
+    }
+
+    .slide-icon {
+        font-size: 2rem;
+        margin-bottom: 10px;
+    }
+
+    .carousel-text-bottom-title {
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+
+    .carousel-text-bottom {
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    .carousel-btn {
+        width: 40px;
+        height: 40px;
+    }
+
+    .carousel-btn.prev {
+        left: 10px;
+    }
+
+    .carousel-btn.next {
+        right: 10px;
+    }
+
+    .carousel-dots {
+        padding: 15px 0;
+        gap: 10px;
+    }
+
+    .dot {
+        width: 10px;
+        height: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .carousel-container {
+        border-radius: 10px;
+    }
+
+    .carousel-wrapper {
+        border-radius: 10px;
+    }
+
+    .slides {
+        height: 350px;
+    }
+
+    .text-overlay {
+        padding: 15px;
+    }
+
+    .slide-icon {
+        font-size: 1.5rem;
+        margin-bottom: 8px;
+    }
+
+    .carousel-text-bottom-title {
+        font-size: 18px;
+        margin-bottom: 8px;
+    }
+
+    .carousel-text-bottom {
+        font-size: 13px;
+        line-height: 1.4;
+    }
+
+    .carousel-btn {
+        width: 35px;
+        height: 35px;
+    }
+
+    .carousel-btn.prev {
+        left: 5px;
+    }
+
+    .carousel-btn.next {
+        right: 5px;
+    }
+
+    .carousel-dots {
+        padding: 10px 0;
+        gap: 8px;
+    }
+
+    .dot {
+        width: 8px;
+        height: 8px;
     }
 }
 

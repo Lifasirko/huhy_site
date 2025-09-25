@@ -1,4 +1,4 @@
-name: huhy_site
+name: ${DB_NAME}
 version: '3.8'
 
 services:
@@ -11,9 +11,22 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
-      - "5432:5432"
+      - ${DB_PORT}:${DB_PORT}
+  web:
+    build: .
+    env_file: .env
+    environment:
+      DB_HOST: db
+      DB_PORT: ${DB_PORT}
+    depends_on:
+      - db
+    volumes:
+      - ./backup_20250430.sql:/app/backup/backup.sql:ro
+      # щоб SEED_PATH міг читати initial.json/initial.sql
+    command: [ "gunicorn", "--bind", ":8000", "alphahuhysite.wsgi:application" ]
+
 
 volumes:
   postgres_data:
-    external: true
-    name: huhy_site_postgres_data
+#    external: true
+    name: ${DB_NAME}data

@@ -23,6 +23,8 @@ django-meta = "^2.4.2"
 django-imagekit = "^5.0.0"
 django-js-asset = "^3.0.1"
 whitenoise = "^6.9.0"
+gunicorn = "^23.0.0"
+
 
 
 [build-system]

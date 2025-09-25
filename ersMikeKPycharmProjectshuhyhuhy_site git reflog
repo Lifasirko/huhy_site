@@ -1,0 +1,14 @@
+[33md122f52[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mnew_shop[m[33m, [m[1;31morigin/new_shop[m[33m, [m[1;31morigin/frontend_the_seventh[m[33m, [m[1;32mfrontend_the_seventh[m[33m)[m HEAD@{0}: merge frontend_the_seventh: Fast-forward
+[33m59583e5[m HEAD@{1}: checkout: moving from frontend_the_seventh to new_shop
+[33md122f52[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mnew_shop[m[33m, [m[1;31morigin/new_shop[m[33m, [m[1;31morigin/frontend_the_seventh[m[33m, [m[1;32mfrontend_the_seventh[m[33m)[m HEAD@{2}: checkout: moving from new_shop to frontend_the_seventh
+[33m59583e5[m HEAD@{3}: commit: Fix PackAdmin
+[33m58dca08[m HEAD@{4}: commit: Fix DEPLOY.md
+[33m4e3ff98[m HEAD@{5}: commit: Fix DEPLOY.md
+[33m85447ef[m HEAD@{6}: commit: Improve product page
+[33m3172127[m HEAD@{7}: commit: Fix picture for bundles
+[33m24ab01b[m HEAD@{8}: commit: Hiding filters
+[33mc1bb7c1[m HEAD@{9}: commit: Added bundles
+[33m2f90c3b[m HEAD@{10}: commit: Initial? for shop
+[33m97cdf31[m[33m ([m[1;31morigin/blog_final[m[33m, [m[1;32mblog_final[m[33m)[m HEAD@{11}: checkout: moving from blog_final to new_shop
+[33m97cdf31[m[33m ([m[1;31morigin/blog_final[m[33m, [m[1;32mblog_final[m[33m)[m HEAD@{12}: checkout: moving from main to blog_final
+[33m324554e[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m HEAD@{13}: clone: from https://github.com/ollenaaa/huhy_site.git

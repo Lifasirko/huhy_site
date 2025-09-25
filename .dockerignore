@@ -1,0 +1,12 @@
+.git
+venv
+**/__pycache__/
+*.py[cod]
+*.log
+.env
+# великі локальні артефакти/дампи (ми їх змонтуємо томом при потребі)
+backup_*.sql
+backup/
+media/
+staticfiles/
+node_modules/
