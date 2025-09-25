@@ -11,21 +11,22 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
       - ${DB_PORT}:${DB_PORT}
+
+
   web:
     build: .
     env_file: .env
     environment:
       DB_HOST: db
       DB_PORT: ${DB_PORT}
+      SEED_ON_BOOT: "true"          # сидити на старті
+      SEED_MODE: "sql"              # режим SQL дампу
+      SEED_DIR: "/app/backups"      # де лежать файли
+      SEED_GLOB: "backup_*.sql.gz"  # як шукати
     depends_on:
       - db
     volumes:
       - ./backups:/app/backups:ro
-      environment:
-        SEED_ON_BOOT: "true"          # сидити на старті
-        SEED_MODE: "sql"              # режим SQL дампу
-        SEED_DIR: "/app/backups"      # де лежать файли
-        SEED_GLOB: "backup_*.sql.gz"  # як шукати
     command: [ "gunicorn", "--bind", ":8000", "alphahuhysite.wsgi:application" ]
 
 
