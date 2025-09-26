@@ -167,6 +167,11 @@ docker-compose logs
 ```
 docker system prune -a --volumes
 ```
+docker compose build --no-cache web
+
+docker compose up -d --force-recreate web
+
+docker compose logs -f web
 
 ## 9. Додаткові корисні команди
 Оновлення залежностей (з Poetry)
