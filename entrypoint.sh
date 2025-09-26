@@ -1,25 +1,21 @@
 #!/usr/bin/env sh
-set -euo pipefail
-# на час налагодження корисно:
-# set -x
+set -e
 
-echo "SEED_ON_BOOT=${SEED_ON_BOOT} SEED_MODE=${SEED_MODE} SEED_PATH=${SEED_PATH}"
-
-echo "Waiting for DB at ${DB_HOST}:${DB_PORT}..."
-until nc -z "${DB_HOST}" "${DB_PORT}"; do
+echo "Waiting for DB at ${DB_HOST:-db}:${DB_PORT:-5432}..."
+until nc -z "${DB_HOST:-db}" "${DB_PORT:-5432}"; do
   sleep 1
 done
 echo "DB is up"
 
+# (опціонально) базова перевірка Django-конфігурації
+python manage.py check
+
+# ВАЖЛИВО: сидимо ЛИШЕ через Django-команду (без жодного psql -f)
 python manage.py init_app
+
+# Збір статики у stdout (щоб бачилось у docker logs)
 python manage.py collectstatic --noinput
 
-: "${GUNICORN_WORKERS:=3}"
-: "${GUNICORN_TIMEOUT:=60}"
-: "${GUNICORN_LOG_LEVEL:=info}"
-
-exec gunicorn alphahuhysite.wsgi:application \
-  --bind 0.0.0.0:8000 \
-  --workers "${GUNICORN_WORKERS}" \
-  --timeout "${GUNICORN_TIMEOUT}" \
-  --log-level "${GUNICORN_LOG_LEVEL}"
+# Запуск gunicorn у foreground з логами в stdout/stderr
+exec gunicorn --bind :8000 ${DJANGO_WSGI_MODULE:-alphahuhysite.wsgi:application} \
+  --access-logfile - --error-logfile -

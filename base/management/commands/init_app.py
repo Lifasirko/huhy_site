@@ -1,36 +1,33 @@
+# base/management/commands/init_app.py
 import os
 import re
 import gzip
-import subprocess
+import uuid
+import shutil
 import requests
+import subprocess
 from pathlib import Path
+from typing import List, Set, Tuple
 
 from django.core.management.base import BaseCommand
 from django.core.management import call_command
 from django.contrib.auth import get_user_model
 
 
-# =========================
-# Допоміжні утиліти / ENV
-# =========================
-
-def _env_str(name: str, default: str = "") -> str:
-    return os.getenv(name, default).strip()
-
-
-def _env_bool(name: str, default: bool = False) -> bool:
+# ----------------------------
+# helpers
+# ----------------------------
+def _env_bool(name: str, default=False) -> bool:
     v = os.getenv(name, str(default)).strip().lower()
     return v in ("1", "true", "yes", "y", "on")
 
 
-def _psql(args, *, check: bool = True, capture: bool = False, text_input: str | None = None) -> str:
+def _psql(args: List[str], check=True, capture=False) -> str:
     """
-    Викликає psql з коректними ENV. Повертає stdout, якщо capture=True.
-    Підтримує text_input (stdin).
+    Run psql with project DB env. Raises on non-zero exit if check=True.
     """
     env = os.environ.copy()
     pg_env = {**env, "PGPASSWORD": env.get("DB_PASSWORD", "")}
-
     base = [
         "psql",
         "-h", env.get("DB_HOST", "db"),
@@ -39,14 +36,12 @@ def _psql(args, *, check: bool = True, capture: bool = False, text_input: str | 
         "-d", env.get("DB_NAME", ""),
         "-v", "ON_ERROR_STOP=1",
     ]
-    cmd = base + list(args)
-
-    if capture or text_input is not None:
-        res = subprocess.run(cmd, env=pg_env, text=True, capture_output=capture, input=text_input)
+    cmd = base + args
+    if capture:
+        res = subprocess.run(cmd, env=pg_env, text=True, capture_output=True)
         if check and res.returncode != 0:
-            err = (res.stderr or "").strip() or "psql error"
-            raise RuntimeError(err)
-        return (res.stdout or "").strip() if capture else ""
+            raise RuntimeError(res.stderr.strip() or "psql error")
+        return (res.stdout or "").strip()
     else:
         res = subprocess.run(cmd, env=pg_env)
         if check and res.returncode != 0:
@@ -55,8 +50,8 @@ def _psql(args, *, check: bool = True, capture: bool = False, text_input: str | 
 
 
 def telegram_notify(text: str):
-    token = _env_str("TGBOT_TOKEN")
-    ids_raw = _env_str("TELEGRAM_ADMIN_IDS")
+    token = os.getenv("TGBOT_TOKEN", "").strip()
+    ids_raw = os.getenv("TELEGRAM_ADMIN_IDS", "").strip()
     if not token or not ids_raw:
         print("init_app: telegram skipped (no token/admin ids)")
         return
@@ -71,290 +66,241 @@ def telegram_notify(text: str):
             print(f"init_app: telegram error for {chat_id}: {e}")
 
 
-# =========================
-# Діагностика БД / блокування
-# =========================
-
-def _db_diag():
-    try:
-        diag = _psql(["-tAc", "select current_database(), current_user;"], capture=True)
-        print(f"init_app: DB diag -> {diag or '?'}")
-    except Exception as e:
-        print(f"init_app: DB diag failed: {e}")
-
-
-def _db_has_content() -> bool:
+# ----------------------------
+# DB state checks (safe)
+# ----------------------------
+def _schema_has_tables(schema: str = "public") -> bool:
     """
-    Вважаємо БД "непорожньою", якщо:
-      - є таблиця django_migrations і в ній є записи, або
-      - є таблиця blog_blogpost і в ній count > 0
+    Безпечна перевірка: чи є хоч одна таблиця у схемі (без звернення до юзерських таблиць напряму).
     """
+    sql = (
+        "SELECT COUNT(*) FROM pg_class c "
+        "JOIN pg_namespace n ON n.oid = c.relnamespace "
+        f"WHERE n.nspname='{schema}' AND c.relkind IN ('r','p');"
+    )
+    out = _psql(["-tAc", sql], capture=True) or "0"
     try:
-        mig = int((_psql(
-            ["-tAc",
-             "SELECT CASE WHEN to_regclass('public.django_migrations') IS NULL "
-             "THEN 0 ELSE (SELECT COUNT(*) FROM public.django_migrations) END;"],
-            capture=True
-        ) or "0").strip())
-        if mig > 0:
-            return True
-    except Exception:
-        pass
-
-    try:
-        blog = int((_psql(
-            ["-tAc",
-             "SELECT CASE WHEN to_regclass('public.blog_blogpost') IS NULL "
-             "THEN 0 ELSE (SELECT COUNT(*) FROM public.blog_blogpost) END;"],
-            capture=True
-        ) or "0").strip())
-        return blog > 0
-    except Exception:
+        return int(out.strip()) > 0
+    except ValueError:
         return False
 
 
-def _advisory_lock() -> bool:
+# ----------------------------
+# Seed selection
+# ----------------------------
+def _choose_seed_file(seed_path: str, seed_glob: str = "*.sql*") -> Path | None:
     """
-    Проста взаємна виключність між репліками web:
-    TRUE — якщо вдалося взяти lock; FALSE — якщо ні.
+    Якщо seed_path — файл, повертаємо його; якщо директорія — беремо найсвіжіший файл за маскою.
     """
-    try:
-        out = _psql(["-tAc", "SELECT pg_try_advisory_lock(905221234);"], capture=True)
-        return (out or "").strip().lower() in ("t", "true", "1")
-    except Exception as e:
-        print(f"init_app: advisory lock failed: {e}")
-        return True  # не блокуємо виконання при діагностичних збоях
+    p = Path(seed_path)
+    if p.is_file():
+        return p
+    if p.is_dir():
+        files = sorted(p.glob(seed_glob), key=lambda x: x.stat().st_mtime, reverse=True)
+        return files[0] if files else None
+    return None
 
 
-# =========================
-# Вибір файлу сидингу
-# =========================
+# ----------------------------
+# Variant B: temp roles
+# ----------------------------
+_ROLE_IGNORE = {"postgres", "public"}
 
-def _find_seed_file() -> str | None:
+
+def _role_exists(name: str) -> bool:
+    safe = name.replace("'", "''")
+    out = _psql(["-tAc", f"SELECT 1 FROM pg_roles WHERE rolname = '{safe}' LIMIT 1;"], capture=True)
+    return out.strip() == "1"
+
+
+def _create_temp_role(name: str):
+    safe = name.replace('"', '""')
+    _psql(["-tAc", f'CREATE ROLE "{safe}" NOLOGIN;'], check=True, capture=False)
+
+
+def _reassign_and_drop_role(name: str, new_owner: str):
+    s_name = name.replace('"', '""')
+    s_owner = new_owner.replace('"', '""')
+    # Перепризначаємо всі об'єкти і прибираємо привілеї, потім видаляємо роль
+    _psql(["-tAc", f'REASSIGN OWNED BY "{s_name}" TO "{s_owner}";'], check=False, capture=False)
+    _psql(["-tAc", f'DROP OWNED BY "{s_name}";'], check=False, capture=False)
+    _psql(["-tAc", f'DROP ROLE "{s_name}";'], check=False, capture=False)
+
+
+def _extract_role_candidates(sql_text: str, db_user: str) -> Set[str]:
     """
-    Повертає шлях до seed-файлу:
-      1) якщо заданий SEED_PATH і такий файл існує — використовуємо його;
-      2) інакше шукаємо найновіший файл у SEED_DIR за маскою SEED_GLOB.
-    За замовчуванням: SEED_DIR=/app/backups, SEED_GLOB=*.sql*
+    З сирого дампу дістаємо можливі імена ролей, щоб тимчасово їх створити.
+    Беремо з конструкцій OWNER TO / GRANT ... TO / REVOKE ... FROM /
+    ALTER DEFAULT PRIVILEGES FOR ROLE / CREATE ROLE.
     """
-    seed_path = _env_str("SEED_PATH")
-    if seed_path:
-        p = Path(seed_path)
-        if p.is_file():
-            return str(p)
-
-    seed_dir = Path(_env_str("SEED_DIR", "/app/backups"))
-    seed_glob = _env_str("SEED_GLOB", "*.sql*")
-    if not seed_dir.exists():
-        return None
-    files = sorted(seed_dir.glob(seed_glob), key=lambda x: x.stat().st_mtime, reverse=True)
-    return str(files[0]) if files else None
-
-
-# =========================
-# Обробка SQL-дампу
-# =========================
-
-_OWNER_PATTERNS = (
-    re.compile(r'OWNER\s+TO\s+"?[^";]+"\s*;', re.IGNORECASE),
-    re.compile(r'ALTER\s+SCHEMA\s+public\s+OWNER\s+TO\s+"?[^";]+"\s*;', re.IGNORECASE),
-)
-
-
-def _normalize_owner_line(line: str, db_user: str) -> str:
-    """Заміняє OWNER TO ... на OWNER TO "{db_user}"; у поточному рядку."""
-    for pat in _OWNER_PATTERNS:
-        line = pat.sub(f'OWNER TO "{db_user}";', line)
-    return line
-
-
-def _stream_seed_into_psql(seed_file: str, *, db_user: str,
-                           skip_drop: bool, single_tx: bool) -> None:
-    """
-    Стрімить .sql / .sql.gz у psql.
-    - Якщо skip_drop=False — перед цим скидає схему public і створює заново з OWNER=db_user.
-    - Якщо single_tx=True — імпорт у одній транзакції (-1).
-    """
-    if not skip_drop:
-        drop_sql = (
-            f'DROP SCHEMA IF EXISTS public CASCADE; '
-            f'CREATE SCHEMA public AUTHORIZATION "{db_user}"; '
-            f'ALTER SCHEMA public OWNER TO "{db_user}";'
-        )
-        _psql(["-tAc", drop_sql], check=True)
-
-    # Готуємо psql для читання зі stdin
-    args = []
-    if single_tx:
-        args.append("-1")
-    args += ["-f", "-"]  # читати SQL зі stdin
-
-    env = os.environ.copy()
-    pg_env = {**env, "PGPASSWORD": env.get("DB_PASSWORD", "")}
-    base = [
-        "psql",
-        "-h", env.get("DB_HOST", "db"),
-        "-p", env.get("DB_PORT", "5432"),
-        "-U", env.get("DB_USER", ""),
-        "-d", env.get("DB_NAME", ""),
-        "-v", "ON_ERROR_STOP=1",
+    patterns = [
+        r"\bOWNER\s+TO\s+\"?([A-Za-z0-9_]+)\"?",
+        r"\bGRANT\b[^\;]*?\bTO\s+\"?([A-Za-z0-9_]+)\"?",
+        r"\bREVOKE\b[^\;]*?\bFROM\s+\"?([A-Za-z0-9_]+)\"?",
+        r"\bALTER\s+DEFAULT\s+PRIVILEGES\s+FOR\s+ROLE\s+\"?([A-Za-z0-9_]+)\"?",
+        r"\bCREATE\s+ROLE\s+\"?([A-Za-z0-9_]+)\"?",
     ]
-    cmd = base + args
-
-    proc = subprocess.Popen(cmd, env=pg_env, stdin=subprocess.PIPE, text=True)
-
-    def _write_stream(fobj):
-        for line in fobj:
-            proc.stdin.write(_normalize_owner_line(line, db_user))
-
-    try:
-        if seed_file.endswith(".gz"):
-            with gzip.open(seed_file, "rt", encoding="utf-8", errors="ignore") as f:
-                _write_stream(f)
-        else:
-            with open(seed_file, "rt", encoding="utf-8", errors="ignore") as f:
-                _write_stream(f)
-    finally:
-        try:
-            proc.stdin.close()
-        except Exception:
-            pass
-
-    rc = proc.wait()
-    if rc != 0:
-        raise RuntimeError(f"psql returned non-zero exit code: {rc}")
+    found: Set[str] = set()
+    for pat in patterns:
+        for m in re.finditer(pat, sql_text, flags=re.IGNORECASE):
+            name = (m.group(1) or "").strip()
+            if not name:
+                continue
+            if name in _ROLE_IGNORE:
+                continue
+            if name.lower() == db_user.lower():
+                continue
+            found.add(name)
+    return found
 
 
-# =========================
-# Основна логіка сидингу
-# =========================
-
-def _seed_sql_if_needed() -> bool:
+# ----------------------------
+# Seeding
+# ----------------------------
+def _seed_sql_if_needed() -> Tuple[bool, str]:
     """
-    Сидинг БД із SQL/SQL.GZ дампу.
-    ENV:
-      SEED_ON_BOOT (bool)        — вмикає сидинг (default: false)
-      SEED_MODE (str)            — "sql" / "sql_full" / "postgres_sql" (для сумісності; значення не критичне)
-      SEED_FORCE_ON_BOOT (bool)  — ігнорувати перевірку "порожня/непорожня" (default: false)
-      SEED_PATH (str)            — явний шлях до файлу (опц.)
-      SEED_DIR (str)             — каталог з дампами (default: /app/backups)
-      SEED_GLOB (str)            — маска пошуку файлів (default: *.sql*)
-      SEED_SKIP_DROP (bool)      — не скидати схему public перед відновленням (default: false)
-      SEED_PSQL_SINGLE_TX (bool) — виконувати в одній транзакції (-1) (default: true)
-      SEED_OWNER_FIX (bool)      — нормалізувати OWNER TO ... на поточного DB_USER (default: true; вимикає лише нормалізацію рядків, але сам дамп все одно виконається)
+    Виконує сидинг, якщо:
+      - SEED_ON_BOOT=true і SEED_MODE=sql (або postgres_sql/sql_full),
+      - і (FORCE=true або схоже, що БД порожня).
+    Повертає (seeded: bool, info_message: str).
     """
     on_boot = _env_bool("SEED_ON_BOOT", False)
-    mode = _env_str("SEED_MODE", "sql").lower()
+    mode = os.getenv("SEED_MODE", "sql").strip().lower()
     force = _env_bool("SEED_FORCE_ON_BOOT", False)
-    skip_drop = _env_bool("SEED_SKIP_DROP", False)
-    single_tx = _env_bool("SEED_PSQL_SINGLE_TX", True)
-    owner_fix = _env_bool("SEED_OWNER_FIX", True)
-    db_user = _env_str("DB_USER", "")
 
-    print(f"init_app: seed_on_boot={on_boot}, mode={mode}, force={force}")
-    _db_diag()
+    # Можемо передати або шлях до файлу, або директорію.
+    seed_path = os.getenv("SEED_PATH", "/app/backups").strip()
+    seed_glob = os.getenv("SEED_GLOB", "*.sql*").strip()  # наприклад: backup_*.sql.gz
+
+    db_user = os.getenv("DB_USER", "").strip()
+    print(f"init_app: seed_on_boot={on_boot}, mode={mode}, force={force}, seed_path={seed_path}")
 
     if not (on_boot and mode in ("sql", "sql_full", "postgres_sql")):
-        print("init_app: seeding disabled by mode/on_boot")
-        return False
+        return False, "seeding disabled"
 
-    # М'ютекс між репліками
-    if not _advisory_lock():
-        print("init_app: another instance is seeding -> skip")
-        return False
-
-    need = force or (not _db_has_content())
-    print(f"init_app: db_has_content={not need}, will_seed={need}")
-
+    # Безпечна евристика «порожня БД» — у схемі public немає таблиць
+    empty = not _schema_has_tables("public")
+    need = force or empty
     if not need:
-        print("init_app: DB has content -> skip seeding")
-        return False
+        return False, "DB has content -> skip seeding"
 
-    seed_file = _find_seed_file()
-    if not seed_file:
-        print("init_app: no seed file found (SEED_PATH / SEED_DIR+SEED_GLOB)")
-        return False
+    seed_file = _choose_seed_file(seed_path, seed_glob)
+    if not seed_file or not seed_file.exists():
+        return False, f"seed file not found: {seed_path}"
 
-    print(f"init_app: seeding from {seed_file} (skip_drop={skip_drop}, single_tx={single_tx}, owner_fix={owner_fix})")
+    print(f"init_app: seeding from {seed_file}")
 
-    # Якщо вимкнули owner_fix — просто стрімимо як є, без нормалізації
-    if not owner_fix:
-        # Прямий стрім без змін рядків
-        def _raw_stream_to_psql(path: str):
-            args = []
-            if single_tx:
-                args.append("-1")
-            args += ["-f", "-"]
-            data = None
-            if path.endswith(".gz"):
-                with gzip.open(path, "rt", encoding="utf-8", errors="ignore") as f:
-                    data = f.read()
-            else:
-                data = Path(path).read_text(encoding="utf-8", errors="ignore")
-            if not skip_drop:
-                drop_sql = (
-                    f'DROP SCHEMA IF EXISTS public CASCADE; '
-                    f'CREATE SCHEMA public AUTHORIZATION "{db_user}"; '
-                    f'ALTER SCHEMA public OWNER TO "{db_user}";'
-                )
-                _psql(["-tAc", drop_sql], check=True)
-            _psql(args, check=True, capture=False, text_input=data)
+    # 1) Скидаємо схему й створюємо з правильним owner
+    drop_sql = (
+        f'DROP SCHEMA IF EXISTS public CASCADE; '
+        f'CREATE SCHEMA public AUTHORIZATION "{db_user}"; '
+        f'ALTER SCHEMA public OWNER TO "{db_user}";'
+    )
+    _psql(["-tAc", drop_sql], check=True, capture=False)
 
-        _raw_stream_to_psql(seed_file)
+    # 2) Розпаковуємо дамп у /tmp/seed.sql (щоб уникнути "Broken pipe")
+    tmp = Path("/tmp/seed.sql")
+    if seed_file.suffix == ".gz":
+        with gzip.open(seed_file, "rb") as fsrc, open(tmp, "wb") as fdst:
+            shutil.copyfileobj(fsrc, fdst)
     else:
-        # Нормальний потік з нормалізацією OWNER
-        _stream_seed_into_psql(seed_file, db_user=db_user, skip_drop=skip_drop, single_tx=single_tx)
+        shutil.copyfile(seed_file, tmp)
 
-    print("init_app: seeding completed")
+    # 3) Витягаємо потенційні імена ролей (ВАРІАНТ B)
+    raw = tmp.read_text(encoding="utf-8", errors="ignore")
+    candidates = sorted(_extract_role_candidates(raw, db_user))
+    print(f"init_app: role candidates -> {candidates}")
+
+    created: List[str] = []
+    for r in candidates:
+        try:
+            if not _role_exists(r):
+                _create_temp_role(r)
+                created.append(r)
+                print(f'init_app: created temp role "{r}"')
+        except Exception as e:
+            print(f'init_app: cannot create temp role "{r}": {e}')
+
+    # 4) Імпорт дампу
+    try:
+        _psql(["-f", str(tmp)], check=True, capture=False)
+    except Exception as e:
+        return False, f"seeding failed: {e}"
+
+    # 5) Після імпорту: REASSIGN OWNED/DROP тимчасові ролі
+    for r in created:
+        try:
+            _reassign_and_drop_role(r, db_user)
+            print(f'init_app: dropped temp role "{r}"')
+        except Exception as e:
+            print(f'init_app: cleanup for role "{r}" failed: {e}')
+
     telegram_notify("✅ <b>Huhy.space</b>: БД відновлено з бекапу і готова до роботи.")
-    return True
+    return True, "seeding completed"
 
 
-# =========================
-# Django command
-# =========================
-
+# ----------------------------
+# Command
+# ----------------------------
 class Command(BaseCommand):
-    help = "Initial setup: optional seed (latest SQL/SQL.GZ), migrate, ensure superuser, Telegram notify."
+    help = "Initial setup: optional seed, migrate, ensure superuser, notify."
 
     def handle(self, *args, **options):
         print(">>> init_app: start")
 
-        # 0) Сидинг (перед міграціями, бо дамп може містити DDL)
-        print(">>> init_app: seed phase")
-        try:
-            seeded = _seed_sql_if_needed()
-            print(f">>> init_app: seeded = {seeded}")
-        except Exception as e:
-            print(f"init_app: seeding failed: {e}")
-            # свідомо НЕ падаємо — даємо шанс піти далі (наприклад, якщо дампу немає)
+        # 0) Можливий сидинг (до міграцій, бо дамп містить DDL)
+        seeded, msg = _seed_sql_if_needed()
+        print(f">>> init_app: seed phase -> {msg}")
+        print(f">>> init_app: seeded = {seeded}")
 
         # 1) Міграції
         print(">>> init_app: migrate phase")
         call_command("migrate", interactive=False)
 
-        # 2) Суперюзер (з підтримкою *_FILE)
+        # 2) Суперюзер (обережно з унікальним phone)
         print(">>> init_app: superuser phase")
-        User = get_user_model()
-        su_username = _env_str("DJANGO_SUPERUSER_USERNAME", "admin")
-        su_email = _env_str("DJANGO_SUPERUSER_EMAIL", "admin@example.com")
+        try:
+            User = get_user_model()
+            su_username = os.getenv("DJANGO_SUPERUSER_USERNAME", "admin").strip()
+            su_email = os.getenv("DJANGO_SUPERUSER_EMAIL", "admin@example.com").strip()
+            su_password = os.getenv("DJANGO_SUPERUSER_PASSWORD", "admin").strip()
+            only_if_empty = _env_bool("DJANGO_SUPERUSER_IF_EMPTY", True)  # створювати лише якщо немає користувачів
 
-        # Підтримка secret-файлу (docker secrets)
-        su_password = _env_str("DJANGO_SUPERUSER_PASSWORD", "")
-        su_password_file = _env_str("DJANGO_SUPERUSER_PASSWORD_FILE", "")
-        if not su_password and su_password_file and Path(su_password_file).is_file():
-            try:
-                su_password = Path(su_password_file).read_text(encoding="utf-8").strip()
-            except Exception:
-                pass
-        if not su_password:
-            su_password = "admin"
+            if only_if_empty and User.objects.exists():
+                print("init_app: users already exist -> skip superuser creation")
+            else:
+                # Визначаємо поле телефону (якщо є) і гарантуємо унікальність
+                extra = {}
+                try:
+                    field_names = {f.name for f in User._meta.get_fields() if hasattr(f, "name")}
+                    phone_field = (
+                        "phone" if "phone" in field_names
+                        else ("phone_number" if "phone_number" in field_names else None)
+                    )
+                    if phone_field:
+                        env_phone = os.getenv("DJANGO_SUPERUSER_PHONE", "").strip()
+                        if not env_phone:
+                            env_phone = f"+999{uuid.uuid4().int % 10**9:09d}"  # технічний унікальний номер
+                        extra[phone_field] = env_phone
+                except Exception:
+                    pass
 
-        if not User.objects.filter(username=su_username).exists():
-            User.objects.create_superuser(su_username, su_email, su_password)
-            print(f"init_app: superuser '{su_username}' created")
-            telegram_notify(f"👤 Створено суперкористувача <b>{su_username}</b>.")
-        else:
-            print("init_app: superuser already exists")
+                obj, created = User.objects.get_or_create(
+                    username=su_username,
+                    defaults={"email": su_email, **extra},
+                )
+                if created:
+                    if hasattr(obj, "is_staff"):
+                        obj.is_staff = True
+                    if hasattr(obj, "is_superuser"):
+                        obj.is_superuser = True
+                    obj.set_password(su_password)
+                    obj.save()
+                    print(f"init_app: superuser '{su_username}' created")
+                    telegram_notify(f"👤 Створено суперкористувача <b>{su_username}</b>.")
+                else:
+                    print("init_app: superuser already exists")
+        except Exception as e:
+            print(f"init_app: superuser phase skipped due to error: {e}")
 
         print(">>> init_app: done")
